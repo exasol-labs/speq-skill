@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.27.0
+
+- Implementations get smaller. Implementer agents first reuse a helper already in your repository, then a platform feature, then an installed dependency, before they write new code, and they keep the smallest change that still does the whole job. Code review flags any line the change does not need.
+- Plans propose the smallest scope that does the job. Anything the plan leaves out is named in one line, so you can ask for it instead of discovering later that it went missing.
+- The trimmed change never drops validation at trust boundaries, error handling that prevents data loss, security, accessibility, behavior your spec names, or the test the change needs.
+
 ## 0.26.0
 
 - One routing table (`scripts/plugin/model-routing.yml`) owns the model and reasoning level of every agent and skill. The build injects each harness's frontmatter from it and emits `pi/model-overrides.json`; the installer reconciles the operator's Pi `subagents.agentOverrides` from that artifact, and the uninstaller removes exactly the entries it wrote.

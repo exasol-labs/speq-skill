@@ -45,3 +45,5 @@ For more information, see the [LLM-Coding/Semantic-Anchors](https://github.com/L
 | Dependency Rule (Clean Architecture / Martin) | speq-design-philosophy | Design principles |
 | Rule of Three | speq-code-guardrails | Design principles |
 | Command-Query Separation | speq-code-guardrails | Design principles |
+| YAGNI | speq-minimal-change | Design principles |
+| Lazy Senior Dev (Ponytail) | speq-minimal-change | Scope control |

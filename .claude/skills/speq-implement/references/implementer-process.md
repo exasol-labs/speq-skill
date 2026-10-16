@@ -8,6 +8,7 @@ Invoke these before any implementation work:
 - `/speq-code-tools`: semantic code navigation and editing
 - `/speq-ext-research`: library documentation
 - `/speq-code-guardrails`: TDD workflow and guardrails
+- `/speq-minimal-change`: the smallest change that fully does the job
 - `/speq-design-philosophy`: complexity-management design principles
 - `/speq-git-discipline`: version control rules
 - `/speq-cli`: spec discovery

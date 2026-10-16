@@ -241,7 +241,7 @@ fn build_emits_pi_thinking_only() {
     let root = shared_build();
 
     let agent = frontmatter(&pi_agent(root, "planner-agent"));
-    assert_has_line(&agent, "thinking: xhigh", "pi planner-agent");
+    assert_has_line(&agent, "thinking: medium", "pi planner-agent");
     assert_lacks_prefix(&agent, "model:", "pi planner-agent");
     assert_lacks_prefix(&agent, "effort:", "pi planner-agent");
     assert_lacks_prefix(&agent, "color:", "pi planner-agent");

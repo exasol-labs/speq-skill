@@ -49,6 +49,7 @@ The repository-tree copies under `.claude/` carry no routing and inherit the ses
 | `/speq:ext-research` | inherited | inherited | Reference material for the caller |
 | `/speq:git-discipline` | inherited | inherited | Reference material for the caller |
 | `/speq:git-operations` | inherited | inherited | Reference material for the caller |
+| `/speq:minimal-change` | inherited | inherited | Reference material for the caller |
 | `/speq:plan-review` | inherited | inherited | Reference material for the caller |
 | `/speq:planning` | inherited | inherited | Reference material for the caller |
 | `/speq:spec-merge` | inherited | inherited | Reference material for the caller |
@@ -87,6 +88,7 @@ The repository-tree copies under `.claude/` carry no routing and inherit the ses
 | `/speq:ext-research` | inherited | inherited | Reference material for the caller |
 | `/speq:git-discipline` | inherited | inherited | Reference material for the caller |
 | `/speq:git-operations` | inherited | inherited | Reference material for the caller |
+| `/speq:minimal-change` | inherited | inherited | Reference material for the caller |
 | `/speq:plan-review` | inherited | inherited | Reference material for the caller |
 | `/speq:planning` | inherited | inherited | Reference material for the caller |
 | `/speq:spec-merge` | inherited | inherited | Reference material for the caller |
@@ -129,19 +131,20 @@ The build emits `pi/model-overrides.json` from the non-null `pi.model` values in
 | `/skill:speq-ext-research` | inherited | inherited | Reference material for the caller |
 | `/skill:speq-git-discipline` | inherited | inherited | Reference material for the caller |
 | `/skill:speq-git-operations` | inherited | inherited | Reference material for the caller |
+| `/skill:speq-minimal-change` | inherited | inherited | Reference material for the caller |
 | `/skill:speq-plan-review` | inherited | inherited | Reference material for the caller |
 | `/skill:speq-planning` | inherited | inherited | Reference material for the caller |
 | `/skill:speq-spec-merge` | inherited | inherited | Reference material for the caller |
 | `/skill:speq-writing-guardrails` | inherited | inherited | Reference material for the caller |
-| `speq-planner-agent` | `opencode-go/gpt-5.6-luna` | `xhigh` | Spec deltas, context, task decomposition |
-| `speq-plan-reviewer` | `opencode-go/kimi-k3` | `max` | Adversarial plan review |
-| `speq-implementer-agent` | `opencode-go/gpt-6-luna` | `high` | Standard implementation tasks |
-| `speq-implementer-expert-agent` | `opencode-go/glm-5.3` | `max` | Tasks tagged `[expert]` |
-| `speq-code-reviewer` | `opencode-go/grok-4.7` | `xhigh` | Adversarial implementation review |
-| `speq-audit-agent` | `opencode-go/glm-5.3-flash` | `high` | Mission ↔ spec-library sync |
-| `speq-architecture-agent` | `opencode-go/gpt-5.6-luna` | `high` | Brownfield draft of `specs/architecture.md` for `/speq:mission` |
-| `speq-adr-audit-agent` | `opencode-go/glm-5.3-flash` | `high` | ADR noise and accuracy review |
-| `speq-recorder-agent` | `opencode-go/deepseek-v4.1-flash` | `high` | Deterministic spec merge and archive |
+| `speq-planner-agent` | `opencode-go/gemini-4-argon` | `medium` | Spec deltas, context, task decomposition |
+| `speq-plan-reviewer` | `opencode-go/grok-4.7` | `medium` | Adversarial plan review |
+| `speq-implementer-agent` | `opencode-go/mimo-v2.6-pro` | `medium` | Standard implementation tasks |
+| `speq-implementer-expert-agent` | `opencode-go/deepseek-v4-pro` | `medium` | Tasks tagged `[expert]` |
+| `speq-code-reviewer` | `opencode-go/grok-4.7` | `high` | Adversarial implementation review |
+| `speq-audit-agent` | `opencode-go/gemini-4-argon` | `high` | Mission ↔ spec-library sync |
+| `speq-architecture-agent` | `opencode-go/gemini-4-argon` | `medium` | Brownfield draft of `specs/architecture.md` for `/speq:mission` |
+| `speq-adr-audit-agent` | `opencode-go/gpt-5.6-luna` | `medium` | ADR noise and accuracy review |
+| `speq-recorder-agent` | `opencode-go/deepseek-v4.1-flash` | `low` | Deterministic spec merge and archive |
 <!-- END GENERATED pi routing table -->
 
 ### Pin the Pi models

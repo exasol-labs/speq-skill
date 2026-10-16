@@ -192,6 +192,13 @@ skills:
     codex: {}
     pi: {}
 
+  speq-minimal-change:
+    file: .claude/skills/speq-minimal-change/SKILL.md
+    note: Reference material for the caller
+    claude: {}
+    codex: {}
+    pi: {}
+
   speq-plan-review:
     file: .claude/skills/speq-plan-review/SKILL.md
     note: Reference material for the caller

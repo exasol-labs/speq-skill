@@ -781,7 +781,7 @@ main() {
     log_info "Codex plugin: $CODEX_PLUGIN_DIR"
     log_info "Workflow skills: /speq:plan, /speq:implement, /speq:record, /speq:mission, /speq:audit"
     log_info "Headless PR pipeline: /speq:plan-pr, /speq:implement-pr"
-    log_info "Utility skills: /speq:code-tools, /speq:ext-research, /speq:code-guardrails, /speq:design-philosophy, /speq:git-discipline, /speq:cli, /speq:writing-guardrails, /speq:planning, /speq:plan-review, /speq:code-review, /speq:spec-merge, /speq:git-operations, /speq:adr-rules"
+    log_info "Utility skills: /speq:code-tools, /speq:ext-research, /speq:code-guardrails, /speq:minimal-change, /speq:design-philosophy, /speq:git-discipline, /speq:cli, /speq:writing-guardrails, /speq:planning, /speq:plan-review, /speq:code-review, /speq:spec-merge, /speq:git-operations, /speq:adr-rules"
     log_info "Model routing: $ROUTING_TABLE_RELATIVE"
     log_info "Marketplace structure built at: $MARKETPLACE_DIR"
 }
