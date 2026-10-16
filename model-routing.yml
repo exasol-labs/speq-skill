@@ -21,7 +21,7 @@ agents:
     note: Spec deltas, context, task decomposition
     claude: { model: opus, effort: xhigh }
     codex: { model: gpt-5.5, effort: xhigh }
-    pi: { model: opencode-go/gemini-4-argon, thinking: medium }
+    pi: { model: opencode-go/gpt-6-luna, thinking: medium }
 
   plan-reviewer:
     file: .claude/agents/plan-reviewer.md
@@ -42,7 +42,7 @@ agents:
     note: Tasks tagged `[expert]`
     claude: { model: opus, effort: xhigh }
     codex: { model: gpt-5.5, effort: xhigh }
-    pi: { model: opencode-go/deepseek-v4-pro, thinking: medium }
+    pi: { model: opencode-go/deepseek-v4-pro, thinking: high }
 
   code-reviewer:
     file: .claude/agents/code-reviewer.md
@@ -56,14 +56,14 @@ agents:
     note: Mission ↔ spec-library sync
     claude: { model: opus, effort: high }
     codex: { model: gpt-5.5, effort: high }
-    pi: { model: opencode-go/gemini-4-argon, thinking: high }
+    pi: { model: opencode-go/gpt-6-luna, thinking: high }
 
   architecture-agent:
     file: .claude/agents/architecture-agent.md
     note: Brownfield draft of `specs/architecture.md` for `/speq:mission`
     claude: { model: opus, effort: high }
     codex: { model: gpt-5.5, effort: high }
-    pi: { model: opencode-go/gemini-4-argon, thinking: medium }
+    pi: { model: opencode-go/gpt-6-luna, thinking: medium }
 
   adr-audit-agent:
     file: .claude/agents/adr-audit-agent.md
