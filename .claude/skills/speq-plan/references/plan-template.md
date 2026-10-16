@@ -108,11 +108,12 @@ Do NOT copy placeholders below. Replace with real values.
 
 ### Checklist
 
-<!-- Read specs/mission.md § Commands. Fill with ACTUAL commands, no placeholders. -->
+<!--
+Read specs/mission.md § Commands. Fill with ACTUAL commands, no placeholders.
+Write ONE chained command, not one row per step: the implement orchestrator runs the
+chain as a single call, and this is the only full-suite run of the implementation.
+-->
 
 | Step | Command | Expected |
 |------|---------|----------|
-| Build | `<from mission.md>` | Exit 0 |
-| Test | `<from mission.md>` | 0 failures |
-| Lint | `<from mission.md>` | 0 errors/warnings |
-| Format | `<from mission.md>` | No changes |
+| Checklist | `mkdir -p target && <build> > target/speq-build.log 2>&1 && <test> > target/speq-test.log 2>&1 && <lint> > target/speq-lint.log 2>&1 && <format> > target/speq-format.log 2>&1` | Exit 0; each step's log is empty of failures |

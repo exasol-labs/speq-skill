@@ -87,7 +87,15 @@ Run — operation: push (per /speq-git-operations)
 
 ### Phase B: Test + Record
 
-**B1. Run suites**: run the project's real test suites (per `specs/mission.md § Commands`, typically an integration suite and an end-to-end suite), redirecting each suite's output to a log: `mkdir -p target && <suite-command> > target/speq-<suite>.log 2>&1`. Judge green/red by exit code. When reporting failures, quote at most `tail -n 30` of the relevant log.
+**B1. Run suites**: run the project's real test suites (per `specs/mission.md § Commands`, typically an integration suite and an end-to-end suite) as **one chained call**, redirecting each suite's output to its own log:
+
+```bash
+mkdir -p target && \
+  <suite-1-command> > target/speq-suite-1.log 2>&1 && \
+  <suite-2-command> > target/speq-suite-2.log 2>&1
+```
+
+One call, one turn, one log per suite. Judge green/red by exit code. When reporting failures, quote at most `tail -n 30` of the relevant log.
 - **All green** → mark `[x] tested-green`, continue with B2.
 - **Any suite red** → mark `- [!] tested-green — red: <failed suites> (logs: target/speq-<suite>.log)`, report the failures, and **stop**. Leave the plan unrecorded.
 - On red-path re-entry (`[!]` at dispatch), re-run the suites only, per the protocol. Never re-enter `/speq-implement` from here.

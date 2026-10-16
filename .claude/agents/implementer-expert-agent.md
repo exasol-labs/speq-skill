@@ -23,7 +23,7 @@ Follow the `## Process` section of your brief, which carries the shared implemen
 When the brief names a code-review findings file and one or two sections of it instead of a task list, deriving and appending the fix tasks IS the assignment. This is the one case where you author task lines. The brief always names `## Expert fixes`, and also names `## Standard fixes` when the review found both kinds: one agent applies the whole fix pass.
 
 1. Read the named section(s) of `specs/_plans/{plan_name}/review-findings.md`. Ignore any section the brief does not name.
-2. Append one task line per finding to `specs/_plans/{plan_name}/tasks.md` under a `## Phase 4: Review Fixes` heading (create it if absent), numbered `4.1, 4.2, …` at the next free index. Derive each line from the finding's `Fix:` field, which is already an imperative naming the file, symbol, and change. Tag the lines derived from `## Expert fixes` with `[expert]`. Leave lines derived from `## Standard fixes` untagged: the tag records which findings needed expert reasoning.
+2. Append one task line per finding to `specs/_plans/{plan_name}/tasks.md` under a `## Phase 4: Review Fixes` heading (create it if absent), numbered `4.1, 4.2, …` at the next free index. Derive each line from the finding's `Fix:` field, which is already an imperative naming the file, symbol, and change. Tag the lines derived from `## Expert fixes` with `[expert]`. Leave lines derived from `## Standard fixes` untagged: the tag records which findings needed expert reasoning. No other agent is in flight during this pass, so writing `tasks.md` here is safe.
 3. Execute those tasks through the normal TDD cycle, preserving each line's tag state across status transitions.
 
 The findings file is the whole scope: implement nothing it does not name, and do not re-review the code for defects of your own.
@@ -37,11 +37,16 @@ Completed expert tasks:
 - X.1: <description + invariants the code now enforces>
 - X.2: <description + invariants the code now enforces>
 
+Not completed:
+- X.3: <state it is in, or "none">
+
 Test results: N passed, 0 failed
 Lint: clean
 Files modified: <n>
 
 Key decisions: <any non-obvious tradeoffs that belong in the verification report>
 ```
+
+This return is the orchestrator's only source for the group's status: it owns `tasks.md` during implementation and applies these lines to it. Report every task, and never claim one you did not finish.
 
 Do not enumerate modified paths. The orchestrator recovers them from the working tree (`git diff --name-only <base>` plus the untracked-file list).

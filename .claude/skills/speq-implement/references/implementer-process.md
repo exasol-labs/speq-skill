@@ -4,14 +4,20 @@ Shared by `implementer-agent` and `implementer-expert-agent`. The orchestrator i
 
 ## Required Skills
 
-Invoke these before any implementation work:
+Load these three before any implementation work. They govern every task:
 - `/speq-code-tools`: semantic code navigation and editing
-- `/speq-ext-research`: library documentation
 - `/speq-code-guardrails`: TDD workflow and guardrails
 - `/speq-minimal-change`: the smallest change that fully does the job
-- `/speq-design-philosophy`: complexity-management design principles
-- `/speq-git-discipline`: version control rules
-- `/speq-cli`: spec discovery
+
+Load a skill from this table only when its trigger holds for the task in hand. A skill you do not need is a turn you do not spend:
+
+| Skill | Load when |
+|-------|-----------|
+| `/speq-ext-research` | The task needs a library or API whose contract the repo does not show |
+| `/speq-design-philosophy` | The task introduces or changes a module seam, public interface, or data format |
+| `/speq-cli` | You need spec text the brief's `Knowledge:` entry does not name |
+
+**Git history is read-only for you.** Do not run `git commit`, `git checkout`, `git reset`, `git stash`, `git rebase`, or any other history write; the orchestrator and the headless pipeline own those. Read-only git (`status`, `diff`, `log`, `show`) is fine. Files you write under `specs/_plans/<plan_name>/notes/` are local working state and are never committed. This rule replaces loading `/speq-git-discipline`.
 
 ## For Each Assigned Task
 
@@ -36,9 +42,11 @@ speq feature get '<domain>/<feature>/<scenario>'
 
 Follow the LIST → RED → GREEN → REFACTOR → REVISE cycle per `/speq-code-guardrails`. An expert task targets the invariants, failure modes, concurrent interactions, and edge cases that would break a naive implementation, not only the happy path.
 
-### 5. Update Progress
+**Run only the test you changed.** `cargo test --test <binary>`, `pytest <file>::<test>`, or the project's equivalent single-test invocation. Never run the full suite in this loop: the orchestrator runs it once in Phase 5, and a full cycle per task costs more than the implementation. If the project offers no single-test invocation, run the smallest target that contains the test.
 
-After each task completion, edit `specs/_plans/{plan_name}/tasks.md` and change `[~] X.Y <task>` to `[x] X.Y <task>`. Preserve the `[expert]` tag when the task carries one.
+### 5. Report Progress
+
+Do not edit `specs/_plans/{plan_name}/tasks.md`: during implementation the orchestrator is its only writer, so a concurrent wave has no write conflicts. Report each task's outcome in your return instead, in the Output Format your agent file specifies. Name every task you did not complete, with the state it is in.
 
 ## Early Termination
 
@@ -61,7 +69,7 @@ Hand-off: specs/_plans/{plan_name}/notes/<group-letter>.md
 ## Scope Constraints
 
 - Implement only the tasks in your assignment. In an expert group, the untagged tasks in the list are part of that assignment.
-- Edit only your own numbered task lines in `tasks.md` (plus the lines you append in Fix-Task Mode).
+- Leave `tasks.md` to the orchestrator during implementation. Fix-Task Mode is the one exception: no other agent is in flight then, so you append your own `## Phase 4: Review Fixes` lines and mark them.
 - Keep every change inside the spec deltas named in your brief.
 - Never edit a `## PR Lifecycle` section in `tasks.md`: it is the headless pipeline's checkpoint, not a work item.
 - Leave unrelated code unchanged.

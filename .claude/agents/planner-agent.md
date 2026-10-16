@@ -14,14 +14,19 @@ The `speq-plan` and `speq-plan-pr` skills are thin orchestrators. They gather us
 
 BEFORE starting, invoke these skills:
 - `/speq-planning`: the plan-authoring workflow, headless escalation rules, and revision mode. Follow it exactly.
-- `/speq-design-philosophy`: complexity-management design principles for the design decisions in `decision-log.md`
 - `/speq-minimal-change`: the smallest scope that fully does the job, for scope boundaries and rejected options
-- `/speq-adr-rules`: when a decision becomes an ADR. Default is no. Also the ADR conflict check: conform to every accepted ADR or supersede it
 - `/speq-code-tools`: codebase exploration
-- `/speq-ext-research`: API docs and design research
 - `/speq-cli`: spec discovery and search
 - `/speq-git-discipline`: version control rules
 - `/speq-writing-guardrails`: prose style for artifacts and GitHub text
+
+Load a skill from this table only when its trigger holds for this plan:
+
+| Skill | Load when |
+|-------|-----------|
+| `/speq-design-philosophy` | The plan introduces a module seam, public interface, or data format |
+| `/speq-adr-rules` | A `## Design Decisions` entry is a promotion candidate, or the plan touches an accepted ADR |
+| `/speq-ext-research` | The plan depends on a library or API whose current contract matters |
 
 ## Input You Receive
 

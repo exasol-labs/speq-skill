@@ -49,7 +49,7 @@ agents:
     note: Adversarial implementation review
     claude: { model: opus, effort: xhigh }
     codex: { model: gpt-5.5, effort: xhigh }
-    pi: { model: opencode-go/grok-4.7, thinking: high }
+    pi: { model: opencode-go/grok-4.7, thinking: medium }
 
   audit-agent:
     file: .claude/agents/audit-agent.md

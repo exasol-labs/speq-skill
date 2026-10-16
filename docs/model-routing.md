@@ -140,7 +140,7 @@ The build emits `pi/model-overrides.json` from the non-null `pi.model` values in
 | `speq-plan-reviewer` | `opencode-go/grok-4.7` | `medium` | Adversarial plan review |
 | `speq-implementer-agent` | `opencode-go/mimo-v2.6-pro` | `medium` | Standard implementation tasks |
 | `speq-implementer-expert-agent` | `opencode-go/deepseek-v4-pro` | `medium` | Tasks tagged `[expert]` |
-| `speq-code-reviewer` | `opencode-go/grok-4.7` | `high` | Adversarial implementation review |
+| `speq-code-reviewer` | `opencode-go/grok-4.7` | `medium` | Adversarial implementation review |
 | `speq-audit-agent` | `opencode-go/gemini-4-argon` | `high` | Mission ↔ spec-library sync |
 | `speq-architecture-agent` | `opencode-go/gemini-4-argon` | `medium` | Brownfield draft of `specs/architecture.md` for `/speq:mission` |
 | `speq-adr-audit-agent` | `opencode-go/gpt-5.6-luna` | `medium` | ADR noise and accuracy review |

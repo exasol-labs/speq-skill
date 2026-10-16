@@ -3,6 +3,8 @@
 ## 0.27.0
 
 - Implementations get smaller. Implementer agents first reuse a helper already in your repository, then a platform feature, then an installed dependency, before they write new code, and they keep the smallest change that still does the whole job. Code review flags any line the change does not need.
+- `/speq:implement` runs independent task groups at the same time instead of one after another. A plan with several groups now finishes in roughly one group's time rather than the sum of them, and each group's agent reports its task status back for the orchestrator to record.
+- The full build, test, lint, and format suite runs once per implementation, as one chained command. While implementing, an agent runs only the test it changed.
 - Plans propose the smallest scope that does the job. Anything the plan leaves out is named in one line, so you can ask for it instead of discovering later that it went missing.
 - The trimmed change never drops validation at trust boundaries, error handling that prevents data loss, security, accessibility, behavior your spec names, or the test the change needs.
 

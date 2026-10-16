@@ -15,6 +15,8 @@ BEFORE starting, invoke these skills:
 - `/speq-code-tools` — File operations
 - `/speq-cli` — Spec validation
 - `/speq-git-discipline` — Version control rules
+
+When the plan carries at least one ADR candidate, also invoke:
 - `/speq-writing-guardrails` — Prose style for ADR promotion (decision-log synthesis). Keep ADR text to the minimum and state facts, not history, per `/speq-adr-rules` rule 8
 - `/speq-adr-rules` — The ADR rules and status lifecycle. Recording is the acceptance, so you write `Accepted`
 

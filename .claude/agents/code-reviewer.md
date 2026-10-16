@@ -11,12 +11,17 @@ Analyze implementation quality and identify issues for the implementer agents to
 ## First: Invoke Required Skills
 
 - `/speq-code-review`: the review tag taxonomy and output format. Follow it exactly.
-- `/speq-writing-guardrails`: prose style for `review-findings.md`
 - `/speq-code-guardrails`: quality standards the taxonomy is built on
-- `/speq-minimal-change`: what justifies a line, for the lean categories
-- `/speq-design-philosophy`: complexity-management principles behind the Design Depth category
 - `/speq-code-tools`: you must use the provided code tools
 - `/speq-cli`: how to use the `speq` CLI
+- `/speq-writing-guardrails`: prose style for `review-findings.md`
+
+Load a skill from this table only when its trigger holds for a file you are reviewing:
+
+| Skill | Load when |
+|-------|-----------|
+| `/speq-design-philosophy` | You are about to raise a Design Depth finding |
+| `/speq-minimal-change` | You are about to raise a YAGNI or over-engineering finding |
 
 ## Input
 
