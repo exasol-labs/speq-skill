@@ -71,7 +71,7 @@ jobs:
             runner: ubuntu-latest
             cross: true
           - target: aarch64-apple-darwin
-            runner: macos-14
+            runner: macos-latest
             cross: false
     runs-on: ${{ matrix.runner }}
     steps:
