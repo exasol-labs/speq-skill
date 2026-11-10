@@ -24,7 +24,7 @@
 - If a spec does, the plan restores the code
 - If no spec covers the case, or the spec is wrong, the plan adds or corrects the scenario
 - Then run `/speq:implement` and `/speq:record`
-- For a small fix, run `/speq:patch <symptom>` instead. It fixes the code, edits only the specs and docs the fix needs, and opens one ready PR. See [Patch](./patch.md)
+- For a small fix, run `/speq:patch <symptom>` instead. It fixes the code and edits only the specs and docs the fix needs. `/speq:patch-pr <symptom>` does the same and opens one ready PR. See [Patch](./patch.md)
 
 ## How do I start a greenfield project?
 

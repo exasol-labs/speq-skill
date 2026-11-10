@@ -1,11 +1,11 @@
 ---
 name: speq-git-operations
-description: The git/gh operation-to-command mapping, return formats, and PR-title and version-bump rules, invoked directly by /speq-plan-pr, /speq-implement-pr, and /speq-patch.
+description: The git/gh operation-to-command mapping, return formats, and PR-title and version-bump rules, invoked directly by /speq-plan-pr, /speq-implement-pr, and /speq-patch-pr.
 ---
 
 # Git Operations
 
-This skill documents the git/gh write commands available to `speq-plan-pr`, `speq-implement-pr`, and `speq-patch`.
+This skill documents the git/gh write commands available to `speq-plan-pr`, `speq-implement-pr`, and `speq-patch-pr`.
 
 ## Rules
 

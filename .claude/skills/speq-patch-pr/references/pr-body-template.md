@@ -1,6 +1,6 @@
 # PR Body Template
 
-Used by `/speq-patch` as the ready PR body.
+Used by `/speq-patch-pr` as the ready PR body.
 
 ## Skeleton
 

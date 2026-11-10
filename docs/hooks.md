@@ -26,8 +26,9 @@ Create `.speq/<name>-hook.md` in the project root. The matching entry-point skil
 | `/speq:record` | `.speq/record-hook.md` |
 | `/speq:audit` | `.speq/audit-hook.md` |
 | `/speq:patch` | `.speq/patch-hook.md` |
+| `/speq:patch-pr` | `.speq/patch-pr-hook.md` |
 
-Only the 8 entry-point skills read hooks directly. A skill that spawns sub-agents, for example `planner-agent`, `plan-reviewer`, or `code-reviewer`, passes the hook file path to each sub-agent. When the file is relevant to the task of the sub-agent, the sub-agent reads the file itself.
+Only the 9 entry-point skills read hooks directly. A skill that spawns sub-agents, for example `planner-agent`, `plan-reviewer`, or `code-reviewer`, passes the hook file path to each sub-agent. When the file is relevant to the task of the sub-agent, the sub-agent reads the file itself.
 
 Commit `.speq/` to the repository. Hook files are project-level configuration and need no frontmatter.
 

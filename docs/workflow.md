@@ -48,7 +48,7 @@ Run `/speq:record <plan-name>`.
 
 ## Ship a small change
 
-Run `/speq:patch <intent>` for a small fix or tweak. It skips the plan and opens one ready PR. See [Patch](./patch.md).
+Run `/speq:patch <intent>` for a small fix or tweak. It skips the plan and applies the change in one run. Run `/speq:patch-pr <intent>` to also ship it as one ready PR. See [Patch](./patch.md).
 
 ## Check the library
 

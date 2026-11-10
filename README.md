@@ -73,7 +73,7 @@ Each skill is grounded in [semantic anchors](./docs/semantic-anchors.md) — nam
 
 Specs live in `specs/<domain>/<feature>/spec.md`. `specs/architecture.md` holds the current architecture. Plans stage in `specs/_plans/<plan-name>/`. The separation keeps your spec library clean while work is in progress.
 
-For a small fix or tweak, `/speq:patch` skips the plan and ships one ready PR. See [Patch](./docs/patch.md).
+For a small fix or tweak, `/speq:patch` skips the plan and applies the change in one run. `/speq:patch-pr` also ships it as one ready PR. See [Patch](./docs/patch.md).
 
 ---
 
@@ -85,7 +85,7 @@ For a small fix or tweak, `/speq:patch` skips the plan and ships one ready PR. S
 | [Workflow](./docs/workflow.md)                 | One-time mission setup, then Plan → Implement → Record cycle |
 | [FAQ](./docs/faq.md)                           | Add features, fix bugs, start greenfield or brownfield       |
 | [PR Workflow](./docs/pr-workflow.md)           | Plan and implement via a feat/ branch + Pull Request         |
-| [Patch](./docs/patch.md)                       | Ship a small fix or tweak as one ready PR                    |
+| [Patch](./docs/patch.md)                       | Apply a small fix without a plan, or ship it as a ready PR   |
 | [Decision Log](./docs/decision-log.md)         | Design decisions, ADR fragment format, validation, and show  |
 | [CLI Reference](./docs/cli-reference.md)       | All CLI commands                                             |
 | [MCP Servers](./docs/mcp-servers.md)           | Optional Serena and Context7 setup                           |

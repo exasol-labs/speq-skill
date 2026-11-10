@@ -1,11 +1,11 @@
 ---
 name: speq-patch
-description: "Ships a bug fix, small feature, or tweak in one run: branches, implements and tests it, has code-reviewer review the diff once, edits only the specs, ADRs, architecture, and docs it needs, bumps the version, and opens a ready PR. Arg: change intent text."
+description: "Applies a bug fix, small feature, or tweak in the working tree in one run: implements and tests it, has code-reviewer review the diff once, and edits only the specs, ADRs, architecture, and docs it needs. Runs no git writes. Arg: change intent text."
 ---
 
 # Patch (Orchestrator)
 
-You take one small change to a ready PR on the branch `patch/<patch-name>`. You write the code and tests yourself. Stop on the first failed step and report it. Running it again resumes the work.
+You take one small change to a tested, reviewed working tree. You write the code and tests yourself. You run no git write: the user commits, or `/speq-patch-pr` ships the change as a PR. Stop on the first failed step and report it. Running it again resumes the work.
 
 ## Required Skills
 
@@ -15,14 +15,13 @@ Invoke before starting:
 - `/speq-code-tools`: code navigation and editing
 - `/speq-adr-rules`: whether a change earns an ADR
 - `/speq-writing-guardrails`: prose style
-- `/speq-git-operations`: git/`gh` writes, PR title, version bump
 - `/speq-planning`: apply only the Short Background and Specs-describe-the-software rules of its § Rules
 - `/speq-ext-library`: on demand, for library APIs
 
 ## Rules
 
-- Never touch `specs/_recorded/` or `specs/mission.md`. In `specs/_plans/`, touch only the patch folder `specs/_plans/<patch-name>/`, and never commit it.
-- Prose states requirements and decisions. No process narration, no history. Commit no plan, notes, review, or report file.
+- Never touch `specs/_recorded/` or `specs/mission.md`. In `specs/_plans/`, touch only the patch folder `specs/_plans/<patch-name>/`.
+- Prose states requirements and decisions. No process narration, no history.
 - Ask about the size limit at most once per run. After a yes, report a later exceeded limit without asking.
 
 ## Workflow
@@ -35,48 +34,31 @@ Check for `.speq/patch-hook.md` in the repo root.
 
 ### 1. Check Prerequisites
 
-`$1` empty → ask the user for the change intent. Stop before any edit and name the missing piece when `specs/mission.md` is absent (point to `/speq-mission`), `gh auth status` fails, or the repository has no `origin` remote.
+`$1` empty → ask the user for the change intent. `specs/mission.md` absent → stop before any edit and point to `/speq-mission`. The working tree has uncommitted changes → ask whether they belong to the patch. They do not → stop and ask the user to commit or stash them. Never stash or discard them yourself.
 
 ### 2. Discover and Name
 
 1. Run `speq plan list` and the absence check per `/speq-cli` for the behavior the change touches.
 2. Do not interview. Ask only when the intent has more than one reading or leaves the expected behavior open.
-3. Name the patch per `/speq-plan` step 3, without its decision log. On the branch `patch/<name>` of a stopped run for this intent, reuse `<name>`. Otherwise never pick a name that `speq plan list` shows.
+3. Name the patch per `/speq-plan` step 3, without its decision log. A stopped run for this intent left the patch folder or the branch `patch/<name>` → reuse `<name>`. Otherwise never pick a name that `speq plan list` shows.
 
-### 3. Size Check Before Branching
+### 3. Size Check Before Coding
 
-The change exceeds the size limit when it needs a new feature spec or a new domain, changes scenarios in more than 2 features, or adds or removes a component in `specs/architecture.md`. Then name the limit and the measured value, recommend `/speq-plan` or `/speq-plan-pr`, and ask whether to continue. A "no" stops the run before any branch exists.
+The change exceeds the size limit when it needs a new feature spec or a new domain, changes scenarios in more than 2 features, or adds or removes a component in `specs/architecture.md`. Then name the limit and the measured value, recommend `/speq-plan` or `/speq-plan-pr`, and ask whether to continue. A "no" stops the run before any edit.
 
-### 4. Branch
-
-1. The current branch is not `patch/<patch-name>` and the working tree has uncommitted changes → ask whether they belong to the patch. They do not → stop and ask the user to commit or stash them. Never stash or discard them yourself.
-2. Run `checkout` with `patch/<patch-name>`. Found → resume at step 8 when a commit on `origin/<default-branch>..HEAD` has the step 7 PR title as subject, otherwise at step 5. Not found → `create-branch` with `patch/<patch-name>` and `base: origin/<default-branch>`.
-
-### 5. Implement and Test
+### 4. Implement and Test
 
 1. Write the code and tests, TDD per `/speq-code-guardrails`. A fix starts with a test that reproduces the defect. A removal deletes the code and the tests that covered it.
-2. Run the test suites and the lint command from `specs/mission.md § Commands` with logs per `/speq-implement-pr` step 5, which judges green or red by exit code. Every failure counts as caused by the patch. Red → fix and rerun. After 3 red runs of the same suite, stop and report the suite, its failing tests, at most `tail -n 30` of its log, and the branch state.
+2. Run the test suites and the lint command from `specs/mission.md § Commands`. Redirect each command's output to a log: `mkdir -p target && <command> > target/speq-<suite>.log 2>&1`, and judge green or red by exit code. Every failure counts as caused by the patch. Red → fix and rerun. After 3 red runs of the same suite, stop and report the suite, its failing tests, and at most `tail -n 30` of its log.
 
-### 6. Review
+### 5. Review
 
-1. Collect the changed files per `/speq-implement` Phase 4 step 1, with base `origin/<default-branch>`, leaving out the patch folder.
+1. Collect the changed files per `/speq-implement` Phase 4 step 1, with base `HEAD`, leaving out the patch folder.
 2. Write the patch folder's `plan.md`: H1 `# Plan: <patch-name>`, then `## Summary` with the change intent `$1`.
-3. Spawn `code-reviewer` once with `/speq-implement` Phase 4 step 2's brief, `<plan-name>` set to `<patch-name>` and the hook line naming `.speq/patch-hook.md`.
-4. Read `specs/_plans/<patch-name>/review-findings.md`. Fix every finding, then rerun the suites per step 5. Never spawn a second review.
+3. `review-findings.md` absent from the patch folder → spawn `code-reviewer` once with `/speq-implement` Phase 4 step 2's brief, `<plan-name>` set to `<patch-name>` and the hook line naming `.speq/patch-hook.md`. Present → a stopped run already reviewed: never spawn a second review.
+4. Read `specs/_plans/<patch-name>/review-findings.md`. Fix every finding that is not yet fixed, then rerun the suites per step 4.
 
-### 7. Bump Version and Commit
-
-1. Bump the version file and sync the lockfile per `/speq-implement-pr` step 3, at the level `/speq-git-operations` § PR title and version bump gives.
-2. Derive the PR title from `<patch-name>` per that same section.
-3. Run `commit` with the code, the tests, the version file, and the lockfile. Message: the PR title.
-
-### 8. Size Check After Commit
-
-Measure `git diff --shortstat origin/<default-branch>...HEAD`. More than 10 files changed, or more than 400 lines (insertions plus deletions), exceeds the size limit. Ask as in step 3. A "no" stops the run with the implementation committed on the unpushed branch: report the branch name and the commit.
-
-A resumed run runs the suites here once for the PR body. Red → stop and report as in step 5.
-
-### 9. Specs, ADRs, Architecture, Docs
+### 6. Specs, ADRs, Architecture, Docs
 
 Edit only what the change needs.
 
@@ -86,26 +68,24 @@ Edit only what the change needs.
   - Removed behavior → delete the scenario, and the feature directory when no scenario remains.
   - A new feature starts from `/speq-plan`'s `references/feature-template.md`.
   - Keep the feature description accurate. Every added or changed scenario has a test in the diff. `speq feature validate <domain>/<feature>` passes for each edited feature.
-  - An active plan other than the patch folder holds a delta for an edited feature → name the plan and the feature in the report and the PR body.
+  - An active plan other than the patch folder holds a delta for an edited feature → name the plan and the feature in the report.
   - A feature or domain over the limits of `/speq-spec-merge` "Check Library Thresholds" → name it in the report. Never reorganize the library.
 - **ADR.** Apply `/speq-adr-rules`. The default is none. Write at most one new fragment `specs/_decision/NNN-<patch-name>.md`: NNN per `/speq-spec-merge` "Promote ADRs to Permanent Decision Log" step 2, H1 `# Decisions: <patch-name>`, `**Plan:** <patch-name>`, `**Status:** Accepted`, layout per `/speq-plan`'s `references/decision-log-permanent-template.md`. Never edit another fragment. `speq decision-log validate` passes.
 - **Architecture.** `specs/architecture.md` absent → no edit. Otherwise edit its affected section only when the change alters a component, boundary, interface, data flow, constraint, or external dependency it describes. Keep the format of `/speq-plan`'s `references/architecture-template.md`, then run the post-check of `/speq-spec-merge` "Apply Architecture Delta" step 5. On failure, restore the file and report.
 - **Docs.** Edit the project's user docs (by default `README.md` and `docs/`) only where the change alters documented behavior.
 
-### 10. Ship
+### 7. Size Check After the Change
 
-Delete the patch folder `specs/_plans/<patch-name>/`. Then:
+Measure the whole change against `HEAD`, leaving out the patch folder: `git diff --shortstat HEAD` plus each untracked file from `git ls-files --others --exclude-standard` and its line count. More than 25 files changed, or more than 400 lines (insertions plus deletions), exceeds the size limit. Ask as in step 3. A "no" stops the run with the change left in the working tree: report the changed files.
 
-```
-Run operation: ship-ready (per /speq-git-operations)
-  paths: the edited specs, ADRs, architecture, and docs
-  message: spec(<scope>): <patch-name>, or docs(<scope>): <patch-name> when only docs change
-  title: <the step 7 PR title>
-  body: per references/pr-body-template.md
-```
+### 8. Clean Up and Report
 
-Never merge the PR.
+Delete the patch folder `specs/_plans/<patch-name>/`. Then report:
 
-### 11. Report
+- the patch name, the changed files, and the number of review findings fixed
+- each suite and the lint command with its result
+- the new ADR with its `/speq-adr-rules` rule-2 criterion and ADR search result, or none
+- the changed `specs/architecture.md` sections, or none
+- the size limit the user chose to exceed with its measured value, the affected plans, the library-size notes, and any `specs/mission.md` inaccuracy
 
-Give the PR link, the new version, the edited files, and the number of review findings fixed. Name the size limit the user chose to exceed with its measured value, the affected plans, the library-size notes, and any `specs/mission.md` inaccuracy.
+End with: review the changes and commit them.

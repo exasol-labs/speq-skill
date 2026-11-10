@@ -28,7 +28,8 @@ An ADR (Architecture Decision Record) is one durable decision. The decisions of 
 
 /speq:patch    writes an ADR with Status: Accepted into
                specs/_decision/NNN-<patch-name>.md.
-               Merging the patch PR is the acceptance.
+               Committing the patch is the acceptance.
+               Under /speq:patch-pr, merging the PR is.
 ```
 
 To drop a candidate, set the entry to `Promotes to ADR: no` and run `/speq:plan` again. In a PR run, comment on the draft PR and run `/speq:plan-pr` again.
