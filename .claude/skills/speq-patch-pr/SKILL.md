@@ -45,7 +45,7 @@ Run `/speq-patch` steps 4 to 8. Keep its report for the PR body. Skip its closin
 
 ### 5. Ship
 
-A run that resumed here runs the suites once per `/speq-patch` step 4 and reads the ADR, architecture, and plan lines from the commit's diff. Red → stop and report as in `/speq-patch` step 4.
+A run that resumed here stops when the working tree has uncommitted changes: name the files and ask the user to commit or stash them. Never ship them unreviewed. Otherwise it runs the suites once per `/speq-patch` step 4 and reads the ADR, architecture, and plan lines from the commit's diff. Red → stop and report as in `/speq-patch` step 4.
 
 ```
 Run operation: ship-ready (per /speq-git-operations)
