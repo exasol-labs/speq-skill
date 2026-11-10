@@ -76,7 +76,7 @@ Edit only what the change needs.
 
 ### 7. Size Check After the Change
 
-Measure the whole change against `HEAD`, leaving out the patch folder: `git diff --shortstat HEAD` plus each untracked file from `git ls-files --others --exclude-standard` and its line count. More than 25 files changed, or more than 400 lines (insertions plus deletions), exceeds the size limit. Ask as in step 3. A "no" stops the run with the change left in the working tree: report the changed files.
+Measure the whole change against `HEAD`, leaving out the patch folder, the version file, and the lockfile: `git diff --shortstat HEAD` plus each untracked file from `git ls-files --others --exclude-standard` and its line count. More than 25 files changed, or more than 400 lines (insertions plus deletions), exceeds the size limit. Ask as in step 3. A "no" stops the run with the change left in the working tree: report the changed files.
 
 ### 8. Clean Up and Report
 

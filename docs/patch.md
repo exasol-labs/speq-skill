@@ -34,7 +34,7 @@ Run `/speq:patch <intent>`.
 Run `/speq:patch-pr <intent>`.
 
 - Creates the branch `patch/<patch-name>` and runs `/speq:patch` on it
-- Bumps the version
+- Bumps the version and runs the test suites once more
 - Commits the change and opens a ready PR. It never merges it
 
 ## When to use it instead of `/speq:plan`
@@ -49,7 +49,7 @@ A patch stays small. It exceeds the limit when it:
 - needs a new feature spec or a new domain
 - changes scenarios in more than 2 features
 - adds or removes a component in `specs/architecture.md`
-- touches more than 25 files, or more than 400 changed lines, in total
+- touches more than 25 files, or more than 400 changed lines, in total, not counting the version file and the lockfile
 
 The run names the limit and the measured value, recommends `/speq:plan` or `/speq:plan-pr`, and asks whether to continue. A "no" stops the run. Changes made so far stay in the working tree for you to keep or discard.
 
@@ -60,7 +60,7 @@ The run names the limit and the measured value, recommends `/speq:plan` or `/spe
 - `specs/architecture.md`, only where the change alters a component, boundary, interface, data flow, constraint, or external dependency
 - The project's user docs, by default `README.md` and `docs/`
 
-A patch never touches `specs/_recorded/` or `specs/mission.md`. In `specs/_plans/`, it uses only its own folder `specs/_plans/<patch-name>/`, which holds the change intent and the review findings during the run. The patch deletes that folder at the end of the run. When an active plan holds a delta for an edited feature, the report names the plan. `/speq:patch-pr` also names it in the PR body.
+A patch never touches `specs/_recorded/` or `specs/mission.md`. In `specs/_plans/`, it uses only its own folder `specs/_plans/<patch-name>/`, which holds the change intent and the review findings during the run. The patch deletes that folder at the end of the run. `/speq:patch-pr` deletes it once the PR is open. When an active plan holds a delta for an edited feature, the report names the plan. `/speq:patch-pr` also names it in the PR body.
 
 ## Hooks
 
