@@ -14,7 +14,6 @@
 | [PR Pipeline](./pr-workflow.md) | Planning and implementation on a PR                                |
 | [Spec Library](./spec-library.md)              | Spec format, BDD, and RFC keywords                                 |
 | [Decision Log](./decision-log.md)              | Design decisions, ADRs, validation, and the display command        |
-| [Model Routing](./model-routing.md)            | Orchestrator skills, specialist sub-agents, and effort tiers       |
 | [Hooks](./hooks.md)                            | Repo-local `.speq/<name>-hook.md` customizations                   |
 | [CLI Reference](./cli-reference.md)            | All CLI commands                                                   |
 | [MCP Servers](./mcp-servers.md)                | Serena, Context7, both optional                                    |

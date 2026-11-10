@@ -87,7 +87,6 @@ Specs live in `specs/<domain>/<feature>/spec.md`. `specs/architecture.md` holds 
 | [CLI Reference](./docs/cli-reference.md)       | All CLI commands                                             |
 | [MCP Servers](./docs/mcp-servers.md)           | Optional Serena and Context7 setup                           |
 | [Semantic Anchors](./docs/semantic-anchors.md) | Named methodologies grounding each skill                     |
-| [Model Routing](./docs/model-routing.md)       | How workflow skills and sub-agents are routed across models  |
 | [Hooks](./docs/hooks.md)                       | Repo-local `.speq/<name>-hook.md` customizations             |
 
 ---
