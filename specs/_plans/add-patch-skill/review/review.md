@@ -1,135 +1,92 @@
 # Plan Review Findings: add-patch-skill
 
+Scope: the no-baseline revision only. That is § Requirements rows Test and Report, § PR body, decision-log [4], tasks 5.1 to 5.4, and the matching Parallelization, Dead Code Removal, and Manual Testing rows.
+
 ## Summary
 - Axes checked: 6/6
-- Total findings: 17 (Blockers: 2, Findings: 15)
+- Total findings: 8 (Blockers: 2, Findings: 6)
 - Intent Fidelity blockers: 0
 
 ## Failure Modes
 
-1. A suite that is red on the default branch, or a `§ Commands` entry that is not a test suite, traps the run in the Test row's "Red → fix and rerun" loop. The patch then grows with unrelated fixes or does not end. Routed to Requirement Quality `[COMPLETENESS_GAP]` BLOCKER.
-2. A correct build fails the plan's own verification: the "Command rename" check expects zero `/speq-` matches, but the Test row puts `target/speq-<suite>.log` into the skill, and the build keeps that path unchanged. Routed to Requirement Quality `[REQUIREMENT_CONFLICT]` BLOCKER.
-3. Spec, ADR, and architecture text is written after the single `code-reviewer` pass. It reaches a ready PR with no review and no manual test. The user's main prose concern (bloat in specs and decisions) has no check. Routed to Requirement Quality `[COMPLETENESS_GAP]` findings on the Specs, Architecture, ADR, and Verification sections.
+1. The patch breaks a build or a test outside its changed files: a signature change breaks an unchanged caller, or a change in `src/` breaks an unchanged integration test that runs the binary. The Test row labels that failure "outside the patch". The run never fixes it and ships a ready PR with the regression listed as someone else's failure. Routed to Requirement Quality `[COMPLETENESS_GAP]` BLOCKER.
+2. A suite whose only failure is outside the patch exits non-zero. The Test row imports `/speq-implement-pr` step 5's exit-code verdict and also defines red by log content. An orchestrator that follows the exit code counts the suite red, cannot fix the failure, and stops after 3 runs. The PR the user expects never opens. Routed to Requirement Quality `[REQUIREMENT_CONFLICT]` BLOCKER.
+3. The revised behavior ships with no executed check. Task 5.4 runs a grep, a byte count, and the packaging rows. No task runs the new Manual Testing row. Routed to Task Breakdown `[TRACEABILITY_GAP]` FINDINGS.
 
 ## Intent Fidelity
 
-Checked: each of the 8 interview answers maps to a Requirements row (branch and PR → Branch, Ship; direct edits → Specs, ADR; ask on ambiguity → Questions; warn and continue → Patch size limit; inline coding and one review → Code, Review; version → Version; artifacts → Specs, ADR, Architecture, Docs; ready PR and hook → Ship, Hook). Task 1.3 serves the third PR-title consumer named in § Context, so it is not scope creep.
+No objection, axis checked: each clause of the request maps to the revision.
+- "Remove the up-front baseline test run": task 5.1 deletes step 4 item 3 and renames step 4 to `### 4. Branch`.
+- "after the change, run the suites and lint": Test row "After the change, run the real test suites and the lint command".
+- "fix it only when it is in code the patch touched": Test row "A suite is red when its log has a failure in code the patch touched. Red → fix and rerun".
+- "reported in the report and PR body, never fixed": Test row, Report row, § PR body `Verification` line, task 5.1 (step 11), task 5.2.
+- "after 3 red runs of the same suite, stop and report": the Test row keeps that sentence.
+- "Drop the baseline log files, baseline resume rules, and the PR body 'baseline failures' wording": task 5.1 removes `target/speq-baseline-<patch-name>-<suite>.log`, the step 4 item 2 resume sentence, and the step 8 baseline condition. Task 5.2 replaces the template's `baseline failures` field and rule.
+- "Update docs/patch.md to match": task 5.3.
 
-#### [SCOPE_REDUCTION] FINDINGS
-- Location: plan.md § Requirements, row "Docs"
-- Issue: The user asked to derive "any needed speq changes / decisions / docs", and the interview answer is "user docs". The row narrows this to "Edit `README.md` and `docs/` only where the change alters documented behavior". A project whose user docs live elsewhere (`doc/`, a docs-site directory, a root `USAGE.md`) gets no doc edit, and the row reads as a ban on those paths.
-- Fix: In plan.md § Requirements, row "Docs", replace the path list with "Edit the project's user docs (by default `README.md` and `docs/`) only where the change alters documented behavior". Use the same wording in task 2.3's "the files a patch may change".
+Interview lines 9 and 10 record both decisions. The added `<failing test or error location>` field and the Manual Testing row "Failure outside the patch" trace to "reported in the report and PR body". This is not scope creep. No clause is dropped.
 
 ## Feasibility
 
-#### [HIDDEN_DEPENDENCY] FINDINGS
-- Location: plan.md § Requirements, rows "Prerequisite" and "Ship"
-- Issue: The run needs an `origin` remote and an authenticated `gh`, because `ship-ready` runs `push` and `gh pr create`. The Prerequisite row checks only `specs/mission.md`. Without a remote or `gh` auth, the run fails at Ship, after branching, coding, a commit, and spec edits. `/speq-implement-pr` does not meet this case because `/speq-plan-pr` already pushed and opened the PR. `/speq-patch` is the first git contact.
-- Fix: In plan.md § Requirements, row "Prerequisite", add: "`gh auth status` fails or the repository has no `origin` remote → stop before any edit and name the missing piece".
-
-#### [HIDDEN_DEPENDENCY] FINDINGS
-- Location: plan.md § Requirements, rows "Discovery" and "Specs"
-- Issue: A patch edits `specs/<domain>/<feature>/spec.md` directly. An active plan in `specs/_plans/` can hold a `DELTA:CHANGED` or `DELTA:REMOVED` block that names a scenario in the same feature. If the patch renames or removes that scenario, the plan breaks. `speq plan validate` does not catch it, because ADR `plan-validate-skips-anchor-presence` keeps plan validation from reading the target spec. The break appears only when that plan's `speq record` rejects the missing anchor, at the end of its implement run. The Discovery row runs `speq feature list` and the ADR digest, not `speq plan list`.
-- Fix: In plan.md § Requirements, row "Discovery", add `speq plan list`. In row "Specs", add: "An active plan holds a delta for a feature the patch edits → name the plan and the feature in the report and the PR body".
+Checked: every task 5.1 anchor occurs exactly once in `.claude/skills/speq-patch/SKILL.md` (lines 50, 53, 54, 59, 85, 117). A simulation of the six edits gives 7953 bytes (cap 8000) and leaves no "baseline". Task 5.2's anchors are `pr-body-template.md:14,22`, and task 5.3's anchor is `docs/patch.md:22`. `docs/patch.md` § Resume (`:58-60`) has no baseline text. A repo-wide `grep -rni baseline .claude/ docs/ README.md scripts/ tests/` finds baseline text only in those three files, plus an unrelated use at `.claude/skills/speq-planning/SKILL.md:39`, so task 5.4's grep scope is sufficient.
 
 #### [UNSTATED_ASSUMPTION] FINDINGS
-- Location: plan.md § Patch size limit, point 2; § Requirements, row "Branch"
-- Issue: `git diff --shortstat <default-branch>...HEAD` assumes the local default branch is the base that `create-branch` used. `create-branch` runs `git fetch` and branches off the "repository default branch" without saying whether that is the local or the remote ref. If the branch starts at `origin/<default-branch>` while the local default branch is behind, the three-dot diff counts every upstream commit since the local tip. The 10-file or 400-line limit then fires on work the patch did not do.
-- Fix: In plan.md § Requirements, row "Branch", pass `base: origin/<default-branch>` to `create-branch`. In § Patch size limit, point 2, measure `git diff --shortstat origin/<default-branch>...HEAD`.
+- Location: plan.md § Requirements, rows "Test" and "Review"; `.claude/skills/speq-patch/SKILL.md` step 6
+- Issue: The Test row decides "in code the patch touched" from "the changed files per `/speq-implement` Phase 4 step 1, with base `origin/<default-branch>`". Phase 4 step 1 runs `git diff --name-only <base>`, which compares the working tree with the current tip of `origin/<default-branch>`. The rule assumes that tip is still the branch point. A fetch moves it. `checkout` of a remote-only branch runs `git fetch` (`/speq-git-operations`, `checkout`), and so does a user fetch or pull between a stopped run and its resume. The list then contains every file changed upstream since the branch point. A failure in such a file counts as in code the patch touched, and the run fixes code the patch did not touch.
+- Fix: In plan.md § Requirements rows "Test" and "Review", replace "with base `origin/<default-branch>`" with "with base `git merge-base origin/<default-branch> HEAD`". Add to task 5.1: "In step 6, replace ``with base `origin/<default-branch>`. Spawn`` with ``with base `git merge-base origin/<default-branch> HEAD`. Spawn``." With both BLOCKER fixes and the step 11 change below, the simulated file measures 7992 bytes.
 
-#### [EFFORT_MISESTIMATION] FINDINGS
-- Location: plan.md § Implementation Tasks, task 1.1
-- Issue: "Keep the file at most 6 KB" conflicts with the content the task must carry. Measured in plan.md, the Requirements table is 4.0 KB, the size-limit section is 0.8 KB, and the PR body is 0.3 KB. The step-0 hook wording copied from `/speq-implement-pr` adds 0.36 KB. That is 5.5 KB before the frontmatter, the Required Skills list, the step headings, the `code-reviewer` brief, and the `create-branch`, `commit`, and `ship-ready` operation blocks (0.35 KB each in `/speq-implement-pr`). `/speq-implement-pr`, which delegates all coding, is 7.7 KB. No project rule sets a 6 KB limit. The implementer must drop requirements or break the cap.
-- Fix: In plan.md task 1.1, replace "Keep the file at most 6 KB" with "Keep the file at most 8 KB. If it does not fit, move the PR body into `.claude/skills/speq-patch/references/pr-body-template.md`".
+#### [UNSTATED_ASSUMPTION] FINDINGS
+- Location: plan.md § Verification, Manual Testing, row "Failure outside the patch"
+- Issue: "In the same clone, push a failing test to the default branch". "The same clone" is the row Fix run's "throwaway clone of a speq project with a GitHub remote". A throwaway clone can still point at a shared remote. The row needs the push, because the skill branches from `origin/<default-branch>`. That push breaks the remote's CI for everyone, and branch protection blocks it on most protected repositories.
+- Fix: In that row, replace "In the same clone, push a failing test to the default branch" with "In a clone whose `origin` is a throwaway GitHub repository that accepts direct pushes to its default branch, push a failing test to the default branch".
 
 ## Requirement Quality
 
 #### [COMPLETENESS_GAP] BLOCKER
-- Location: plan.md § Requirements, row "Test"
-- Issue: "Run every suite in `specs/mission.md § Commands` ... Red → fix and rerun" has no baseline, no bound, and no defined command set.
-  1. A suite that is already red or flaky on the default branch makes the skill "fix" code the patch did not cause. This breaks the user's "Ensure that changes are concise".
-  2. The loop has no attempt limit and no stop-and-report. `/speq-implement-pr` step 5 stops on red.
-  3. "every suite" is not actionable. This repository's `§ Commands` lists `cargo build --release`, `cargo test`, `cargo fmt && cargo clippy`, and `cargo llvm-cov`. The last is a coverage run, and `cargo fmt` rewrites files. The Prerequisite row says "build, test, and lint commands", the Test row says "every suite", and `/speq-implement-pr` says "the project's real test suites". No pass/fail check can be written for which commands run.
-- Fix: In plan.md § Requirements, row "Test":
-  1. Name the commands: the test suites and the lint command from `specs/mission.md § Commands`, per `/speq-implement-pr` step 5's "real test suites".
-  2. Add: "Run the suites once on the new branch before the first edit. A suite red there is a baseline failure: name it in the report and the PR body, and never fix it. After the change, a suite passes when it has no failure beyond the baseline."
-  3. Add: "After 3 red runs of the same suite, stop and report the suite with at most `tail -n 30` of its log, and the branch state."
+- Location: plan.md § Requirements, row "Test"; task 5.1 (step 5 item 2 replacement); § Verification, Manual Testing, row "Failure outside the patch"
+- Issue: The row counts a failure as in code the patch touched only when the changed files "include the failing test's file, a file with code that test calls directly, or the file a lint or build error names". "Every other failure is outside the patch: name it in the report and the PR body, and never fix it", and the suite is not red. Three failures that the patch itself causes fall outside this rule:
+  1. A build error in an unchanged caller. The patch changes a signature in a changed file, and the compiler reports the error at the call site in an unchanged file. "The file a lint or build error names" is that unchanged file. The run never fixes the error and ships a ready PR that does not compile.
+  2. An integration test that runs the binary. The integration tests in `tests/` start the CLI through `Command::new(assert_cmd::cargo::cargo_bin!("speq"))` (for example `tests/cli_integration.rs:62`), so they call no project file directly. A change in `src/record.rs` that breaks an unchanged test in `tests/cli_integration.rs` counts as outside the patch.
+  3. A transitive call. An unchanged test calls an unchanged function, which calls a changed one.
+
+  In each case the defect is in code the patch changed. That breaks the intent "fix it only when it is in code the patch touched", and it contradicts decision-log [4]'s Rationale "a failure after the change is almost always in code the patch touched". The PR body then lists the patch's own regression under `failures outside the patch`.
+- Fix:
+  1. In plan.md § Requirements row "Test", replace "include the failing test's file, a file with code that test calls directly, or the file a lint or build error names" with "include the failing test's file, a file the failure output names, or a file with code that the failing test or the erroring line reaches, directly or through the binary under test".
+  2. In task 5.1, replace "with the Test row's sentences on code the patch touched, failures outside the patch, and red suites" with this verbatim text: "A failure is in code the patch touched when the step 6 changed files include its test's file, a file its output names, or a file with code its test or erroring line reaches, directly or through the binary under test. Every other failure is outside the patch: name it in the report and the PR body, and never fix it." Follow it with the red-suite sentence from the `[REQUIREMENT_CONFLICT]` BLOCKER below. The reference to step 6 keeps a single changed-files definition in the skill. With both BLOCKER fixes, the simulated file measures 7945 bytes.
+  3. In § Manual Testing row "Failure outside the patch", replace "calling only code the patch does not change" with "reaching only code the patch does not change".
+  4. Add a § Manual Testing row. Feature: "Regression in a test the patch did not edit". Command: "In the same clone, run `/speq:patch change <output that an existing integration test asserts>`". Expected: "The diff updates that test or the code. The PR body `Verification` line lists no failure outside the patch".
 
 #### [REQUIREMENT_CONFLICT] BLOCKER
-- Location: plan.md § Verification, Manual Testing, row "Command rename"; § Requirements, row "Test"
-- Issue: The row expects `grep -c '/speq-' dist/marketplace/plugins/speq-skill/skills/patch/SKILL.md` to print `0`. The Test row requires the skill to name `target/speq-<suite>.log`. `namespace_slash_commands` in `scripts/plugin/build.sh:69` skips `/speq-` when a path character precedes it, so `target/speq-build.log` survives the build unchanged. A test run of that regex on the text "log to target/speq-build.log" leaves `/speq-` in place, and `grep -c '/speq-'` prints `1`. A correct build fails this check. The implementer must either break the Test row or record a failed verification.
-- Fix: In plan.md § Verification, Manual Testing, row "Command rename", change the command to `grep -cE '(^|[^A-Za-z0-9_./-])/speq-' dist/marketplace/plugins/speq-skill/skills/patch/SKILL.md` with expected output `0`. This pattern matches only slash commands the build failed to rename.
+- Location: plan.md § Requirements, row "Test"; task 5.1 (step 5 item 2 replacement)
+- Issue: The row runs the suites "with logs and exit codes per `/speq-implement-pr` step 5". That step says "Judge green or red by exit code. If any suite is red, report the failed suites ..., **stop**" (`.claude/skills/speq-implement-pr/SKILL.md:77`). The same row then defines red differently: "A suite is red when its log has a failure in code the patch touched." Take a suite whose only failure is outside the patch. Its exit code is non-zero, so it is red under step 5 and not red under the row. The outcome depends on which definition the orchestrator follows: a ready PR under the row, or no fix possible and a stop after 3 runs under step 5. The stop breaks the intent that such a failure is "reported in the report and PR body", and it fails the new Manual Testing row "Failure outside the patch". This misreading has already happened: this plan's `code-reviewer` read the same reference as an exit-code verdict ("logs the baseline run per `/speq-implement-pr` step 5, which ... judges green or red by exit code", `review-findings.md:48`).
+- Fix: In plan.md § Requirements row "Test", replace "with logs and exit codes per `/speq-implement-pr` step 5" with "with logs per `/speq-implement-pr` step 5". In the same row, replace "A suite is red when its log has a failure in code the patch touched." with "Whatever its exit code, a suite is red only when its log has a failure in code the patch touched." In task 5.1, use that same sentence as the red-suite sentence of the step 5 item 2 replacement.
+
+#### [AMBIGUOUS_REQUIREMENT] FINDINGS
+- Location: plan.md § PR body; task 5.2; § Requirements row "Report"; task 5.1 (step 11 replacement)
+- Issue: The skeleton `Verification: <suite>: pass[, <suite>: pass][; failures outside the patch: ...]` allows only one result for a suite: `pass`. A suite whose only failures are outside the patch exits non-zero, yet the line reads, for example, "cargo test: pass; failures outside the patch: cargo test tests/a.rs::b". The template rule "with its result" leaves open whether to write `pass`. The two outputs also describe the same failure differently: the Report row and the step 11 replacement give "each failure outside the patch with its suite", while the PR body gives "<suite> <failing test or error location>". The report does not say which test failed.
+- Fix: In plan.md § PR body and task 5.2, set the skeleton line to `Verification: <suite>: <pass | fail outside the patch>[, ...][; failures outside the patch: <suite> <failing test or error location>[, ...]]`. In § Requirements row "Report" and task 5.1's step 11 replacement, write "each failure outside the patch with its suite and test or error location".
 
 #### [COMPLETENESS_GAP] FINDINGS
-- Location: plan.md § Requirements, rows "Branch" and "Report"; § Patch size limit, last paragraph
-- Issue: Three states have no next step.
-  1. A run that stops (usage limit, a red stop, a "no" at size point 2) leaves `patch/<patch-name>` with commits. A second `/speq-patch <intent>` reaches `create-branch` for a branch that already exists. No row says whether to check it out and continue. `/speq-implement-pr` and `/speq-plan-pr` both define a rerun.
-  2. The Branch row asks whether uncommitted changes belong to the patch, but says nothing for "no". `create-branch` then carries the unrelated changes onto the patch branch.
-  3. A "no" at point 2 recommends `/speq-plan`, but the implementation is already committed on the branch. The plan does not say what the user does with it.
-- Fix: In plan.md § Requirements, row "Branch", add: "Branch `patch/<patch-name>` exists → `checkout` it and continue from the first missing output (implementation commit, spec commit, PR)". Add: "The changes do not belong → stop and ask the user to commit or stash them. Never stash or discard them yourself." In § Patch size limit, state that a "no" at point 2 reports the branch name and commit, so the user can keep the branch for a `/speq-plan` run or delete it. Add the rerun to the `docs/patch.md` outline in task 2.3.
-
-#### [COMPLETENESS_GAP] FINDINGS
-- Location: plan.md § Requirements, row "Specs"; task 1.1 Required skills
-- Issue: The row covers restored, uncovered, wrong, and unchanged behavior. It does not cover removed behavior, although `remove` is a valid patch verb in the Name row. The row also keeps only one of the spec-authoring rules that `/speq-planning` § Rules owns: "Background at most 5 bullets". It drops "Background never encodes features, behavior, or requirements" and "Specs describe the software, not its tests". `speq feature validate` checks neither rule. In the plan flow, `plan-reviewer`'s `[IMPLEMENTATION_DETAIL]` check catches these defects. A patch has no reviewer for spec text, and the user named spec bloat as the main concern.
-- Fix: In plan.md § Requirements, row "Specs", add: "Removed behavior → delete the scenario and the tests that covered it, and delete the feature directory when no scenario remains". Replace "Background at most 5 bullets" with "Follow the Short Background and Specs-describe-the-software rules in `/speq-planning` § Rules". In task 1.1, add to Required skills: "`/speq-planning`, § Rules only".
-
-#### [COMPLETENESS_GAP] FINDINGS
-- Location: plan.md § Requirements, row "Architecture"
-- Issue: The row edits `specs/architecture.md` in place with no format rule and no check. In the plan flow, `/speq-spec-merge` "Apply Architecture Delta" step 5 post-checks the result: H1 `# Architecture`, the six canonical sections once each and in order, no duplicate `##`, and the line rules of `/speq-plan`'s `references/architecture-template.md`. A direct edit by a patch can break that format, and nothing reports it before the PR.
-- Fix: In plan.md § Requirements, row "Architecture", add: "Keep the format of `/speq-plan`'s `references/architecture-template.md`. Then run the post-check of `/speq-spec-merge` 'Apply Architecture Delta' step 5. On failure, restore the file and report."
-
-#### [COMPLETENESS_GAP] FINDINGS
-- Location: plan.md § Requirements, row "ADR"; § PR body
-- Issue: `/speq-adr-rules` rule 2 requires an ADR's Rationale to name the rule-2 criterion and state the rule-5 search result. A patch writes the ADR straight into `specs/_decision/` with no decision-log entry, so neither fact is recorded anywhere. In the plan flow, `plan-reviewer` checks `[ADR_OVERPROMOTION]` against those two facts. In a patch, the PR reviewer sees only `ADRs: <slug>`. The user asked for "real architectural decisions if any", and an over-promoted ADR becomes `Status: Accepted` when the PR merges.
-- Fix: In plan.md § PR body, change the ADR line to `ADRs: <none | slug (<rule-2 criterion>; ADR search: <result>)[, ...]>`. In § Requirements, row "ADR", require that line for every new ADR.
-
-#### [COMPLETENESS_GAP] FINDINGS
-- Location: plan.md § Verification, Manual Testing
-- Issue: The plan has no spec delta, so Manual Testing is its only behavioral proof. The "Fix run" row uses a fix, which per the Specs row edits no spec when a scenario already states the behavior. No row exercises the path the user asked for: a change that adds or corrects a scenario, writes an ADR, or edits `specs/architecture.md` or docs. No row covers size point 2, the uncommitted-changes question, or the `docs(<scope>)` ship message.
-- Fix: In plan.md § Verification, Manual Testing, add three rows. (1) `/speq:patch change <behavior no scenario covers>` → one scenario added with a test in the diff, `speq feature validate` and `speq decision-log validate` pass, the second commit is `spec(<scope>): <patch-name>`, and `specs/_plans/` stays absent. (2) A change over 400 lines → the point-2 warning names the measured value before any push. (3) A run started with an uncommitted edit → the skill asks before it creates the branch.
+- Location: plan.md § Requirements, row "Test"; task 5.1
+- Issue: "Every other failure is outside the patch" includes a suite that fails before any test runs. Examples are a build broken outside the patch, a crash, a timeout, or a missing tool. That log has no failure in code the patch touched, so the suite is not red. The run ships a ready PR in which that suite never ran any test, including the patch's own reproducing test.
+- Fix: In plan.md § Requirements row "Test" and in task 5.1's red-suite sentence, write "Whatever its exit code, a suite is red only when its log has a failure in code the patch touched or it ran no test." A red suite whose cause is outside the patch is never fixed, so the run stops after 3 runs and reports. With every fix in this review applied, the simulated file measures 8010 bytes. To stay at most 8000, add to task 5.1: in step 5, shorten "name it in the report and the PR body, and never fix it" to "report it and never fix it". Step 10 (through `pr-body-template.md`) and step 11 already name these failures. The file then measures 7981 bytes.
 
 ## Task Breakdown
 
-#### [EFFORT_MISESTIMATION] FINDINGS
-- Location: plan.md § Implementation Tasks, task 1.2
-- Issue: "Edit `.claude/skills/speq-code-review/SKILL.md` only where it fixes the findings path to the plan directory" leaves three statements that contradict patch mode.
-  1. `.claude/skills/speq-code-review/references/review-findings-template.md:3` also fixes the path: "`code-reviewer` writes this document to `specs/_plans/<plan-name>/review-findings.md`". Its rule 3 addresses `Fix:` to an implementer agent that appends to `tasks.md`.
-  2. `SKILL.md` § Routing says "The orchestrator never sees them individually". In a patch, the orchestrator reads every finding.
-  3. The `code-reviewer.md` frontmatter description says "spawned by /speq-implement ... against the plan".
-  If the reviewer follows the template, it creates `specs/_plans/<patch-name>/`, which the interview and the "Never touched" row exclude.
-- Fix: In plan.md task 1.2, extend the edit list to `references/review-findings-template.md` (the path line and rule 3), `SKILL.md` § Routing (one sentence: for a patch brief, the findings go to the orchestrator in the reply), and the `code-reviewer.md` description (add `/speq-patch`).
-
-#### [CLUSTER_INCOHERENCE] FINDINGS
-- Location: plan.md § Parallelization, group B; tasks 1.4 and 2.7
-- Issue: Group B is a layer slice. Tasks 2.1-2.2 edit packaging scripts, tasks 2.3-2.7 edit docs, and the two halves share no file. Task 2.7 restates the acceptance rule that task 1.4 writes into `/speq-adr-rules` rule 8 ("merging the PR is the acceptance"). It sits in another group, and group B's Knowledge lacks `.claude/skills/speq-adr-rules/SKILL.md`. Two agents author the same fact.
-- Fix: In plan.md § Parallelization, move task 2.7 into group A after task 1.4.
+Checked: group C runs after A and B because it edits their files. Its Knowledge column lists exactly the three files tasks 5.1 to 5.3 edit. Tasks 5.1 to 5.3 each edit one file, and 5.4 verifies them. The Dead Code Removal rows match the anchors at `SKILL.md:50-59,85,117`, `pr-body-template.md:14,22`, and `docs/patch.md:22`.
 
 #### [TRACEABILITY_GAP] FINDINGS
-- Location: plan.md § Implementation Tasks, task 1.4
-- Issue: Task 1.4 makes `/speq-patch` a consumer of `/speq-adr-rules`, but the skill's description still reads "Use inside a /speq-plan, /speq-record, or /speq-audit run". Task 1.3 updates the consumer list of `/speq-git-operations` for the same reason. Task 1.4 does not.
-- Fix: In plan.md task 1.4, add: "Add /speq-patch to the consumer list in the description at `.claude/skills/speq-adr-rules/SKILL.md:3`".
+- Location: plan.md task 5.4; § Verification, Manual Testing, row "Failure outside the patch"
+- Issue: Task 5.4 reruns "the Manual Testing rows Plugin packaging, Command rename, and Codex name". Those rows check packaging. The grep and the `wc -c` check prove that text was removed. No task runs the row "Failure outside the patch", which is the only check of the revised behavior. `verification-report.md` records the interactive rows as "not run", so the revision has no executed check of its new rule.
+- Fix: In task 5.4, append "and the Manual Testing rows Failure outside the patch and Regression in a test the patch did not edit". If interactive rows stay unrun, replace that addition with "Record the Manual Testing rows Failure outside the patch and Regression in a test the patch did not edit as not run in `verification-report.md`".
 
 ## Design Depth
 
-Checked: `[ADR_OVERPROMOTION]`: decisions [1], [2], and [3] are all `Promotes to ADR: no`. `[ARCHITECTURE_DRIFT]`: there is no `yes` entry, plan.md names no CLI component, interface, or data-flow change, and `specs/architecture.md` describes the CLI only (AGENTS.md). `[ADR_CONFLICT]`: all five accepted ADRs checked. `per-plan-decision-fragments`: a patch writes its own fragment, which keeps the ADR's reason (no shared file). `slug-identity-not-sequential-numbers`: the NNN prefix only orders fragments; `render_permanent_log` sorts by prefix then name, and only duplicate slugs fail validation. `record-all-or-nothing-across-plan` and `anchor-first-nonempty-line` are not touched. `plan-validate-skips-anchor-presence` is not contradicted; its interaction is under Feasibility. `[SHALLOW_DESIGN]`: the dual-mode `code-reviewer` adds one input shape and one output path, and the review taxonomy keeps one owner.
-
-#### [INFORMATION_COUPLING] FINDINGS
-- Location: plan.md § Requirements, intro sentence and rows "Name", "Version", "Test", "Review", "Library size"
-- Issue: The intro says "The skill states each rule once and points to the owning skill instead of restating it". Five rows restate rules that other skills own.
-  1. Name restates the verb table of `/speq-plan` step 3.
-  2. Test restates the log convention of `/speq-implement-pr` steps 3 and 5.
-  3. Library size restates the thresholds of `/speq-spec-merge`.
-  4. Review omits how to collect the changed-files list. `/speq-implement` Phase 4 step 1 owns that rule, including untracked files.
-  5. Version restates `/speq-implement-pr` step 3 and diverges from it. The patch maps `refactor` → patch and `remove` → minor. `/speq-implement-pr` names only `feat` and `fix`. The patch's PR title maps `remove` → `chore`, and Conventional Commits does not bump on `chore`.
-  Task 1.3 already moves the verb → commit-type table to `/speq-git-operations`. The verb → version-bump rule derives from the same verb and stays split across two skills.
-- Fix: In plan.md task 1.3, add the verb → version-bump mapping to the new `/speq-git-operations` section next to the verb → type mapping, and settle `remove` there once. Point `/speq-implement-pr` step 3 and the patch Version row at it. In § Requirements, change rows Name, Test, and Library size to pointers: "per `/speq-plan` step 3", "per `/speq-implement-pr` step 5", and "per `/speq-spec-merge` thresholds". In row Review, add "changed files per `/speq-implement` Phase 4 step 1".
+No objection, axis checked. The revision adds no module, interface, or boundary. It removes a step and its log files. Decision-log [4] has `Promotes to ADR: no`, which is correct: rule 3 excludes a workaround specific to one skill's mechanics, and no rule-2 criterion applies. The revision changes skill text only. `specs/architecture.md` describes the `speq` CLI only, so the revision needs no architecture delta and plan.md states none. The ADR digest lists 5 accepted ADRs (`anchor-first-nonempty-line`, `plan-validate-skips-anchor-presence`, `record-all-or-nothing-across-plan`, `per-plan-decision-fragments`, `slug-identity-not-sequential-numbers`). None concerns test runs, so there is no conflict. Task 5.1 as written repeats step 6's changed-files definition in step 5. The `[COMPLETENESS_GAP]` BLOCKER's fix replaces that repeat with a reference to step 6.
 
 ## Prose Quality
 
 #### [PROSE_UNCLEAR] FINDINGS
-- Location: plan.md § Context, the bullets starting "ADR `per-plan-decision-fragments`" and "`scripts/plugin/build.sh` copies"; § Requirements, row "Report"
-- Issue:
-  1. The first bullet says the ADR "gives each unit of work its own fragment file". The ADR says "Store one committed ADR fragment per plan". The paraphrase widens the ADR to patches without saying so.
-  2. The second bullet cites the log line as `:296`, and task 2.1 edits `:295`. Line 295 is "Workflow skills" and line 296 is "PR pipeline", so the reader cannot tell which line the patch joins.
-  3. "a confirmed size warning" in the Report row does not say what is reported. It means the size limit the user chose to exceed.
-- Fix: In plan.md § Context, quote the ADR ("one committed ADR fragment per plan") and add "A patch fragment keeps the ADR's reason: each unit of work writes its own file". In the build.sh bullet, change `:296` to `:295`. In the Report row, replace "a confirmed size warning" with "the size limit the user chose to exceed, with its measured value".
+- Location: plan.md § Implementation Tasks (groups 1, 2, 3, 5), task 5.1, § Dead Code Removal row 3
+- Issue: plan.md skips from group 3 to group 5. It cites "review-fix tasks 4.6, 4.7, and 4.8" and "added by review-fix tasks 4.6-4.8", but those tasks exist only in `tasks.md` § Phase 4: Review Fixes. A reader of plan.md alone cannot resolve them.
+- Fix: In task 5.1, replace "These edits remove the text of review-fix tasks 4.6, 4.7, and 4.8." with "These edits remove the text that `tasks.md` § Phase 4 tasks 4.6 to 4.8 added." In § Dead Code Removal row 3, replace "added by review-fix tasks 4.6-4.8" with "added by `tasks.md` § Phase 4 tasks 4.6 to 4.8".

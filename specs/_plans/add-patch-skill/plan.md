@@ -30,7 +30,7 @@ No spec delta. The change adds a skill and edits skill, agent, script, and doc f
 
 ## Requirements
 
-The behavior of `/speq-patch`. Task 1.1 implements each row. The skill states each rule once and points to the owning skill instead of restating it.
+The behavior of `/speq-patch`. Task 1.1 implements each row. Task 5.1 applies the current Test and Report rows. The skill states each rule once and points to the owning skill instead of restating it.
 
 | Requirement | Details |
 |-------------|---------|
@@ -42,7 +42,7 @@ The behavior of `/speq-patch`. Task 1.1 implements each row. The skill states ea
 | Size limit | See "Patch size limit" below |
 | Branch | Branch `patch/<patch-name>` exists → `checkout` it and continue from the first missing output (implementation commit, spec commit, PR). Otherwise, before any edit: uncommitted changes in the working tree → ask whether they belong to the patch. They do not → stop and ask the user to commit or stash them. Never stash or discard them yourself. Then `create-branch` with `patch/<patch-name>` and `base: origin/<default-branch>` |
 | Code | The orchestrator writes the code and tests itself, TDD per `/speq-code-guardrails`. A fix starts with a test that reproduces the defect |
-| Test | Run the real test suites and the lint command from `specs/mission.md § Commands`, with logs and exit codes per `/speq-implement-pr` step 5. Run the suites once on the new branch before the first edit. A suite red there is a baseline failure: name it in the report and the PR body, and never fix it. After the change, a suite passes when it has no failure beyond the baseline. Red → fix and rerun. After 3 red runs of the same suite, stop and report the suite with at most `tail -n 30` of its log, and the branch state |
+| Test | After the change, run the real test suites and the lint command from `specs/mission.md § Commands`, with logs per `/speq-implement-pr` step 5, which judges green or red by exit code. Every failure counts as caused by the patch. Red → fix and rerun. After 3 red runs of the same suite, stop and report the suite, its failing tests, at most `tail -n 30` of its log, and the branch state |
 | Review | Spawn `code-reviewer` once with the intent, the changed-files list (changed files per `/speq-implement` Phase 4 step 1), and the hook path. Fix every finding, then rerun the suites. No second review |
 | Version | Bump the version file and sync the lockfile per `/speq-implement-pr` step 3, at the level `/speq-git-operations` § PR title and version bump gives |
 | Implementation commit | `commit` with the code, tests, version file, and lockfile. Message: the PR title |
@@ -74,7 +74,7 @@ When a limit is exceeded, the skill names the limit and the measured value, reco
 ## What Changes
 <1-2 sentences: the mechanism>
 
-Verification: <suite>: pass[, <suite>: pass][; baseline failures: <suite>[, <suite>]]
+Verification: <suite>: pass[, <suite>: pass]
 ADRs: <none | slug (<rule-2 criterion>; ADR search: <result>)[, ...]>
 Plans affected: <none | <plan-name> (<domain>/<feature>)[, ...]>
 Architecture: <none | none (specs/architecture.md absent) | § Section (changed|new|removed)[, ...]>
@@ -97,6 +97,11 @@ Architecture: <none | none (specs/architecture.md absent) | § Section (changed|
    - [ ] 2.6 Add a bullet to `docs/faq.md` "How do I fix a bug?" that points to `/speq:patch` for a small fix
 3. Verification
    - [ ] 3.1 Run the Checklist and the Manual Testing commands below
+5. Remove the baseline run
+   - [ ] 5.1 In `.claude/skills/speq-patch/SKILL.md`, apply the Requirements rows Test and Report and decision-log [4]. Rename step 4 to `### 4. Branch`. Delete the step 4 item 2 sentence "A resumed run reuses the item 3 baseline logs." and step 4 item 3. Set step 5 item 2 to "2. Run the suites and the lint command with logs per `/speq-implement-pr` step 5, which judges green or red by exit code. Every failure counts as caused by the patch. Red → fix and rerun. After 3 red runs of the same suite, stop and report the suite, its failing tests, at most `tail -n 30` of its log, and the branch state." In step 8, replace "A failure beyond the baseline → stop and report as in step 5." with "Red → stop and report as in step 5." In step 11, delete "the baseline failures, ". These edits remove the text that `tasks.md` § Phase 4 tasks 4.6 to 4.8 added. Keep the file at most 8000 bytes (`wc -c`)
+   - [ ] 5.2 In `.claude/skills/speq-patch/references/pr-body-template.md`, set the skeleton's `Verification` line to the one in "PR body" above. In § Rules, delete "Add every baseline failure from the run on the new branch."
+   - [ ] 5.3 In `docs/patch.md`, delete the baseline bullet at `:22`. After the TDD bullet, add "Runs the test suites and the lint command after the change and fixes every failure. After 3 red runs of the same suite, it stops and reports the failing tests". § Resume holds no baseline text and stays unchanged
+   - [ ] 5.4 Run `grep -rni baseline .claude/skills/speq-patch/ docs/patch.md` (no output) and `wc -c .claude/skills/speq-patch/SKILL.md` (at most 8000). Rerun the Checklist and the Manual Testing rows Plugin packaging, Command rename, and Codex name. Record the interactive Manual Testing rows (Claude load through Hook) as not run in `verification-report.md`
 
 ## Parallelization
 
@@ -104,6 +109,7 @@ Architecture: <none | none (specs/architecture.md absent) | § Section (changed|
 |-------|-------|------------|-----------|
 | A: patch skill | 1.1-1.5 | — | `plan.md` Requirements; `.claude/skills/speq-implement-pr/SKILL.md`, `.claude/skills/speq-git-operations/SKILL.md`, `.claude/skills/speq-plan-pr/SKILL.md`, `.claude/agents/code-reviewer.md`, `.claude/skills/speq-code-review/`, `.claude/skills/speq-adr-rules/SKILL.md`, `docs/decision-log.md` |
 | B: packaging and docs | 2.1-2.6, 3.1 | A (docs describe `.claude/skills/speq-patch/SKILL.md`) | `.claude/skills/speq-patch/SKILL.md`; `scripts/plugin/build.sh`, `scripts/release/test.sh`, `tests/docker/test-codex-plugin.sh`, `docs/`, `README.md` |
+| C: baseline removal | 5.1-5.4 | A, B (edits files they wrote) | `plan.md` Requirements rows Test and Report, "PR body", decision-log [4]; `.claude/skills/speq-patch/SKILL.md`, `.claude/skills/speq-patch/references/pr-body-template.md`, `docs/patch.md` |
 
 ## Dead Code Removal
 
@@ -111,6 +117,9 @@ Architecture: <none | none (specs/architecture.md absent) | § Section (changed|
 |------|----------|--------|
 | Skill text | `.claude/skills/speq-plan-pr/SKILL.md:85-90` | PR-title derivation moves to `/speq-git-operations` (task 1.3) |
 | Skill text | `.claude/skills/speq-implement-pr/SKILL.md:59`, the bump rule | Moves to `/speq-git-operations` (task 1.3) |
+| Skill text | `.claude/skills/speq-patch/SKILL.md` step 4 item 3 and the baseline sentences in step 4 item 2, step 5 item 2, step 8, and step 11, added by `tasks.md` § Phase 4 tasks 4.6 to 4.8 | No baseline run (decision-log [4], task 5.1) |
+| Template text | `.claude/skills/speq-patch/references/pr-body-template.md:14,22`, the baseline failures | No baseline run (task 5.2) |
+| Doc text | `docs/patch.md:22`, the baseline bullet | No baseline run (task 5.3) |
 
 ## Verification
 

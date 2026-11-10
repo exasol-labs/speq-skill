@@ -27,3 +27,12 @@
 - [x] 4.6 In `.claude/skills/speq-patch/SKILL.md`, log the step 4 baseline to `target/speq-baseline-<patch-name>-<suite>.log` and pass a step 5 suite only when each failure in its log also appears in its baseline log [expert]
 - [x] 4.7 In `.claude/skills/speq-patch/SKILL.md` step 4 item 3, run the baseline only on a new branch with a clean working tree [expert]
 - [x] 4.8 In `.claude/skills/speq-patch/SKILL.md`, reuse the baseline logs on a resumed run, stop step 8 only on a failure beyond the baseline, and keep the file at most 8000 bytes [expert]
+
+## Phase 2: Implementation (Group C: baseline removal)
+- [x] 5.1 Apply the simple test rule in `.claude/skills/speq-patch/SKILL.md` and remove the baseline text (steps 4, 5, 8, 11)
+- [x] 5.2 Remove the baseline field and rule from `references/pr-body-template.md`
+- [x] 5.3 Replace the baseline bullet in `docs/patch.md`
+- [x] 5.4 Grep for leftover baseline text, check size, rerun Checklist and packaging rows
+
+## Phase 4: Review Fixes (Group C)
+- [x] 6.1 In `.claude/skills/speq-patch/SKILL.md` step 5 item 2, name `specs/mission.md § Commands` as the source of the test suites and the lint command, and keep the file at most 8000 bytes

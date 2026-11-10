@@ -10,6 +10,9 @@
 - Q: Version bump? → A: Yes; fix → patch, small feature → minor
 - Q: Artifacts patch may update? → A: Feature specs, ADRs, architecture.md, user docs
 - Q: PR state and hook? → A: Ready PR; support .speq/patch-hook.md
+- Q: Run the suites once before the first edit as a baseline? → A: No, the default branch is green in almost every case (CI); nobody asked for it
+- Q: A suite fails in code the patch did not touch? → A: Report it in the report and the PR body, never fix it
+- Q: Plan review shows "touched" cannot be decided by file (callers, binary-level tests). Keep the touched rule or simplify? → A: Simplify: every failure after the change counts as caused by the patch and is fixed; after 3 red runs of a suite, stop and report the failing tests
 
 ## Design Decisions
 
@@ -34,4 +37,17 @@
 - **Alternatives:** Pin `model: sonnet` like the other PR orchestrators: rejected, it fixes the coding model to Sonnet whatever model the user's session runs.
 - **Promotes to ADR:** no
 
+### [4] No baseline run, every failure is fixed
+
+- **Decision:** `/speq-patch` runs no test suite before the first edit. After the change, it counts every failure as caused by the patch and fixes it. After 3 red runs of the same suite, it stops and reports.
+- **Rationale:** CI keeps the default branch green, so a failure after the change is almost always caused by the patch. A per-file "touched" test cannot find failures in unchanged callers or in tests that run the binary.
+- **Alternatives:** (a) Run the suites once before the first edit as a baseline: rejected, it adds a full suite run to every patch for a case CI almost always rules out. (b) Fix only failures in code the patch touched: rejected, it misses regressions in unchanged callers and in tests that run the binary.
+- **Promotes to ADR:** no
+
 ## Review Findings
+
+### [plan-review] "Touched" cannot be decided by file
+
+- **Finding:** `plan-reviewer` raised two BLOCKERs against the Test row. A per-file rule labels the patch's own regression in an unchanged caller or in a test that runs the binary as a failure outside the patch. The row's log-based red verdict also conflicts with the exit-code verdict of `/speq-implement-pr` step 5.
+- **Direction change:** Per user decision, the simple rule in [4] replaces the touched rule. A suite is green or red by exit code, every failure counts as caused by the patch and is fixed, and the run stops after 3 red runs of the same suite.
+- **Promotes to ADR:** no

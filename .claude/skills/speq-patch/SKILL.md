@@ -47,16 +47,15 @@ Check for `.speq/patch-hook.md` in the repo root.
 
 The change exceeds the size limit when it needs a new feature spec or a new domain, changes scenarios in more than 2 features, or adds or removes a component in `specs/architecture.md`. Then name the limit and the measured value, recommend `/speq-plan` or `/speq-plan-pr`, and ask whether to continue. A "no" stops the run before any branch exists.
 
-### 4. Branch and Baseline
+### 4. Branch
 
 1. The current branch is not `patch/<patch-name>` and the working tree has uncommitted changes → ask whether they belong to the patch. They do not → stop and ask the user to commit or stash them. Never stash or discard them yourself.
-2. Run `checkout` with `patch/<patch-name>`. Found → resume at step 8 when a commit on `origin/<default-branch>..HEAD` has the step 7 PR title as subject, otherwise at step 5. A resumed run reuses the item 3 baseline logs. Not found → `create-branch` with `patch/<patch-name>` and `base: origin/<default-branch>`.
-3. On a new branch with a clean working tree, run the test suites and the lint command from `specs/mission.md § Commands` once, with exit codes per `/speq-implement-pr` step 5 and logs in `target/speq-baseline-<patch-name>-<suite>.log`. A suite red here is a baseline failure. Never fix it.
+2. Run `checkout` with `patch/<patch-name>`. Found → resume at step 8 when a commit on `origin/<default-branch>..HEAD` has the step 7 PR title as subject, otherwise at step 5. Not found → `create-branch` with `patch/<patch-name>` and `base: origin/<default-branch>`.
 
 ### 5. Implement and Test
 
 1. Write the code and tests, TDD per `/speq-code-guardrails`. A fix starts with a test that reproduces the defect. A removal deletes the code and the tests that covered it.
-2. Run the suites and the lint command with logs per `/speq-implement-pr` step 5. A suite passes when every failure in its log is in its baseline log. No baseline log → every failure counts. Red → fix and rerun. After 3 red runs of the same suite, stop and report the suite with at most `tail -n 30` of its log, and the branch state.
+2. Run the test suites and the lint command from `specs/mission.md § Commands` with logs per `/speq-implement-pr` step 5, which judges green or red by exit code. Every failure counts as caused by the patch. Red → fix and rerun. After 3 red runs of the same suite, stop and report the suite, its failing tests, at most `tail -n 30` of its log, and the branch state.
 
 ### 6. Review
 
@@ -82,7 +81,7 @@ Fix every finding, then rerun the suites per step 5. Never spawn a second review
 
 Measure `git diff --shortstat origin/<default-branch>...HEAD`. More than 10 files changed, or more than 400 lines (insertions plus deletions), exceeds the size limit. Ask as in step 3. A "no" stops the run with the implementation committed on the unpushed branch: report the branch name and the commit.
 
-A resumed run runs the suites here once for the PR body. A failure beyond the baseline → stop and report as in step 5.
+A resumed run runs the suites here once for the PR body. Red → stop and report as in step 5.
 
 ### 9. Specs, ADRs, Architecture, Docs
 
@@ -114,4 +113,4 @@ Never merge the PR.
 
 ### 11. Report
 
-Give the PR link, the new version, the edited files, and the number of review findings fixed. Name the size limit the user chose to exceed with its measured value, the baseline failures, the affected plans, the library-size notes, and any `specs/mission.md` inaccuracy.
+Give the PR link, the new version, the edited files, and the number of review findings fixed. Name the size limit the user chose to exceed with its measured value, the affected plans, the library-size notes, and any `specs/mission.md` inaccuracy.

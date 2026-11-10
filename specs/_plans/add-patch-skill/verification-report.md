@@ -4,8 +4,8 @@
 
 | Result | Details |
 |--------|---------|
-| **PASS** | `/speq:patch` builds into the Claude and Codex plugins, and every automated suite passes |
-| Code review | 8 findings — 8 fixed |
+| **PASS** | `/speq:patch` builds into the Claude and Codex plugins, runs no baseline test run, and every automated suite passes |
+| Code review | 9 findings — 9 fixed (8 in the first pass, 1 in the group C pass) |
 
 | Check | Status |
 |-------|--------|
@@ -30,8 +30,8 @@
 | Type | Run | Passed | Ignored |
 |------|-----|--------|---------|
 | `cargo test` (unit and integration) | 302 | 302 | 0 |
-| Release artifact (`scripts/release/test.sh v0.28.0`) | 1 | 1 | 0 |
-| Docker (`tests/docker/test-docker.sh`) | 32 | 32 | 0 |
+| Release artifact (`scripts/release/test.sh v0.29.0`) | 1 | 1 | 0 |
+| Docker (`tests/docker/test-docker.sh`) | 33 | 33 | 0 |
 
 ### Manual Tests
 
@@ -42,6 +42,7 @@
 | Codex name: frontmatter of the Codex patch skill | ✓ `name: speq:patch`, no `model:` line |
 | Release artifact: patch skill in both plugins | ✓ `OK skills/patch/SKILL.md`, `OK codex/skills/patch/SKILL.md` |
 | Docker: Codex skills present | ✓ `PASS: Codex skills exist` |
+| No baseline text: `grep -rni baseline .claude/skills/speq-patch/ docs/patch.md` | ✓ no output |
 | Claude load, fix run, spec change run, size warnings, uncommitted edit, hook | not run: each needs an interactive session or a throwaway project with a GitHub remote |
 
 ## Tool Evidence
@@ -65,6 +66,5 @@ The plan has no spec delta, so no scenario maps to a test. `scripts/release/test
 ## Notes
 
 - The interactive Manual Testing rows are unverified. A reviewer runs them before relying on `/speq:patch`.
-- `.claude/skills/speq-patch/SKILL.md` is 7996 bytes, under the 8000-byte cap.
-- `docs/patch.md` says the run takes a test baseline once. The skill takes the baseline only on a new branch with a clean working tree.
+- `.claude/skills/speq-patch/SKILL.md` is 7625 bytes, under the 8000-byte cap.
 - `get_version` in `scripts/lib/version.sh` returns an empty string when it is sourced from zsh, because it reads `BASH_SOURCE`.

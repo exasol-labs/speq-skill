@@ -19,8 +19,8 @@ Run `/speq:patch <intent>`.
 
 - Reads the existing specs and decisions, and asks only when the intent has more than one reading
 - Creates the branch `patch/<patch-name>`
-- Runs the test suites once as a baseline. A suite that is red before any edit is named in the report and the PR body, and never fixed
 - Writes the code and tests with TDD. A fix starts with a test that reproduces the defect
+- Runs the test suites and the lint command after the change and fixes every failure. After 3 red runs of the same suite, it stops and reports the failing tests
 - Has `code-reviewer` review the diff once, then fixes every finding
 - Bumps the version and commits
 - Edits only the specs, ADRs, architecture, and docs the change needs
