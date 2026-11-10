@@ -63,13 +63,13 @@ Collect the changed files per `/speq-implement` Phase 4 step 1, with base `origi
 
 ```
 Delegate to code-reviewer: Review patch <patch-name>
-- Patch brief. Change intent: <$1>
+- Change intent: <$1>
 - Changed files: <the list>
-- Return the findings document as your reply. Write no file.
+- Write findings to target/speq-review-<patch-name>.md per your output format; return only the one-line verdict.
 - Project Hook: <if active: .speq/patch-hook.md, read it and apply it; else omit this line>
 ```
 
-Fix every finding, then rerun the suites per step 5. Never spawn a second review.
+Read the findings file. Fix every finding, then rerun the suites per step 5. Never spawn a second review.
 
 ### 7. Bump Version and Commit
 
