@@ -107,7 +107,7 @@ echo "=== Checking plugin structure ==="
 PLUGIN_DIR="$EXTRACT_DIR/plugins/speq-skill"
 CODEX_PLUGIN_DIR="$EXTRACT_DIR/codex/plugins/speq-skill"
 
-for file in .claude-plugin/plugin.json skills/plan/SKILL.md skills/implement/SKILL.md skills/record/SKILL.md skills/mission/SKILL.md; do
+for file in .claude-plugin/plugin.json skills/plan/SKILL.md skills/implement/SKILL.md skills/record/SKILL.md skills/mission/SKILL.md skills/patch/SKILL.md; do
     if [ -f "$PLUGIN_DIR/$file" ]; then
         echo "OK $file"
     else
@@ -116,7 +116,7 @@ for file in .claude-plugin/plugin.json skills/plan/SKILL.md skills/implement/SKI
     fi
 done
 
-for file in .codex-plugin/plugin.json skills/plan/SKILL.md skills/implement/SKILL.md skills/record/SKILL.md skills/mission/SKILL.md; do
+for file in .codex-plugin/plugin.json skills/plan/SKILL.md skills/implement/SKILL.md skills/record/SKILL.md skills/mission/SKILL.md skills/patch/SKILL.md; do
     if [ -f "$CODEX_PLUGIN_DIR/$file" ]; then
         echo "OK codex/$file"
     else

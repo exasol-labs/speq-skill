@@ -56,11 +56,11 @@ Otherwise invoke `/speq-implement <plan-name>` and let it run to completion. If 
 
 Skip this step if the version file already differs from the default branch.
 
-Read the tech stack in `specs/mission.md` and bump the version in that stack's version file (for example `Cargo.toml` for Rust, `package.json` for Node, `pyproject.toml` for Python). Apply the conventional next version per Conventional Commits: `feat` → minor, a purely `fix` plan → patch, a breaking change → major. Do not take the version from the plan's spec deltas. Run a build to keep the lockfile in sync, redirecting its output to a log: `mkdir -p target && <build-command> > target/speq-build.log 2>&1`. Branch on the exit code. If a report quotes output, quote at most `tail -n 30` of the log.
+Read the tech stack in `specs/mission.md` and bump the version in that stack's version file (for example `Cargo.toml` for Rust, `package.json` for Node, `pyproject.toml` for Python). Apply the next version per `/speq-git-operations` § PR title and version bump. Do not take the version from the plan's spec deltas. Run a build to keep the lockfile in sync, redirecting its output to a log: `mkdir -p target && <build-command> > target/speq-build.log 2>&1`. Branch on the exit code. If a report quotes output, quote at most `tail -n 30` of the log.
 
 ### 4. Commit Evidence
 
-Commit and push now, so the evidence artifacts reach git history before `/speq-record` archives the plan out of tracked space, and so the branch survives workspace loss. Derive `<type>(<scope>)` per `/speq-plan-pr`'s PR-title derivation:
+Commit and push now, so the evidence artifacts reach git history before `/speq-record` archives the plan out of tracked space, and so the branch survives workspace loss. Derive `<type>(<scope>)` per `/speq-git-operations` § PR title and version bump:
 
 ```
 Run — operation: commit (per /speq-git-operations)
@@ -80,7 +80,7 @@ Run — operation: push (per /speq-git-operations)
 
 ### 6. Ship
 
-1. **Ship.** One composite call. Step 4 already committed the implementation and evidence, so this commit covers only what `/speq-record` produced: the merge results and the archive's removal of the plan directory. Derive `<type>(<scope>)` and `<slug>` per `/speq-plan-pr`'s PR-title derivation. Do not rewrite the PR body `speq-plan-pr` set. Use `Implements <plan-name>.` as the body, which applies only if no PR exists yet:
+1. **Ship.** One composite call. Step 4 already committed the implementation and evidence, so this commit covers only what `/speq-record` produced: the merge results and the archive's removal of the plan directory. Derive `<type>(<scope>)` and `<slug>` per `/speq-git-operations` § PR title and version bump. Do not rewrite the PR body `speq-plan-pr` set. Use `Implements <plan-name>.` as the body, which applies only if no PR exists yet:
 
    ```
    Run — operation: ship-ready (per /speq-git-operations)

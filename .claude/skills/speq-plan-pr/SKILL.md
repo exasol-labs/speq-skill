@@ -78,16 +78,11 @@ Commit the plan and open the draft PR with one composite call:
 Run — operation: ship-draft (per /speq-git-operations)
   paths: the plan directory, excluding specs/_plans/<plan-name>/notes/
   message: spec(plan): <plan-name>
-  title: <the derived <type>(<scope>): <slug>>
+  title: <type>(<scope>): <slug>, derived per /speq-git-operations § PR title and version bump
   body: per references/pr-body-template.md, ending "Draft pending implementation."
 ```
 
-Derive the PR title from `<plan-name>` as `<type>(<scope>): <slug>`:
-- **type**: `add`/`change` → `feat`, `remove` → `chore`, `refactor` → `refactor`, `fix` → `fix`; `chore` for an unparseable name.
-- **scope**: the token after the verb.
-- **slug**: the `<plan-name>` with hyphens turned into spaces.
-
-Example: `add-plan-export` ⇒ `feat(plan): add plan export`. With no scope token, emit `<type>: <slug>`.
+Derive the PR title from `<plan-name>` per `/speq-git-operations` § PR title and version bump.
 
 The PR stays a draft. `speq-implement-pr` is the only skill that marks it ready.
 

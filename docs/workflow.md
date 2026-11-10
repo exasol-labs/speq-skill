@@ -46,6 +46,10 @@ Run `/speq:record <plan-name>`.
 - Merges the architecture delta (if present)
 - Moves the plan to `specs/_recorded/NNN-<plan-name>/`
 
+## Ship a small change
+
+Run `/speq:patch <intent>` for a small fix or tweak. It skips the plan and opens one ready PR. See [Patch](./patch.md).
+
 ## Check the library
 
 Run `/speq:audit` to check structure, ADRs, mission drift, and unrecorded plans.

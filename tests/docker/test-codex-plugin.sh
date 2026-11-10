@@ -67,7 +67,7 @@ if grep -Eq '^\[mcp_servers\.serena\]' "${HOME}/.codex/config.toml"; then
 fi
 echo "PASS: Serena not registered without a terminal"
 
-for skill in cli code-guardrails code-tools ext-library git-discipline implement mission plan record; do
+for skill in cli code-guardrails code-tools ext-library git-discipline implement mission patch plan record; do
     if [[ ! -f "${HOME}/.codex/skills/speq-${skill}/SKILL.md" ]]; then
         echo "FAIL: Codex skill missing: speq-${skill}"
         exit 1

@@ -1,12 +1,12 @@
 # Code Review Findings Template
 
-`code-reviewer` writes this document to `specs/_plans/<plan-name>/review-findings.md`.
+For a plan brief, `code-reviewer` writes this document to `specs/_plans/<plan-name>/review-findings.md`. For a `/speq-patch` brief, it returns the document as its reply and writes no file.
 
 ## Rules
 
 1. Two top-level sections partition every finding: `## Standard fixes` and `## Expert fixes`, routed per `/speq-code-review` § Routing. An empty section keeps its heading with a single `[none]` line.
 2. Within a section, group findings by file (`### <path>`). Every finding: `#### [TAG] <short title>` plus `Location`, `Issue`, `Fix`.
-3. `Fix:` is an imperative instruction to the consuming implementer agent (file path, symbol, concrete change), phrased so the agent can append it to `tasks.md` near-verbatim as a fix task and execute it without re-reading `Issue`.
+3. `Fix:` is an imperative instruction to the agent that applies the fix (file path, symbol, concrete change), phrased so the agent can execute it without re-reading `Issue`. For a plan brief, that agent is an implementer agent, which appends the `Fix:` to `tasks.md` near-verbatim as a fix task. For a patch brief, it is the `/speq-patch` orchestrator.
 
 ## Skeleton
 
