@@ -8,7 +8,7 @@
 
 [![spec|driven](https://img.shields.io/badge/spec-driven-blue)](specs/)
 [![Rust](https://img.shields.io/badge/rust-stable-brightgreen.svg)](https://www.rust-lang.org/)
-[![CI](https://github.com/marconae/speq-skill/actions/workflows/ci.yml/badge.svg)](https://github.com/marconae/speq-skill/actions/workflows/ci.yml)
+[![CI](https://github.com/exasol-labs/speq-skill/actions/workflows/ci.yml/badge.svg)](https://github.com/exasol-labs/speq-skill/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 [Getting Started](#getting-started) • [What](#what-this-is) • [How It Works](#how-does-it-work) • [Documentation](./docs/) • [Installation](./docs/installation.md)

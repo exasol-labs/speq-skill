@@ -2,10 +2,10 @@
 name = "speq-skill"
 version = "0.28.0"
 edition = "2024"
-authors = ["marconae"]
+authors = ["Exasol"]
 license = "MIT"
 description = "Spec-driven development CLI for AI coding agents"
-repository = "https://github.com/marconae/speq-skill"
+repository = "https://github.com/exasol-labs/speq-skill"
 readme = "README.md"
 keywords = ["spec", "tdd", "codex", "claude", "cli"]
 categories = ["command-line-utilities", "development-tools"]
