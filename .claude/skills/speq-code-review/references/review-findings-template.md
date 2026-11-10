@@ -1,6 +1,6 @@
 # Code Review Findings Template
 
-`code-reviewer` writes this document to the findings path from its brief (`specs/_plans/<plan-name>/review-findings.md` for `/speq-implement`).
+`code-reviewer` writes this document to `specs/_plans/<plan-name>/review-findings.md`.
 
 ## Rules
 

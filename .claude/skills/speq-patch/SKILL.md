@@ -21,7 +21,7 @@ Invoke before starting:
 
 ## Rules
 
-- Never touch `specs/_plans/`, `specs/_recorded/`, or `specs/mission.md`.
+- Never touch `specs/_recorded/` or `specs/mission.md`. In `specs/_plans/`, touch only the patch folder `specs/_plans/<patch-name>/`, and never commit it.
 - Prose states requirements and decisions. No process narration, no history. Commit no plan, notes, review, or report file.
 - Ask about the size limit at most once per run. After a yes, report a later exceeded limit without asking.
 
@@ -41,7 +41,7 @@ Check for `.speq/patch-hook.md` in the repo root.
 
 1. Run `speq plan list` and the absence check per `/speq-cli` for the behavior the change touches.
 2. Do not interview. Ask only when the intent has more than one reading or leaves the expected behavior open.
-3. Name the patch per `/speq-plan` step 3, without its decision log. On the branch `patch/<name>` of a stopped run for this intent, reuse `<name>`.
+3. Name the patch per `/speq-plan` step 3, without its decision log. On the branch `patch/<name>` of a stopped run for this intent, reuse `<name>`. Otherwise never pick a name that `speq plan list` shows.
 
 ### 3. Size Check Before Branching
 
@@ -59,17 +59,10 @@ The change exceeds the size limit when it needs a new feature spec or a new doma
 
 ### 6. Review
 
-Collect the changed files per `/speq-implement` Phase 4 step 1, with base `origin/<default-branch>`. Spawn `code-reviewer` once:
-
-```
-Delegate to code-reviewer: Review patch <patch-name>
-- Change intent: <$1>
-- Changed files: <the list>
-- Write findings to target/speq-review-<patch-name>.md per your output format; return only the one-line verdict.
-- Project Hook: <if active: .speq/patch-hook.md, read it and apply it; else omit this line>
-```
-
-Read the findings file. Fix every finding, then rerun the suites per step 5. Never spawn a second review.
+1. Collect the changed files per `/speq-implement` Phase 4 step 1, with base `origin/<default-branch>`, leaving out the patch folder.
+2. Write the patch folder's `plan.md`: H1 `# Plan: <patch-name>`, then `## Summary` with the change intent `$1`.
+3. Spawn `code-reviewer` once with `/speq-implement` Phase 4 step 2's brief, `<plan-name>` set to `<patch-name>` and the hook line naming `.speq/patch-hook.md`.
+4. Read `specs/_plans/<patch-name>/review-findings.md`. Fix every finding, then rerun the suites per step 5. Never spawn a second review.
 
 ### 7. Bump Version and Commit
 
@@ -93,13 +86,15 @@ Edit only what the change needs.
   - Removed behavior → delete the scenario, and the feature directory when no scenario remains.
   - A new feature starts from `/speq-plan`'s `references/feature-template.md`.
   - Keep the feature description accurate. Every added or changed scenario has a test in the diff. `speq feature validate <domain>/<feature>` passes for each edited feature.
-  - An active plan holds a delta for an edited feature → name the plan and the feature in the report and the PR body.
+  - An active plan other than the patch folder holds a delta for an edited feature → name the plan and the feature in the report and the PR body.
   - A feature or domain over the limits of `/speq-spec-merge` "Check Library Thresholds" → name it in the report. Never reorganize the library.
 - **ADR.** Apply `/speq-adr-rules`. The default is none. Write at most one new fragment `specs/_decision/NNN-<patch-name>.md`: NNN per `/speq-spec-merge` "Promote ADRs to Permanent Decision Log" step 2, H1 `# Decisions: <patch-name>`, `**Plan:** <patch-name>`, `**Status:** Accepted`, layout per `/speq-plan`'s `references/decision-log-permanent-template.md`. Never edit another fragment. `speq decision-log validate` passes.
 - **Architecture.** `specs/architecture.md` absent → no edit. Otherwise edit its affected section only when the change alters a component, boundary, interface, data flow, constraint, or external dependency it describes. Keep the format of `/speq-plan`'s `references/architecture-template.md`, then run the post-check of `/speq-spec-merge` "Apply Architecture Delta" step 5. On failure, restore the file and report.
 - **Docs.** Edit the project's user docs (by default `README.md` and `docs/`) only where the change alters documented behavior.
 
 ### 10. Ship
+
+Delete the patch folder `specs/_plans/<patch-name>/`. Then:
 
 ```
 Run operation: ship-ready (per /speq-git-operations)

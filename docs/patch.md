@@ -49,7 +49,7 @@ The run names the limit and the measured value, recommends `/speq:plan` or `/spe
 - `specs/architecture.md`, only where the change alters a component, boundary, interface, data flow, constraint, or external dependency
 - The project's user docs, by default `README.md` and `docs/`
 
-A patch never touches `specs/_plans/`, `specs/_recorded/`, or `specs/mission.md`. When an active plan holds a delta for an edited feature, the report and the PR body name the plan.
+A patch never touches `specs/_recorded/` or `specs/mission.md`. In `specs/_plans/`, it uses only its own folder `specs/_plans/<patch-name>/`, which holds the change intent and the review findings during the run. The patch deletes that folder before it opens the PR, so the folder is never committed. When an active plan holds a delta for an edited feature, the report and the PR body name the plan.
 
 ## Hook
 
@@ -57,4 +57,4 @@ Create `.speq/patch-hook.md` to add project rules to a run. The hook is authorit
 
 ## Resume
 
-If a run stops, for example at a usage limit or a red suite, run `/speq:patch <intent>` again. It reuses the branch `patch/<patch-name>` and continues where the work stopped. When the current branch is not `patch/<patch-name>` and the working tree has uncommitted changes, the run asks whether they belong to the patch. If they do not, it stops and asks you to commit or stash them.
+If a run stops, for example at a usage limit or a red suite, run `/speq:patch <intent>` again. It reuses the branch `patch/<patch-name>` and continues where the work stopped. When the current branch is not `patch/<patch-name>` and the working tree has uncommitted changes, the run asks whether they belong to the patch. If they do not, it stops and asks you to commit or stash them. A stopped run can leave `specs/_plans/<patch-name>/` behind, and the next run reuses it. To abandon the patch, delete that folder and the branch.

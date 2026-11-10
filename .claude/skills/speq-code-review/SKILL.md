@@ -1,6 +1,6 @@
 ---
 name: speq-code-review
-description: "Code review tag taxonomy and findings format for the code-reviewer agent during /speq-implement or /speq-patch. Not for general code review."
+description: "Code review tag taxonomy and findings format for the code-reviewer agent during /speq-implement. Not for general code review."
 ---
 
 # Code Review Taxonomy
@@ -93,10 +93,10 @@ The Evidence Rule applies here: raise a finding in this category only with a mea
 
 ## Output Format
 
-Write the findings document to the findings path from your brief (`specs/_plans/<plan-name>/review-findings.md` for `/speq-implement`) per `references/review-findings-template.md`. Then return exactly one line and nothing else:
+Write the findings document to `specs/_plans/<plan-name>/review-findings.md` per `references/review-findings-template.md`. Then return exactly one line and nothing else:
 
 ```
-CODE REVIEW: <n> findings — standard: <n>, expert: <n> — <findings path>
+CODE REVIEW: <n> findings — standard: <n>, expert: <n> — specs/_plans/<plan-name>/review-findings.md
 ```
 
 ## Routing
