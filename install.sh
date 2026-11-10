@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # speq-skill installer
-# Usage: curl -fsSL https://raw.githubusercontent.com/marconae/speq-skill/main/install.sh | bash
+# Usage: curl -fsSL https://raw.githubusercontent.com/exasol-labs/speq-skill/main/install.sh | bash
 
 set -e
 
-REPO="marconae/speq-skill"
+REPO="exasol-labs/speq-skill"
 INSTALL_DIR="$HOME/.local/bin"
 MARKETPLACE_DIR="$HOME/.speq-skill"
 CODEX_MARKETPLACE_NAME="speq-skill-local"

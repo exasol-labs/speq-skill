@@ -1,17 +1,17 @@
 <div align="center">
 
-<img src="assets/speq-skill-logo.svg" alt="speq-skill Logo" width="200">
+<img src="assets/speq-skill-logo.svg" alt="speq-skill Logo" width="150">
 
 # speq-skill
 
-**A light-weight and straightforward workflow for spec-driven development with Claude Code or Codex**
+**A lightweight and straightforward workflow for spec-driven development with Claude Code or Codex**
 
 [![spec|driven](https://img.shields.io/badge/spec-driven-blue)](specs/)
 [![Rust](https://img.shields.io/badge/rust-stable-brightgreen.svg)](https://www.rust-lang.org/)
 [![CI](https://github.com/marconae/speq-skill/actions/workflows/ci.yml/badge.svg)](https://github.com/marconae/speq-skill/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-[Getting Started](#getting-started) • [Why](#why-i-built-it) • [How It Works](#how-does-it-work) • [Documentation](./docs/) • [Installation](./docs/installation.md)
+[Getting Started](#getting-started) • [What](#what-this-is) • [How It Works](#how-does-it-work) • [Documentation](./docs/) • [Installation](./docs/installation.md)
 </div>
 
 ---
@@ -19,7 +19,7 @@
 ## Getting Started
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/marconae/speq-skill/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/exasol-labs/speq-skill/main/install.sh | bash
 ```
 
 Then open Claude Code or Codex and start with the matching trigger: `/speq:mission` in Claude Code, or `$speq:mission` in Codex.
@@ -39,41 +39,27 @@ To uninstall, see [Installation — Uninstall](./docs/installation.md#uninstall)
 
 ---
 
-## Why I Built It
+## What this is
 
-I want to leverage AI coding agents such as Claude Code and Codex as effective tools for software engineering.
+This is a plugin for Claude Code or Codex for lightweight spec-driven development with the following characteristics:
 
-There are many other spec-driven development tools out there... 
-
-...but I wanted the following:
-
-1. A workflow that is not primped on one language or framework (e.g., Python or TypeScript)
+1. A workflow that is not tied to one language or framework (e.g., Python or TypeScript)
 2. A straightforward repeatable workflow (`plan → implement → record`)
-3. A **permanent** and growing spec-library
+3. A **permanent** and growing spec library
 4. A workflow that keeps the specs **small** to avoid context cluttering
 5. A workflow that keeps **asking me instead of making assumptions**
 6. **Semantic anchors** that ground AI behavior in established methodologies
 
-So I built `speq-skill`. 
-
 It combines skills with a simple CLI called `speq` that lists and reads the permanent spec library. The coding agent lists the features, then reads only the relevant ones during planning and during the implementation. This avoids reading unnecessary specs into the context window.
 
-New to spec-driven development? Read ["Spec-driven development: an introduction"](https://deliberate.codes/blog/2026/spec-driven-development-an-introduction/) and ["Writing specs for AI coding agents"](https://deliberate.codes/blog/2026/writing-specs-for-ai-coding-agents/) on my blog.
-
 Each skill is grounded in [semantic anchors](./docs/semantic-anchors.md) — named references to established methodologies (like London School TDD, BLUF, ADR) that steer AI behavior toward well-documented practices.
-
-## Who should use it?
-
-Vibe Coding does not scale. `speq-skill` adds the missing workflow and guardrails.
-
-It introduces a lightweight workflow for spec-driven development. It adds a CLI to enable the coding agent to list and read the permanent spec library.
 
 ---
 
 ## How Does it Work?
 
 ```
-/speq:mission → specs/mission.md + specs/architecture.md (once per project)
+/speq:mission → specs/mission.md (once per project)
                        │
       ┌────────────────┼────────────────┐
       ▼                ▼                ▼
@@ -87,17 +73,13 @@ It introduces a lightweight workflow for spec-driven development. It adds a CLI 
 
 Specs live in `specs/<domain>/<feature>/spec.md`. `specs/architecture.md` holds the current architecture. Plans stage in `specs/_plans/<plan-name>/`. The separation keeps your spec library clean while work is in progress.
 
-## Building Blocks for Agentic Workflows
-
-`/speq:plan-pr` and `/speq:implement-pr` are two building blocks for agentic workflows centered on pull requests. Each one orchestrates the planning, implementing, and recording skills: `/speq:plan-pr` runs planning and opens a draft PR on a `feat/<plan-name>` branch, and `/speq:implement-pr` runs implementing and recording on that branch. You stay in the loop by commenting on the pull request. See [PR Pipeline](./docs/pr-workflow.md).
-
 ---
 
 ## Documentation
 
 | Guide                                          | Description                                                  |
 |------------------------------------------------|--------------------------------------------------------------|
-| [Installation](./docs/installation.md)         | Setup CLI and plugin                                         |
+| [Installation](./docs/installation.md)         | Set up CLI and plugin                                        |
 | [Workflow](./docs/workflow.md)                 | One-time mission setup, then Plan → Implement → Record cycle |
 | [FAQ](./docs/faq.md)                           | Add features, fix bugs, start greenfield or brownfield       |
 | [PR Workflow](./docs/pr-workflow.md)           | Plan and implement via a feat/ branch + Pull Request         |
@@ -119,7 +101,7 @@ Specs live in `specs/<domain>/<feature>/spec.md`. `specs/architecture.md` holds 
 speq-skill works well with [Serena](https://github.com/oraios/serena) for code navigation and [Context7](https://github.com/upstash/context7) for library documentation. Both are optional. The skills use each one when it is installed and skip it when it is not. See [MCP Servers](./docs/mcp-servers.md).
 
 > [!NOTE]
-> Serena and Context7 are separate open-source projects with their own licenses and terms available in the linked repositories. Context7 sends your documentation queries to a hosted service and offers a free-tier.
+> Serena and Context7 are separate open-source projects with their own licenses and terms available in the linked repositories. Context7 sends your documentation queries to a hosted service and offers a free tier.
 
 ## Acknowledgments
 
@@ -129,11 +111,3 @@ speq-skill works well with [Serena](https://github.com/oraios/serena) for code n
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
-
----
-
-<div align="center">
-
-Build with Rust 🦀 and made with ❤️ by [marconae](https://deliberate.codes).
-
-</div>
