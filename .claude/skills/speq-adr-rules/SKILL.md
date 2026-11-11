@@ -1,6 +1,6 @@
 ---
 name: speq-adr-rules
-description: "When a decision becomes an ADR: the default is no, only durable decisions qualify, search first, one decision per ADR. Use inside a /speq-plan, /speq-record, or /speq-audit run."
+description: "When a decision becomes an ADR: the default is no, only durable decisions qualify, search first, one decision per ADR. Use inside a /speq-plan, /speq-record, /speq-patch, or /speq-audit run."
 ---
 
 # ADR Rules
@@ -86,6 +86,7 @@ An ADR holds the least text that states the decision. Follow `/speq-writing-guar
 - An ADR is proposed at plan time. A `Promotes to ADR: yes` entry that passes rules 1 to 5 is the proposal. The plan skill prints it as an ADR candidate.
 - Recording the plan is the acceptance. `recorder-agent` writes `Status: Accepted` when `/speq-record` runs.
 - To reject a proposal, change the entry to `Promotes to ADR: no` and run the plan skill again before you record. In a PR run, comment on the draft PR and run `/speq-plan-pr` again with the PR number.
+- `/speq-patch` writes an ADR with `Status: Accepted` into its own fragment. Committing the patch is the acceptance. Under `/speq-patch-pr`, merging the patch PR is the acceptance, and a reviewer rejects the ADR by asking on the PR for the fragment's removal.
 - `Deprecated` and `Superseded by <slug>` follow the existing rules.
 
 ## 9. Vocabulary
@@ -96,4 +97,4 @@ An ADR holds the least text that states the decision. Follow `/speq-writing-guar
 | Plan context | The `## Context` part of `plan.md`: a bullet list of the problem and the forces behind one plan's change. It holds no decisions and is not an ADR |
 | Decision-log entry | A note in a plan's `decision-log.md`. Only an entry marked `Promotes to ADR: yes` can become an ADR |
 | ADR candidate | A decision-log entry marked `Promotes to ADR: yes`. It is the proposal, shown when the plan is ready |
-| Accepted | An ADR written by `/speq-record`. Recording the plan is the acceptance |
+| Accepted | An ADR written by `/speq-record` or `/speq-patch`. Recording the plan, committing the patch, or merging the patch PR is the acceptance |

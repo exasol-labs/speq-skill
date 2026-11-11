@@ -12,6 +12,7 @@
 | [Workflow](./workflow.md)                      | One-time project setup, then the Plan, Implement, and Record cycle |
 | [FAQ](./faq.md)                                | Add features, fix bugs, start greenfield or brownfield             |
 | [PR Pipeline](./pr-workflow.md) | Planning and implementation on a PR                                |
+| [Patch](./patch.md)                            | Apply a small fix without a plan, or ship it as a ready PR        |
 | [Spec Library](./spec-library.md)              | Spec format, BDD, and RFC keywords                                 |
 | [Decision Log](./decision-log.md)              | Design decisions, ADRs, validation, and the display command        |
 | [Hooks](./hooks.md)                            | Repo-local `.speq/<name>-hook.md` customizations                   |

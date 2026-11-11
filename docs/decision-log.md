@@ -9,7 +9,7 @@ The decision log records why a plan chose its design. It has two parts: a plan-l
 | Part | Location | Purpose |
 |------|----------|---------|
 | Plan-level log | `specs/_plans/<plan-name>/decision-log.md` | Interview answers and design choices of one plan |
-| Permanent log | `specs/_decision/NNN-<plan-name>.md` | One fragment per plan, holding its accepted ADRs |
+| Permanent log | `specs/_decision/NNN-<plan-name>.md` | One fragment per plan or patch, holding its accepted ADRs |
 
 An ADR (Architecture Decision Record) is one durable decision. The decisions of one plan live in that plan's `decision-log.md`. Only the durable ones become ADRs. The `## Context` section of `plan.md` is a bullet list of the problem. It holds no decisions.
 
@@ -25,6 +25,11 @@ An ADR (Architecture Decision Record) is one durable decision. The decisions of 
 /speq:record   recorder-agent writes each candidate as an ADR with
                Status: Accepted into specs/_decision/NNN-<plan-name>.md.
                Recording the plan is the acceptance.
+
+/speq:patch    writes an ADR with Status: Accepted into
+               specs/_decision/NNN-<patch-name>.md.
+               Committing the patch is the acceptance.
+               Under /speq:patch-pr, merging the PR is.
 ```
 
 To drop a candidate, set the entry to `Promotes to ADR: no` and run `/speq:plan` again. In a PR run, comment on the draft PR and run `/speq:plan-pr` again.

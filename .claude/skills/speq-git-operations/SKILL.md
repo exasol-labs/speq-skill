@@ -1,11 +1,11 @@
 ---
 name: speq-git-operations
-description: The git/gh operation-to-command mapping and return formats — invoked directly by /speq-plan-pr and /speq-implement-pr.
+description: The git/gh operation-to-command mapping, return formats, and PR-title and version-bump rules, invoked directly by /speq-plan-pr, /speq-implement-pr, and /speq-patch-pr.
 ---
 
 # Git Operations
 
-This skill documents the git/gh write commands available to `speq-plan-pr` and `speq-implement-pr`.
+This skill documents the git/gh write commands available to `speq-plan-pr`, `speq-implement-pr`, and `speq-patch-pr`.
 
 ## Rules
 
@@ -17,6 +17,17 @@ This skill documents the git/gh write commands available to `speq-plan-pr` and `
 - Report a no-op plainly (nothing to commit, PR already exists, already ready). It is not an error.
 - Report ambiguity or a not-found target. Do not guess.
 - Never merge a PR. Never force-push. Never rewrite history (rebase, amend, `reset --hard`, filter-branch).
+
+## PR title and version bump
+
+Derive the PR title from `<plan-name>` as `<type>(<scope>): <slug>`:
+- **type**: `add`/`change` → `feat`, `remove` → `chore`, `refactor` → `refactor`, `fix` → `fix`; `chore` for an unparseable name.
+- **scope**: the token after the verb.
+- **slug**: the `<plan-name>` with hyphens turned into spaces.
+
+Example: `add-plan-export` ⇒ `feat(plan): add plan export`. With no scope token, emit `<type>: <slug>`.
+
+Apply the conventional next version per Conventional Commits: `feat` → minor, a purely `fix` plan → patch, a breaking change → major.
 
 ## `create-branch`
 Params: `branch` (exact name), `base` (optional; default: repository default branch).
