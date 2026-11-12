@@ -58,9 +58,37 @@ jobs:
           name: coverage
           path: coverage/
 
-  build:
-    if: startsWith(github.ref, 'refs/tags/v')
+  version:
+    name: Version
     needs: ci
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.version.outputs.tag }}
+      new: ${{ steps.check.outputs.new }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get version from Cargo.toml
+        id: version
+        run: |
+          VERSION=$(grep '^version' Cargo.toml | head -1 | sed 's/.*"\(.*\)"/\1/')
+          echo "tag=v$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Check if tag already exists
+        id: check
+        run: |
+          if git rev-parse --verify --quiet "refs/tags/${{ steps.version.outputs.tag }}" >/dev/null; then
+            echo "new=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "new=true" >> "$GITHUB_OUTPUT"
+          fi
+
+  build:
+    if: needs.version.outputs.new == 'true'
+    needs: [ci, version]
     strategy:
       matrix:
         include:
@@ -102,7 +130,7 @@ jobs:
         shell: bash
         env:
           TARGET: ${{ matrix.target }}
-        run: ./scripts/release/build.sh ${{ github.ref_name }}
+        run: ./scripts/release/build.sh ${{ needs.version.outputs.tag }}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -111,12 +139,23 @@ jobs:
           path: dist/speq-marketplace-*.tar.gz
 
   release:
-    if: startsWith(github.ref, 'refs/tags/v')
-    needs: [ci, build]
+    if: needs.version.outputs.new == 'true'
+    needs: [ci, version, build]
     runs-on: ubuntu-latest
+    # Serialize releases; never cancel one mid-publish.
+    concurrency:
+      group: release
+      cancel-in-progress: false
     permissions:
       contents: write
     steps:
+      - uses: actions/checkout@v4
+
+      - name: Create git tag
+        run: |
+          git tag "${{ needs.version.outputs.tag }}"
+          git push origin "${{ needs.version.outputs.tag }}"
+
       - name: Download coverage artifact
         uses: actions/download-artifact@v4
         with:
@@ -133,6 +172,8 @@ jobs:
       - name: Create GitHub release
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ needs.version.outputs.tag }}
+          name: ${{ needs.version.outputs.tag }}
           generate_release_notes: true
           files: |
             coverage/*
