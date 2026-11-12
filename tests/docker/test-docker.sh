@@ -80,7 +80,6 @@ case "$1" in
         echo "  domain        Manage domains"
         echo "  feature       Manage feature specifications"
         echo "  plan          Manage plans"
-        echo "  record        Record approved plan deltas to permanent specs"
         echo "  decision-log  Manage the permanent decision records"
         echo "  help          Print this message"
         ;;

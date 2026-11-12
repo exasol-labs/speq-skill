@@ -403,4 +403,37 @@ mod delta_anchors {
             .assert()
             .success();
     }
+
+    #[test]
+    fn fails_with_repeated_anchor_of_same_kind() {
+        let tmp = TempDir::new().unwrap();
+        setup_fixture(&tmp, "prose-repeated-anchor");
+        setup_target_specs(&tmp, "prose-repeated-anchor");
+
+        cmd()
+            .current_dir(tmp.path())
+            .args(["plan", "validate", "prose-repeated-anchor"])
+            .assert()
+            .code(1)
+            .stdout(predicate::str::contains("### Scenario: Existing one"))
+            .stdout(predicate::str::contains("appears in 2 delta blocks"))
+            .stdout(predicate::str::contains("DELTA:NEW, DELTA:NEW"))
+            .stdout(predicate::str::contains("ERROR: Missing").not());
+    }
+
+    #[test]
+    fn fails_with_repeated_anchor_of_mixed_kinds() {
+        let tmp = TempDir::new().unwrap();
+        setup_fixture(&tmp, "prose-mixed-kinds");
+        setup_target_specs(&tmp, "prose-mixed-kinds");
+
+        cmd()
+            .current_dir(tmp.path())
+            .args(["plan", "validate", "prose-mixed-kinds"])
+            .assert()
+            .code(1)
+            .stdout(predicate::str::contains("### Scenario: Existing one"))
+            .stdout(predicate::str::contains("DELTA:NEW, DELTA:CHANGED"))
+            .stdout(predicate::str::contains("ERROR: Missing").not());
+    }
 }

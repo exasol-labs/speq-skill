@@ -64,18 +64,18 @@ A `DELTA:CHANGED` block on `## Background` or `# Feature: <name>` replaces the w
 
 Use this when a scenario change makes the current Background prose inaccurate. Copy the section's current content in full, then edit it — per Deletion Semantics above, anything left out is gone from the permanent spec.
 
-A delta file whose only blocks are `## Background` or `# Feature` MUST also include one scenario copied verbatim from the target spec, outside any delta marker: `speq plan validate` rejects a delta file with no scenarios, and `speq record` ignores unmarked content, so the unmarked scenario satisfies validation without itself being merged as a change.
+A delta file whose only blocks are `## Background` or `# Feature` MUST also include one scenario copied verbatim from the target spec, outside any delta marker: `speq plan validate` rejects a delta file with no scenarios, and the `/speq-record` skill ignores unmarked content, so the unmarked scenario satisfies validation without itself being merged as a change.
 
 ```markdown
-# Feature: CLI Record
+# Feature: Plan Delta Anchor Validation
 
-The CLI SHALL provide a command to record approved plan deltas into permanent specs.
+Validates the anchors of a plan's spec delta blocks during plan validation.
 
 <!-- DELTA:CHANGED -->
 ## Background
 
-* Command syntax: `speq record <plan-name>`
-* Merges every delta spec of the plan before writing any permanent spec
+* Command syntax: `speq plan validate <plan-name>`
+* A recognized anchor MUST NOT appear in more than one delta block of a delta file
 <!-- /DELTA:CHANGED -->
 
 ## Scenarios
@@ -87,9 +87,9 @@ Wrap the `# Feature: <name>` heading itself inside the marker. Because the match
 
 ```markdown
 <!-- DELTA:CHANGED -->
-# Feature: CLI Record
+# Feature: Plan Delta Anchor Validation
 
-The CLI SHALL merge every approved delta of a plan into permanent specs in one atomic write, then archive the plan.
+Validates the anchors of a plan's spec delta blocks during plan validation. Catches an unrecognized, illegal, or repeated anchor before implementation begins.
 <!-- /DELTA:CHANGED -->
 
 ## Background
@@ -100,8 +100,8 @@ The CLI SHALL merge every approved delta of a plan into permanent specs in one a
 ```markdown
 ## Background
 <!-- DELTA:CHANGED -->
-* Command syntax: `speq record <plan-name>`
+* Command syntax: `speq plan validate <plan-name>`
 <!-- /DELTA:CHANGED -->
 ```
 
-Wrong. The block's first non-empty line is the bullet, not `## Background`, so the anchor is unrecognized and `record`/`plan validate` reject it. Move the heading inside the marker, as in the Background example above.
+Wrong. The block's first non-empty line is the bullet, not `## Background`, so the anchor is unrecognized and `plan validate` and the `/speq-record` skill reject it. Move the heading inside the marker, as in the Background example above.
