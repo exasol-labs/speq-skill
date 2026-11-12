@@ -10,7 +10,7 @@ Captures feature changes in plans before applying to permanent specs.
 
 ## Anchors
 
-The anchor of a delta block is its first non-empty line. `record` and `plan validate` read only that line to decide what the block targets — nothing else in the block affects it.
+The anchor of a delta block is its first non-empty line. `plan validate` and the `/speq-record` skill read only that line to decide what the block targets. Nothing else in the block affects it.
 
 | Anchor | First line of the block | Match |
 |--------|--------------------------|-------|
@@ -18,7 +18,7 @@ The anchor of a delta block is its first non-empty line. `record` and `plan vali
 | Background | `## Background` | Exact |
 | Description | `# Feature: <name>` | Prefix (`# Feature`) — a description delta MAY rename the feature |
 
-Put the heading itself inside the marker, not above it. A block whose first line is not one of these three is an unrecognized anchor and `record`/`plan validate` reject it.
+Put the heading itself inside the marker, not above it. A block whose first line is not one of these three is an unrecognized anchor and `plan validate` rejects it.
 
 ## Markers
 

@@ -72,4 +72,4 @@ cargo fmt --check: exit 0, no changes
 ## Notes
 
 - `offer_does_nothing_when_no_host_is_installed` asserts that `claude` is absent from `/usr/bin:/bin`. On this machine `/usr/bin/claude` exists, so the assertion fails. The test and the installer it covers are not touched by this plan. The failure was not reproduced on the base branch.
-- `.claude/skills/speq-plan/references/delta-template.md` lines 13 and 21 still say bare `record` ("`record` and `plan validate` read only that line"). A reader may take this for the removed command. No review finding named it.
+- The test is a guard that panics when `claude` resolves on `/usr/bin:/bin`. It passes on machines where `claude` lives elsewhere, for example in a clean Docker image or CI.
