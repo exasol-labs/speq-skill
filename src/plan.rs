@@ -1,7 +1,7 @@
 use std::path::Path;
 use thiserror::Error;
 
-use crate::record::{check_anchor_rules, find_delta_specs, parse_deltas};
+use crate::delta::{check_anchor_rules, find_delta_specs, parse_deltas};
 use crate::validate;
 use crate::validate::report::{ValidationError, ValidationWarning};
 
@@ -217,11 +217,8 @@ fn validate_delta_markers(content: &str, file_path: &str, result: &mut PlanValid
 /// Reject every delta block that names no section to merge into, or names one its
 /// marker may not target.
 ///
-/// Well-formedness belongs to `record::parse_deltas` and the legality matrix to
-/// `record::check_anchor_rules`, so this gate and `speq record` cannot drift apart:
-/// a delta file this gate passes is one `speq record` can parse and apply. Both
-/// rule sets hold against the delta file alone, which is what lets both gates
-/// share them.
+/// Well-formedness belongs to `delta::parse_deltas` and the legality matrix to
+/// `delta::check_anchor_rules`. Both rule sets hold against the delta file alone.
 ///
 /// Whether an anchor exists in the target spec is settled at record time, because
 /// another plan may rewrite that spec before this one records. A delta whose target

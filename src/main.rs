@@ -2,7 +2,7 @@ use std::path::PathBuf;
 use std::process::ExitCode;
 
 use clap::Parser;
-use speq_skill::{cli, feature, plan, record, tree, validate};
+use speq_skill::{cli, feature, plan, tree, validate};
 
 fn main() -> ExitCode {
     let cli = cli::Cli::parse();
@@ -11,7 +11,6 @@ fn main() -> ExitCode {
         cli::Commands::Domain { command } => handle_domain_command(command),
         cli::Commands::Feature { command } => handle_feature_command(command),
         cli::Commands::Plan { command } => handle_plan_command(command),
-        cli::Commands::Record { plan_name } => handle_record_command(&plan_name),
         cli::Commands::DecisionLog { command } => handle_decision_log_command(command),
     }
 }
@@ -317,53 +316,6 @@ fn handle_decision_log_command(command: cli::DecisionLogCommands) -> ExitCode {
                 validate::decision_log::render_permanent_log(&fragments)
             );
             ExitCode::SUCCESS
-        }
-    }
-}
-
-fn handle_record_command(plan_name: &str) -> ExitCode {
-    let base = PathBuf::from("specs");
-
-    match record::record_plan(&base, plan_name) {
-        Ok(features) => {
-            println!("Recorded plan '{}' to specs/_recorded/", plan_name);
-            for feature in &features {
-                println!("  ✓ {}", feature);
-            }
-
-            // Validate recorded specs
-            println!("\nValidating recorded specs...");
-            let mut has_errors = false;
-            for feature_path in &features {
-                let parts: Vec<&str> = feature_path.splitn(2, '/').collect();
-                if parts.len() == 2 {
-                    let fp = feature::FeaturePath::new(parts[0], parts[1]);
-                    match validate::run_feature(&base, &fp) {
-                        Ok(result) => {
-                            if !result.is_success() {
-                                has_errors = true;
-                                println!("  ✗ {} - {} errors", feature_path, result.errors.len());
-                            } else {
-                                println!("  ✓ {}", feature_path);
-                            }
-                        }
-                        Err(e) => {
-                            has_errors = true;
-                            println!("  ✗ {} - {}", feature_path, e);
-                        }
-                    }
-                }
-            }
-
-            if has_errors {
-                ExitCode::from(1)
-            } else {
-                ExitCode::SUCCESS
-            }
-        }
-        Err(e) => {
-            eprintln!("ERROR: {}", e);
-            ExitCode::from(1)
         }
     }
 }

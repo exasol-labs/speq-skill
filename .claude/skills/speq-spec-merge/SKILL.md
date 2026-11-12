@@ -37,6 +37,8 @@ A delta block's anchor is the first non-empty line inside the block. `### Scenar
 | `DELTA:CHANGED` | Replace scenario with same name |
 | `DELTA:REMOVED` | Delete scenario with same name |
 
+Before you merge a delta spec, check that the target spec holds every scenario a `DELTA:CHANGED` or `DELTA:REMOVED` block names. If one is missing, stop and report the delta file and the scenario name. Do not merge that delta spec.
+
 **Prose-anchor markers** (`## Background` or `# Feature: <name>` wrapped in the marker):
 
 | Marker | Action |
@@ -122,8 +124,8 @@ If a threshold is exceeded, return BEFORE archiving and ask the orchestrator to 
 | Pattern | Why Wrong |
 |---------|-----------|
 | Rewriting scenario wording during merge | Recording is a mechanical operation |
-| `DELTA:CHANGED` or `DELTA:REMOVED` naming a scenario absent from the target spec | Rejected — `record` errors instead of silently merging nothing |
-| Heading left outside the marker, so the block's first line is not a recognized anchor | Rejected — `record` cannot tell what the block targets |
+| `DELTA:CHANGED` or `DELTA:REMOVED` naming a scenario absent from the target spec | Rejected — recorder-agent stops instead of silently merging nothing |
+| Heading left outside the marker, so the block's first line is not a recognized anchor | Rejected — `plan validate` and recorder-agent cannot tell what the block targets |
 | Two delta blocks of one file sharing an anchor, whatever their marker kinds | Rejected — the merged result would depend on block order; write one block carrying the final text |
 | Writing `Status: Proposed` on promotion | Rejected — `/speq-record` accepts the ADR, per `/speq-adr-rules` |
 | `DELTA:NEW` or `DELTA:REMOVED` on a canonical architecture section | Rejected — canonical sections always exist; use `DELTA:CHANGED` |

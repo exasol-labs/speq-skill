@@ -29,12 +29,6 @@ pub enum Commands {
         command: PlanCommands,
     },
 
-    /// Record approved plan deltas to permanent specs
-    Record {
-        /// Name of the plan to record
-        plan_name: String,
-    },
-
     /// Manage the permanent decision records under specs/_decision
     DecisionLog {
         #[command(subcommand)]

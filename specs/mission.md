@@ -23,14 +23,13 @@ speq provides structural verification and exploration tools for software specifi
 2. **List features and domains** — Display specs in a tree view organized by domain, or list domains alone (`speq domain list`)
 3. **Validate spec structure** — Check specs for required sections (Feature, Background, Scenarios), RFC2119 keyword usage, and scenario format
 4. **Inspect plans in flight** — List active plans under `_plans/` and validate a plan's delta specs before recording (`speq plan list` / `speq plan validate <plan>`)
-5. **Record plan deltas** — Merge approved delta specs from `_plans/` into permanent specs and archive the plan
-6. **Track architecture decisions** — Validate and assemble per-plan ADR fragments in `specs/_decision/` into a stable decision record (`speq decision-log validate` / `show`)
+5. **Track architecture decisions** — Validate and assemble per-plan ADR fragments in `specs/_decision/` into a stable decision record (`speq decision-log validate` / `show`)
 
 ## Out of Scope
 
 - Execution engine — Does not run or execute specifications like a test runner
 - Code generation — Does not generate implementation code from specs
-- Version control — Does not manage spec history beyond archiving recorded plans
+- Version control — Does not manage spec history
 - Installation — Does not cover the installer or plugin tooling
 
 Architecture: see specs/architecture.md.

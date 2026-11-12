@@ -20,7 +20,6 @@ speq <command> [subcommand] [options]
 | `feature` | List, get, and validate feature specs |
 | `plan` | List and validate implementation plans |
 | `decision-log` | Validate and show the permanent decision log |
-| `record` | Merge plan deltas into permanent specs |
 
 ---
 
@@ -197,30 +196,6 @@ $ speq decision-log show
 The command orders fragments by their numeric `NNN-` prefix and order within files.
 
 See [Decision Log](./decision-log.md) for the full format reference.
-
----
-
-## Record command
-
-### `speq record`
-
-This command merges approved plan deltas into permanent specs.
-
-```bash
-speq record <plan-name>
-```
-
-**Example**
-```bash
-$ speq record add-auth
-Recorded plan 'add-auth' to specs/_recorded/
-```
-
-This command:
-1. Reads delta specs from `specs/_plans/<plan-name>/`
-2. Merges deltas into permanent specs in `specs/<domain>/<feature>/`
-3. Strips DELTA markers
-4. Archives the plan to `specs/_recorded/NNN-<plan-name>/`, where `NNN` is a record-time sequence number
 
 ---
 

@@ -1,17 +1,14 @@
 # Feature: Plan Delta Anchor Validation
 
-Validates the anchors of a plan's spec delta blocks during plan validation, with the same target-independent rules that `speq record` applies. Catches a delta block that `speq record` would reject before implementation begins.
+Validates the anchors of a plan's spec delta blocks during plan validation. Catches an unrecognized, illegal, or repeated anchor before implementation begins.
 
 ## Background
 
 * Plans are stored in `specs/_plans/<plan-name>/`
 * A delta spec at `<domain>/<feature>/spec.md` in the plan targets `specs/<domain>/<feature>/spec.md`
-* The anchor of a delta block is its first non-empty line
-* Recognized anchors: `### Scenario: <name>`, `## Background`, and `# Feature: <name>`
+* The anchor of a delta block is its first non-empty line: `### Scenario: <name>`, `## Background`, or `# Feature: <name>`
 * `DELTA:NEW` and `DELTA:REMOVED` MAY target a `### Scenario: <name>` anchor only
-* Anchor checks apply the target-independent rules of `speq record`: recognized anchors, legal marker and anchor pairs, and repeated anchors
-* Anchor checks are skipped when the target spec `specs/<domain>/<feature>/spec.md` does not exist
-* A delta file that fails delta parsing produces an error naming the file, and its anchor checks are skipped
+* A recognized anchor MUST NOT appear in more than one delta block of a delta file, whatever the marker kinds
 
 ## Scenarios
 
@@ -55,4 +52,20 @@ Validates the anchors of a plan's spec delta blocks during plan validation, with
 * *AND* the delta opens a second delta marker before it closes the first one
 * *WHEN* the user runs `speq plan validate nested-markers`
 * *THEN* the system SHALL report an error that names the delta spec file and the malformed delta marker
+* *AND* the system SHALL exit with non-zero code
+
+### Scenario: Validate plan with a repeated anchor of the same kind reports an error
+
+* *GIVEN* a plan named "prose-repeated-anchor" whose delta targets an existing feature
+* *AND* the delta has two `<!-- DELTA:NEW -->` blocks anchored at the same `### Scenario:` heading
+* *WHEN* the user runs `speq plan validate prose-repeated-anchor`
+* *THEN* the system SHALL report an error naming the repeated anchor
+* *AND* the system SHALL exit with non-zero code
+
+### Scenario: Validate plan with a repeated anchor of different kinds reports an error
+
+* *GIVEN* a plan named "prose-mixed-kinds" whose delta targets an existing feature
+* *AND* the delta has a `<!-- DELTA:NEW -->` block and a `<!-- DELTA:CHANGED -->` block anchored at the same `### Scenario:` heading
+* *WHEN* the user runs `speq plan validate prose-mixed-kinds`
+* *THEN* the system SHALL report an error naming the repeated anchor and both markers
 * *AND* the system SHALL exit with non-zero code

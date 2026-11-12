@@ -617,10 +617,14 @@ fn offer_continues_when_codex_add_fails() {
 
 #[test]
 fn offer_does_nothing_when_no_host_is_installed() {
+    // The PATH holds only a symlink to bash, so the host cannot supply claude or codex.
     let fake_bin = TempDir::new().unwrap();
-    assert_absent_from_restricted_path("claude");
-    assert_absent_from_restricted_path("codex");
-    let path = restricted_path(fake_bin.path());
+    let bash = std::env::split_paths(&std::env::var_os("PATH").unwrap())
+        .map(|dir| dir.join("bash"))
+        .find(|candidate| candidate.is_file())
+        .expect("bash on PATH");
+    std::os::unix::fs::symlink(bash, fake_bin.path().join("bash")).unwrap();
+    let path = fake_bin.path().display().to_string();
 
     let output = run_function("offer_mcp_servers", &path, &[]);
 

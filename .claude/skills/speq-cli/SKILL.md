@@ -29,7 +29,6 @@ The CLI is installed locally and on the path. Invoke via `speq`.
 | `speq feature validate <domain>/<feature>` | Validate single feature |
 | `speq plan list` | List active plans |
 | `speq plan validate <plan>` | Validate a plan |
-| `speq record <plan>` | Merge a validated plan into the permanent specs |
 
 Single-quote a scenario path. In double quotes, the shell runs the text between backticks as a command.
 
