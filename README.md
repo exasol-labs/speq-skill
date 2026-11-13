@@ -1,17 +1,17 @@
 <div align="center">
 
-<img src="assets/speq-skill-logo.svg" alt="speq-skill Logo" width="200">
+<img src="assets/speq-skill-logo.svg" alt="speq-skill Logo" width="150">
 
 # speq-skill
 
-**A light-weight and straightforward system for spec-driven development with Claude Code, Codex, and Pi**
+**A lightweight and straightforward workflow for spec-driven development with Claude Code or Codex**
 
 [![spec|driven](https://img.shields.io/badge/spec-driven-blue)](specs/)
 [![Rust](https://img.shields.io/badge/rust-stable-brightgreen.svg)](https://www.rust-lang.org/)
-[![CI](https://github.com/tglunde/speq-skill/actions/workflows/ci.yml/badge.svg)](https://github.com/tglunde/speq-skill/actions/workflows/ci.yml)
+[![CI](https://github.com/exasol-labs/speq-skill/actions/workflows/ci.yml/badge.svg)](https://github.com/exasol-labs/speq-skill/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-[Getting Started](#getting-started) • [Why](#why-i-built-it) • [How It Works](#how-does-it-work) • [Documentation](./docs/) • [Installation](./docs/installation.md)
+[Getting Started](#getting-started) • [What](#what-this-is) • [How It Works](#how-does-it-work) • [Documentation](./docs/) • [Installation](./docs/installation.md)
 </div>
 
 ---
@@ -19,21 +19,19 @@
 ## Getting Started
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/tglunde/speq-skill/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/exasol-labs/speq-skill/main/setup.sh | bash
 ```
 
-Then open Claude Code, Codex, or Pi and start with the matching trigger: `/speq:mission` in Claude Code, `$speq:mission` in Codex, or `/skill:speq-mission` in Pi.
+Then open Claude Code or Codex and start with the matching trigger: `/speq:mission` in Claude Code, or `$speq:mission` in Codex.
 
 <details>
-<summary>What does the installer do?</summary>
+<summary>What does the setup script do?</summary>
 
 - Downloads a pre-built `speq` binary for your platform (Linux x86_64/ARM64, macOS Apple Silicon). On other platforms it stops and points to the [source build](./docs/installation.md#install-from-source)
-- Downloads the embedding model (`snowflake-arctic-embed-xs`) into the platform cache directory for semantic search
 - Installs the CLI to `~/.local/bin/speq`
 - Installs plugin files to `~/.speq-skill/`
 - Registers `/speq:*` skills for Claude Code and `$`-triggered skill suggestions for Codex when available
 - Registers the local Codex marketplace when the Codex CLI is available
-- Installs `/skill:speq-*` skills into `~/.agents/skills/` and the sub-agents into `~/.pi/agent/agents/speq/` for Pi
 
 To uninstall, see [Installation — Uninstall](./docs/installation.md#uninstall).
 
@@ -41,43 +39,27 @@ To uninstall, see [Installation — Uninstall](./docs/installation.md#uninstall)
 
 ---
 
-## Why I Built It
+## What this is
 
-I want to leverage AI coding agents such as Claude Code, Codex, and Pi as effective tools to write software.
+This is a plugin for Claude Code or Codex for lightweight spec-driven development with the following characteristics:
 
-There are many other spec-driven development tools out there... 
-
-...but I wanted the following:
-
-1. A system that is not primped on one language or framework (e.g., Python or TypeScript)
+1. A workflow that is not tied to one language or framework (e.g., Python or TypeScript)
 2. A straightforward repeatable workflow (`plan → implement → record`)
-3. A **permanent** and growing spec-library
-4. A system that keeps the specs **small** to avoid context cluttering
-5. A system that keeps **asking me instead of making assumptions**
+3. A **permanent** and growing spec library
+4. A workflow that keeps the specs **small** to avoid context cluttering
+5. A workflow that keeps **asking me instead of making assumptions**
 6. **Semantic anchors** that ground AI behavior in established methodologies
 
-So I built `speq-skill`. 
-
-It combines skills with a simple CLI called `speq` that adds a semantical search layer to the permanent spec library. The search empowers the coding agent to find the right feature or scenarios during planning, but also during the implementation. This avoids reading unnecessary specs into the context window.
-
-New to spec-driven development? Read ["Spec-driven development: an introduction"](https://deliberate.codes/blog/2026/spec-driven-development-an-introduction/) and ["Writing specs for AI coding agents"](https://deliberate.codes/blog/2026/writing-specs-for-ai-coding-agents/) on my blog.
+It combines skills with a simple CLI called `speq` that lists and reads the permanent spec library. The coding agent lists the features, then reads only the relevant ones during planning and during the implementation. This avoids reading unnecessary specs into the context window.
 
 Each skill is grounded in [semantic anchors](./docs/semantic-anchors.md) — named references to established methodologies (like London School TDD, BLUF, ADR) that steer AI behavior toward well-documented practices.
-
-## Who should use it?
-
-Vibe Coding does not scale. `speq-skill` adds the missing workflow and guardrails.
-
-If you want to describe what you want and have a coding agent generate the code for you, then you should give `speq-skill` a try!
-
-It introduces a lightweight workflow for spec-driven development. It adds a CLI to enable the coding agent to search the permanent spec library.
 
 ---
 
 ## How Does it Work?
 
 ```
-/speq:mission → specs/mission.md + specs/architecture.md (once per project)
+/speq:mission → specs/mission.md (once per project)
                        │
       ┌────────────────┼────────────────┐
       ▼                ▼                ▼
@@ -85,49 +67,43 @@ It introduces a lightweight workflow for spec-driven development. It adds a CLI 
 ```
 
 1. **Mission** — Do it once. The coding agent explores your codebase (or interviews you for a greenfield project) and generates `specs/mission.md` and `specs/architecture.md`.
-2. **Plan** — Describe what you want. The coding agent searches existing specs, asks clarifying questions, and creates a plan with spec deltas.
+2. **Plan** — Describe what you want. The coding agent reads the existing specs, asks clarifying questions, and creates a plan with spec deltas.
 3. **Implement** — The coding agent implements the plan, guided by guardrails for code quality, testing and more.
 4. **Record** — The coding agent merges implemented spec deltas, and the architecture delta if the plan has one, into the permanent spec library.
 
 Specs live in `specs/<domain>/<feature>/spec.md`. `specs/architecture.md` holds the current architecture. Plans stage in `specs/_plans/<plan-name>/`. The separation keeps your spec library clean while work is in progress.
 
-## Building Blocks for Agentic Workflows
-
-`/speq:plan-pr` and `/speq:implement-pr` are two building blocks for agentic workflows centered on pull requests. Each one orchestrates the planning, implementing, and recording skills: `/speq:plan-pr` runs planning and opens a draft PR on a `feat/<plan-name>` branch, and `/speq:implement-pr` runs implementing and recording on that branch. Humans stay on the loop by commenting on the pull request. See [Headless PR Pipeline](./docs/headless-workflow.md).
+For a small fix or tweak, `/speq:patch` skips the plan and applies the change in one run. `/speq:patch-pr` also ships it as one ready PR. See [Patch](./docs/patch.md).
 
 ---
 
 ## Documentation
 
-| Guide | Description |
-|-------|-------------|
-| [Installation](./docs/installation.md) | Setup CLI and plugin |
-| [Workflow](./docs/workflow.md) | One-time mission setup, then Plan → Implement → Record cycle |
-| [FAQ](./docs/faq.md) | Add features, fix bugs, start greenfield or brownfield |
-| [Headless PR Pipeline](./docs/headless-workflow.md) | Autonomous plan/implement via a feat/ branch + PR |
-| [Decision Log](./docs/decision-log.md) | Design decisions, ADR fragment format, validation, and show |
-| [CLI Reference](./docs/cli-reference.md) | All CLI commands |
-| [MCP Servers](./docs/mcp-servers.md) | Serena setup, Context7 optional |
-| [Semantic Anchors](./docs/semantic-anchors.md) | Named methodologies grounding each skill |
-| [Model Routing](./docs/model-routing.md) | How workflow skills and sub-agents are routed across models |
-| [Hooks](./docs/hooks.md) | Repo-local `.speq/<name>-hook.md` customizations |
+| Guide                                          | Description                                                  |
+|------------------------------------------------|--------------------------------------------------------------|
+| [Installation](./docs/installation.md)         | Set up CLI and plugin                                        |
+| [Workflow](./docs/workflow.md)                 | One-time mission setup, then Plan → Implement → Record cycle |
+| [FAQ](./docs/faq.md)                           | Add features, fix bugs, start greenfield or brownfield       |
+| [PR Workflow](./docs/pr-workflow.md)           | Plan and implement via a feat/ branch + Pull Request         |
+| [Patch](./docs/patch.md)                       | Apply a small fix without a plan, or ship it as a ready PR   |
+| [Decision Log](./docs/decision-log.md)         | Design decisions, ADR fragment format, validation, and show  |
+| [CLI Reference](./docs/cli-reference.md)       | All CLI commands                                             |
+| [MCP Servers](./docs/mcp-servers.md)           | Optional Serena and Context7 setup                           |
+| [Semantic Anchors](./docs/semantic-anchors.md) | Named methodologies grounding each skill                     |
+| [Hooks](./docs/hooks.md)                       | Repo-local `.speq/<name>-hook.md` customizations             |
 
 ---
 
 ## Important
 
-`speq-skill` is a plugin for Claude Code, Codex, Pi, and other compatible AI coding agents. This tool provides workflow structure and spec management only—**the AI / coding agent generates all code, specs, or other artifacts**.
+`speq-skill` is a plugin for Claude Code, Codex, and other compatible AI coding agents. This project provides workflow structure and spec management only—**the coding agent generates all code, specs, other artifacts, and tool calls**.
 
 ## Companions
 
 speq-skill works well with [Serena](https://github.com/oraios/serena) for code navigation and [Context7](https://github.com/upstash/context7) for library documentation. Both are optional. The skills use each one when it is installed and skip it when it is not. See [MCP Servers](./docs/mcp-servers.md).
 
 > [!NOTE]
-> Serena and Context7 are separate open-source projects with their own licenses and terms available in the linked repositories. Context7 sends your documentation queries to a hosted service and offers a free-tier.
-
-## Dependencies
-
-The `speq` CLI uses [snowflake-arctic-embed-xs](https://huggingface.co/Snowflake/snowflake-arctic-embed-xs) for semantic search. The [installer](./docs/installation.md) downloads the model files automatically onto your machine so inference runs fully offline.
+> Serena and Context7 are separate open-source projects with their own licenses and terms available in the linked repositories. Context7 sends your documentation queries to a hosted service and offers a free tier.
 
 ## Acknowledgments
 
@@ -136,12 +112,4 @@ The `speq` CLI uses [snowflake-arctic-embed-xs](https://huggingface.co/Snowflake
 
 ## License
 
-Free, open-source, and community-supported. [MIT](LICENSE).
-
----
-
-<div align="center">
-
-Build with Rust 🦀 and made with ❤️ by [marconae](https://deliberate.codes).
-
-</div>
+This project is licensed under the [MIT License](LICENSE).
