@@ -17,16 +17,10 @@ Invoke before starting:
 
 ## Workflow
 
-### 0. Load Project Hook
-
-Check for `.speq/patch-pr-hook.md` in the repo root.
-- **Present:** read it. Announce "Loaded project hook: .speq/patch-pr-hook.md". Its content is authoritative: it can add to, change, or override any part of this workflow. If the hook conflicts with this workflow, the hook wins.
-- **Absent:** continue without mention.
-
 ### 1. Check Prerequisites and Name
 
 1. `gh auth status` fails, or the repository has no `origin` remote → stop before any edit and name the missing piece.
-2. Run `/speq-patch` steps 0 to 3: its hook, prerequisites, discovery, the patch name, and the first size check.
+2. Run `/speq-patch` steps 1 to 3: prerequisites, discovery, the patch name, and the first size check.
 3. Derive the PR title from `<patch-name>` per `/speq-git-operations` § PR title and version bump.
 
 ### 2. Branch

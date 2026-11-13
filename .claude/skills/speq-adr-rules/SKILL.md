@@ -39,7 +39,7 @@ The entry's Rationale names the criterion that applies and states the result of 
 
 | Content | Destination |
 |---------|-------------|
-| Conventions that bind contributors or agents | `CLAUDE.md`, `AGENTS.md`, a `.speq/*-hook.md` file, or `specs/mission.md` Constraints |
+| Conventions that bind contributors or agents | `CLAUDE.md`, `AGENTS.md`, or `specs/mission.md` Constraints |
 | WHAT the system is: components and boundaries | `specs/architecture.md`, changed through an architecture delta |
 | HOW this plan builds it | A phrase in the `plan.md` task line. Only a choice with a rejected alternative gets a `decision-log.md` `## Design Decisions` entry with `Promotes to ADR: no` |
 | Execution steps | `plan.md` `## Implementation Tasks` |

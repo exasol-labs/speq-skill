@@ -90,7 +90,6 @@ For a small fix or tweak, `/speq:patch` skips the plan and applies the change in
 | [CLI Reference](./docs/cli-reference.md)       | All CLI commands                                             |
 | [MCP Servers](./docs/mcp-servers.md)           | Optional Serena and Context7 setup                           |
 | [Semantic Anchors](./docs/semantic-anchors.md) | Named methodologies grounding each skill                     |
-| [Hooks](./docs/hooks.md)                       | Repo-local `.speq/<name>-hook.md` customizations             |
 
 ---
 

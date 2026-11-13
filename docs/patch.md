@@ -62,10 +62,6 @@ The run names the limit and the measured value, recommends `/speq:plan` or `/spe
 
 A patch never touches `specs/_recorded/` or `specs/mission.md`. In `specs/_plans/`, it uses only its own folder `specs/_plans/<patch-name>/`, which holds the change intent and the review findings during the run. The patch deletes that folder at the end of the run. `/speq:patch-pr` deletes it once the PR is open. When an active plan holds a delta for an edited feature, the report names the plan. `/speq:patch-pr` also names it in the PR body.
 
-## Hooks
-
-Create `.speq/patch-hook.md` to add project rules to `/speq:patch`, and `.speq/patch-pr-hook.md` for the PR steps of `/speq:patch-pr`. `/speq:patch-pr` reads both. A hook is authoritative and can override any step. See [Hooks](./hooks.md).
-
 ## Resume
 
 If a run stops, for example at a usage limit or a red suite, run the same command with the same intent again. It continues where the work stopped. `/speq:patch-pr` reuses the branch `patch/<patch-name>`. When the working tree has uncommitted changes at the start, the run asks whether they belong to the patch. If they do not, it stops and asks you to commit or stash them. A stopped run can leave `specs/_plans/<patch-name>/` behind, and the next run reuses it. To abandon the patch, delete that folder, and the branch for `/speq:patch-pr`.

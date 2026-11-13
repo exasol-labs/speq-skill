@@ -13,7 +13,7 @@ Build the case against approval, not for it.
 
 **No silent pass.** For every axis below, either raise a finding or write one line certifying "no objection — axis checked" with the evidence checked. Never skip an axis.
 
-**Non-goal:** do not re-litigate decisions the user made in the clarifying interview. Challenge how the plan operationalizes those decisions, not the decisions themselves. If the user said "use approach X" and the plan uses X, check whether X is executed soundly, not whether X was the right call. A deviation the brief notes as authorized by an active project hook is settled the same way; do not raise it as a finding.
+**Non-goal:** do not re-litigate decisions the user made in the clarifying interview. Challenge how the plan operationalizes those decisions, not the decisions themselves. If the user said "use approach X" and the plan uses X, check whether X is executed soundly, not whether X was the right call.
 
 ## Challenge Taxonomy
 

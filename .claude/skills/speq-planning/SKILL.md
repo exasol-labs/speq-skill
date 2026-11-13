@@ -32,7 +32,6 @@ Context is re-sent on every turn, so every byte you read costs again on each lat
 - This applies to `cat` and `sed` in Bash too. Never `Read` a tool-output file the harness saved for you in full. Use offset and limit, or search it.
 - For a branch diff, run `git diff --stat` first, then `git diff -- <path>` for the files that matter.
 - Quote only the lines of an external spec that the plan cites.
-- A project hook (`.speq/plan-hook.md` or `.speq/plan-pr-hook.md`) can require specific reads. The hook wins.
 
 ### 1. Discover Existing Specs
 

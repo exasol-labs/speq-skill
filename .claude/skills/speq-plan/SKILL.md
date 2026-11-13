@@ -17,12 +17,6 @@ Invoke before starting:
 
 ## Workflow
 
-### 0. Load Project Hook (orchestrator)
-
-Check for `.speq/plan-hook.md` in the repo root.
-- **Present:** read it. Announce "Loaded project hook: .speq/plan-hook.md". Its content is authoritative: it can add to, change, or override any part of this workflow. If the hook conflicts with this workflow, the hook wins.
-- **Absent:** continue without mention.
-
 ### 1. Discovery (orchestrator)
 
 Run the speq CLI:
@@ -87,9 +81,6 @@ Read `## Interview` in `specs/_plans/<plan-name>/decision-log.md`. Keep it as is
 ## External Research
 <any research already conducted, or "none — agent to research as needed">
 
-## Project Hook
-<if active: note ".speq/plan-hook.md — read it and apply it" — otherwise omit this section>
-
 ## Your Task
 Produce spec deltas and plan.md per the `planner-agent` workflow. Tag tasks requiring deep reasoning with [expert] so the implementer orchestrator can route them to implementer-expert-agent.
 
@@ -124,9 +115,6 @@ Read `## Interview` in `specs/_plans/<plan-name>/decision-log.md`.
 
 ## Plan Artifacts
 plan.md, decision-log.md, every specs/_plans/<plan-name>/**/spec.md delta, and specs/_plans/<plan-name>/architecture.md when present
-
-## Project Hook
-<if active: note ".speq/plan-hook.md — read it and apply it" — otherwise omit this section>
 ```
 
 It writes its findings to `specs/_plans/<plan-name>/review/review.md` and returns only `PLAN REVIEW: BLOCKERS: <n>, FINDINGS: <n>, INTENT: <n> — <path>`. `INTENT` counts the BLOCKERs on the Intent Fidelity axis alone.

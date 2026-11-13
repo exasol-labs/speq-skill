@@ -396,7 +396,7 @@ dependencies = [
 
 [[package]]
 name = "speq-skill"
-version = "0.30.0"
+version = "0.31.0"
 dependencies = [
  "assert_cmd",
  "clap",
