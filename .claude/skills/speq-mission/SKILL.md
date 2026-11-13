@@ -20,12 +20,6 @@ Do not invoke `/speq-code-tools`: brownfield exploration (step 2) only reads man
 
 ## Workflow
 
-### 0. Load Project Hook
-
-Check for `.speq/mission-hook.md` in the repo root.
-- **Present:** read it. Announce "Loaded project hook: .speq/mission-hook.md". Its content is authoritative: it can add to, change, or override any part of this workflow. If the hook conflicts with this workflow, the hook wins.
-- **Absent:** continue without mention.
-
 ### 1. Project Detection
 
 Determine project type:
@@ -70,7 +64,6 @@ For existing projects, gather context BEFORE interviewing:
    Mission path: specs/mission.md
    Template: /speq-plan references/architecture-template.md
    Draft path: <draft path>
-   Project Hook: <content of .speq/mission-hook.md, or none>
 
    ## Your Task
    Write the draft to the draft path and the evidence to <draft path>.evidence.md. Return only the summary in your output format.

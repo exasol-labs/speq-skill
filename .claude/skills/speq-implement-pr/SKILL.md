@@ -22,12 +22,6 @@ Invoke before starting:
 
 ## Workflow
 
-### 0. Load Project Hook
-
-Check for `.speq/implement-pr-hook.md` in the repo root.
-- **Present:** read it. Announce "Loaded project hook: .speq/implement-pr-hook.md". Its content is authoritative: it can add to, change, or override any part of this workflow. If the hook conflicts with this workflow, the hook wins.
-- **Absent:** continue without mention.
-
 ### 1. Resolve Target
 
 `$1` empty → ask the user which plan. Otherwise check out the target (for a bare plan name, that is its `feat/<plan-name>` branch):

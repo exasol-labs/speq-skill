@@ -68,11 +68,7 @@ Delegated to `audit-agent` (SKILL.md Phase 3a). It returns (a) library domains a
 **Signal:** `✓ present, N sections`, `✗ missing`, `✗ missing, mission.md holds the old sections`, or `✗ bad structure: <first violation with line>`.
 **Remediate (on Yes):** missing or old layout: spawn `/speq-mission` for its migration interview. Bad structure: report only. The user fixes the file or plans the change with `/speq-plan`. Never write `specs/architecture.md` here.
 
-## 13. Project hooks
-**Detect:** list `.speq/*-hook.md` files in the repo root.
-**Signal:** informational, no `✓`/`✗`/`⚠`: `N hooks active: <filenames>` or `none`. Never a finding.
-
-## 14. Serena
+## 13. Serena
 **Detect:** `ToolSearch` with the query `serena`. Any tool name containing `serena` is a match. Serena is optional and Context7 is not checked.
 **Signal:** `✓ serena found`, `ℹ not installed` (Detail: `skills work without it, see docs/mcp-servers.md`), or `— n/a` when the host has no `ToolSearch`, for example Codex.
 **Remediate:** none. A hint is not a finding and does not count toward `N findings`.

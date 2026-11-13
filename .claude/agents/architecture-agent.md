@@ -28,7 +28,6 @@ From the orchestrator, as paths and no pasted content:
 - The mission path (`specs/mission.md`). Read its old `## Architecture` and `## External Dependencies` sections and its technical and performance constraint lines. They may be absent.
 - The template path: `/speq-plan`'s `references/architecture-template.md`.
 - The draft path. Write the draft there and the evidence to `<draft path>.evidence.md`.
-- An optional `Project Hook:` line. It is authoritative and can override this workflow.
 
 ## Workflow
 

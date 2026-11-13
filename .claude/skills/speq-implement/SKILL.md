@@ -40,14 +40,6 @@ Do not invoke coding skills (`/speq-code-tools`, `/speq-ext-library`, `/speq-cod
 
 ## Workflow
 
-### Phase 0: Load Project Hook (orchestrator)
-
-Check for `.speq/implement-hook.md` in the repo root.
-- **Present:** read it. Announce "Loaded project hook: .speq/implement-hook.md". Its content is authoritative: it can add to, change, or override any part of this workflow. If the hook conflicts with this workflow, the hook wins.
-- **Absent:** continue, no mention.
-
-Add a `Project Hook:` line (path only, not content) to every sub-agent brief below. `implementer-agent`, `implementer-expert-agent`, and `code-reviewer` read the hook themselves from that path.
-
 ### Phase 1: Load Plan
 
 ```
@@ -133,7 +125,6 @@ Delegate to <implementer-agent | implementer-expert-agent>: Implement <group-nam
 - The untagged tasks in the list are yours too: the group routes as one unit <expert groups only>
 - Preserve the [expert] tag when updating status markers <expert groups only>
 - Report the invariants the code now enforces <expert groups only>
-- Project Hook: <if active, ".speq/implement-hook.md: read it and apply it"; otherwise omit this line>
 ```
 
 ### Phase 4: Code Review
@@ -154,7 +145,6 @@ Review all changed files after implementation completes. Code review runs ONCE p
    - Plan: specs/_plans/{plan_name}/plan.md
    - Review for: guardrail violations, dead code, test quality, bad comments, optimizations, YAGNI/over-engineering, error handling, design depth
    - Write findings to specs/_plans/{plan_name}/review-findings.md per your output format, partitioned into `## Standard fixes` and `## Expert fixes`; return only the one-line verdict.
-   - Project Hook: <if active, ".speq/implement-hook.md — read it and apply it"; otherwise omit this line>
    ```
    It returns one line: `CODE REVIEW: <n> findings — standard: <n>, expert: <n> — <path>`. You never see the findings themselves.
 3. **Process findings**: branch on the two counts in the verdict. If both are 0, go to Phase 5. One agent applies the whole fix pass, routed by its hardest finding: the findings cluster on the files just written, and a second agent there re-orients into the same code and can collide with the first.
@@ -172,7 +162,6 @@ Review all changed files after implementation completes. Code review runs ONCE p
      ## Context
 
      - Plan: specs/_plans/{plan_name}/plan.md
-     - Project Hook: <if active, ".speq/implement-hook.md — read it and apply it"; otherwise omit this line>
      ```
    - **expert > 0**: spawn `implementer-expert-agent` with the same brief shape, naming section `## Expert fixes`, and also `## Standard fixes` when standard > 0. It tags only the tasks derived from `## Expert fixes` with `[expert]`.
 4. **Proceed to Phase 5.**

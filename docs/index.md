@@ -15,7 +15,6 @@
 | [Patch](./patch.md)                            | Apply a small fix without a plan, or ship it as a ready PR        |
 | [Spec Library](./spec-library.md)              | Spec format, BDD, and RFC keywords                                 |
 | [Decision Log](./decision-log.md)              | Design decisions, ADRs, validation, and the display command        |
-| [Hooks](./hooks.md)                            | Repo-local `.speq/<name>-hook.md` customizations                   |
 | [CLI Reference](./cli-reference.md)            | All CLI commands                                                   |
 | [MCP Servers](./mcp-servers.md)                | Serena, Context7, both optional                                    |
 | [Semantic Anchors](./semantic-anchors.md)      | Named methodologies that ground each skill                         |

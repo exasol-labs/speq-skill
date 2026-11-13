@@ -20,14 +20,6 @@ The `audit-agent` sub-agent invokes `/speq-cli` itself. **Read `references/check
 
 ## Workflow
 
-### Phase 0: Load Project Hook (orchestrator)
-
-Check for `.speq/audit-hook.md` in the repo root.
-- **Present:** read it. Announce "Loaded project hook: .speq/audit-hook.md". Its content is authoritative: it can add to, change, or override any part of this workflow. If the hook conflicts with this workflow, the hook wins.
-- **Absent:** continue normally, no mention.
-
-Note it (not its full content) as a `Project Hook:` line in each sub-agent brief below.
-
 ### Phase 1: Preconditions (orchestrator)
 
 ```
@@ -63,8 +55,7 @@ Mission and architecture
 12. Architecture file — `specs/architecture.md` present and valid, mission.md free of the old sections
 
 Info
-13. Project hooks — informational only
-14. Serena — hint only, Serena is optional
+13. Serena — hint only, Serena is optional
 
 ### Phase 3: Delegate the judgment checks
 
@@ -85,7 +76,6 @@ present in the library but NOT reflected in the mission's Core Capabilities / Do
 Glossary; (b) mission capabilities with NO backing spec. Advisory only —
 do NOT edit mission.md.
 
-Project Hook: <if active, ".speq/audit-hook.md — read it and apply it"; otherwise omit this line>
 ```
 
 If `specs/mission.md` is absent, skip the delegation and mark the check `✗ (no mission.md)`.
@@ -122,7 +112,6 @@ Lead with the verdict (BLUF), then the checks table, then numbered remediations.
 | Recorded-folder naming                | ⚠ | 3 legacy names |
 | Library thresholds                    | ✓ | max 8 scenarios · 5 features |
 | Serena (code tools, optional)         | ℹ | not installed, skills work without it, see docs/mcp-servers.md |
-| Project hooks                         | — | 1 active: plan-hook.md |
 
 ## Recommended actions  (I ask before each change)
 1. Migrate specs/decision-log.md → specs/_decision/ fragments (7 ADRs → slugs)

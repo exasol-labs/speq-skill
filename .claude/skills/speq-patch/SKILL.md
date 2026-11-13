@@ -26,12 +26,6 @@ Invoke before starting:
 
 ## Workflow
 
-### 0. Load Project Hook
-
-Check for `.speq/patch-hook.md` in the repo root.
-- **Present:** read it. Announce "Loaded project hook: .speq/patch-hook.md". Its content is authoritative: it can add to, change, or override any part of this workflow. If the hook conflicts with this workflow, the hook wins.
-- **Absent:** continue without mention.
-
 ### 1. Check Prerequisites
 
 `$1` empty → ask the user for the change intent. `specs/mission.md` absent → stop before any edit and point to `/speq-mission`. The working tree has uncommitted changes → ask whether they belong to the patch. They do not → stop and ask the user to commit or stash them. Never stash or discard them yourself.
@@ -55,7 +49,7 @@ The change exceeds the size limit when it needs a new feature spec or a new doma
 
 1. Collect the changed files per `/speq-implement` Phase 4 step 1, with base `HEAD`, leaving out the patch folder.
 2. Write the patch folder's `plan.md`: H1 `# Plan: <patch-name>`, then `## Summary` with the change intent `$1`.
-3. `review-findings.md` absent from the patch folder → spawn `code-reviewer` once with `/speq-implement` Phase 4 step 2's brief, `<plan-name>` set to `<patch-name>` and the hook line naming `.speq/patch-hook.md`. Present → a stopped run already reviewed: never spawn a second review.
+3. `review-findings.md` absent from the patch folder → spawn `code-reviewer` once with `/speq-implement` Phase 4 step 2's brief, `<plan-name>` set to `<patch-name>`. Present → a stopped run already reviewed: never spawn a second review.
 4. Read `specs/_plans/<patch-name>/review-findings.md`. Fix every finding that is not yet fixed, then rerun the suites per step 4.
 
 ### 6. Specs, ADRs, Architecture, Docs
