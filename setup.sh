@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# speq-skill installer
-# Usage: curl -fsSL https://raw.githubusercontent.com/exasol-labs/speq-skill/main/install.sh | bash
+# speq-skill setup
+# Usage: curl -fsSL https://raw.githubusercontent.com/exasol-labs/speq-skill/main/setup.sh | bash
 
 set -e
 
@@ -352,7 +352,7 @@ check_path() {
 main() {
     echo ""
     echo "=========================="
-    echo "   speq-skill installer"
+    echo "   speq-skill setup"
     echo "=========================="
     echo ""
 

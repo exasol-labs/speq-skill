@@ -2,10 +2,10 @@
 # Run integration test in Docker
 # Usage: ./tests/docker/test-docker.sh
 #
-# This script tests the install.sh script by:
+# This script tests the setup.sh script by:
 # 1. Building the release binary locally (fast, native compilation)
 # 2. Creating a source tarball with the pre-built binary
-# 3. Running install.sh in Docker which extracts and installs
+# 3. Running setup.sh in Docker which extracts and installs
 #
 # Cross-platform note: When running on macOS but testing on Linux Docker,
 # a mock binary is used since the native binary won't work. For full binary
@@ -29,7 +29,7 @@ FORCE_MOCK_BINARY="${SPEQ_DOCKER_MOCK_BINARY:-0}"
 if [[ "$HOST_OS" == "Darwin" ]] || [[ "$FORCE_MOCK_BINARY" == "1" ]]; then
     CROSS_PLATFORM=true
     echo "=== Mock binary mode enabled ==="
-    echo "Note: Using mock binary for installer/plugin testing. Full binary testing requires Linux host with Cargo dependencies available."
+    echo "Note: Using mock binary for setup/plugin testing. Full binary testing requires Linux host with Cargo dependencies available."
     echo ""
 fi
 
@@ -119,7 +119,7 @@ declare -a PIDS=()
 declare -a NAMES=()
 
 docker run --rm \
-    -v "$PROJECT_ROOT/install.sh:/home/testuser/install.sh:ro" \
+    -v "$PROJECT_ROOT/setup.sh:/home/testuser/setup.sh:ro" \
     -v "$PROJECT_ROOT/tests/docker/test-install.sh:/home/testuser/test-install.sh:ro" \
     -v "$TARBALL:/home/testuser/source.tar.gz:ro" \
     -e "SPEQ_LOCAL_TARBALL=/home/testuser/source.tar.gz" \
@@ -129,7 +129,7 @@ docker run --rm \
 PIDS+=($!); NAMES+=("install")
 
 docker run --rm \
-    -v "$PROJECT_ROOT/install.sh:/home/testuser/install.sh:ro" \
+    -v "$PROJECT_ROOT/setup.sh:/home/testuser/setup.sh:ro" \
     -v "$PROJECT_ROOT/tests/docker/test-codex-plugin.sh:/home/testuser/test-codex-plugin.sh:ro" \
     -v "$TARBALL:/home/testuser/source.tar.gz:ro" \
     -e "SPEQ_LOCAL_TARBALL=/home/testuser/source.tar.gz" \
@@ -139,7 +139,7 @@ docker run --rm \
 PIDS+=($!); NAMES+=("codex-plugin")
 
 docker run --rm \
-    -v "$PROJECT_ROOT/install.sh:/home/testuser/install.sh:ro" \
+    -v "$PROJECT_ROOT/setup.sh:/home/testuser/setup.sh:ro" \
     -v "$PROJECT_ROOT/tests/docker/test-update.sh:/home/testuser/test-update.sh:ro" \
     -v "$TARBALL:/home/testuser/source.tar.gz:ro" \
     -e "SPEQ_LOCAL_TARBALL=/home/testuser/source.tar.gz" \
@@ -149,7 +149,7 @@ docker run --rm \
 PIDS+=($!); NAMES+=("update")
 
 docker run --rm \
-    -v "$PROJECT_ROOT/install.sh:/home/testuser/install.sh:ro" \
+    -v "$PROJECT_ROOT/setup.sh:/home/testuser/setup.sh:ro" \
     -v "$PROJECT_ROOT/uninstall.sh:/home/testuser/uninstall.sh:ro" \
     -v "$PROJECT_ROOT/tests/docker/test-install.sh:/home/testuser/test-install.sh:ro" \
     -v "$PROJECT_ROOT/tests/docker/test-uninstall.sh:/home/testuser/test-uninstall.sh:ro" \

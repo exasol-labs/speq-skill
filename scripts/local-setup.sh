@@ -1,16 +1,16 @@
 #!/bin/bash
 # Install speq-skill CLI and Claude/Codex plugin payloads from local build
-# Usage: ./scripts/local-install.sh
+# Usage: ./scripts/local-setup.sh
 
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
-# Shared helpers (info, warn, offer_mcp_servers, ...). install.sh only runs
+# Shared helpers (info, warn, offer_mcp_servers, ...). setup.sh only runs
 # main when executed, so sourcing it defines functions and defaults only.
 # The variables below override its defaults.
-source "$PROJECT_ROOT/install.sh"
+source "$PROJECT_ROOT/setup.sh"
 
 BIN_DIR="${HOME}/.local/bin"
 MARKETPLACE_DIR="${PROJECT_ROOT}/dist/marketplace"

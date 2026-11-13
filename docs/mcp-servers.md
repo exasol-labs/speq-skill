@@ -18,7 +18,7 @@ speq-skill works well with [Serena](https://github.com/oraios/serena), an MCP (M
 
 ## Set up Serena
 
-The installer asks before it installs Serena. It skips Serena when it is already registered. To do it yourself:
+The setup script asks before it installs Serena. It skips Serena when it is already registered. To do it yourself:
 
 **Claude Code**
 
