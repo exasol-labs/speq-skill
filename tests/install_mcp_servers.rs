@@ -1,7 +1,7 @@
-//! Integration tests for the MCP server handling in `install.sh`:
+//! Integration tests for the MCP server handling in `setup.sh`:
 //! `ask_yes_no` and `offer_mcp_servers`.
 //!
-//! These tests source `install.sh` and invoke the functions directly, with
+//! These tests source `setup.sh` and invoke the functions directly, with
 //! `uv`, `serena`, `claude`, and `codex` replaced by fake scripts on a
 //! restricted `PATH` (a temp dir of fakes, plus `/usr/bin:/bin` only, never
 //! the real `PATH`, so a real tool on the host can never leak in and silently
@@ -19,9 +19,9 @@ const CLAUDE_SERENA: &str = "mcp add --scope user serena -- serena start-mcp-ser
 const CODEX_SERENA: &str =
     "mcp add serena -- serena start-mcp-server --project-from-cwd --context=codex";
 
-/// Absolute path to the repository's `install.sh`.
+/// Absolute path to the repository's `setup.sh`.
 fn install_script() -> PathBuf {
-    Path::new(env!("CARGO_MANIFEST_DIR")).join("install.sh")
+    Path::new(env!("CARGO_MANIFEST_DIR")).join("setup.sh")
 }
 
 fn write_executable(path: &Path, contents: &str) {
@@ -168,7 +168,7 @@ fn run_function(function: &str, path: &str, envs: &[(&str, &str)]) -> Output {
     for (k, v) in envs {
         cmd.env(k, v);
     }
-    cmd.output().expect("run install.sh function")
+    cmd.output().expect("run setup.sh function")
 }
 
 fn read_log(log: &Path) -> String {

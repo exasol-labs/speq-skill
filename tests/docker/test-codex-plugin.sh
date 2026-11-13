@@ -10,7 +10,7 @@ codex --version
 
 echo ""
 echo "--- Test 2: Install speq-skill ---"
-./install.sh
+./setup.sh
 
 echo ""
 echo "--- Test 3: Verify Codex plugin payload ---"
@@ -59,9 +59,9 @@ if ! grep -Fq "source = \"${HOME}/.speq-skill/codex\"" "${HOME}/.codex/config.to
 fi
 echo "PASS: Codex marketplace registered"
 
-# No terminal in this container, so the installer must not register servers
+# No terminal in this container, so setup.sh must not register servers
 if grep -Eq '^\[mcp_servers\.serena\]' "${HOME}/.codex/config.toml"; then
-    echo "FAIL: installer registered Serena without asking"
+    echo "FAIL: setup.sh registered Serena without asking"
     cat "${HOME}/.codex/config.toml"
     exit 1
 fi

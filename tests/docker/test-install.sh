@@ -1,5 +1,5 @@
 #!/bin/bash
-# Integration test: verify install.sh works
+# Integration test: verify setup.sh works
 set -euo pipefail
 
 # Expected version is injected by test-docker.sh from Cargo.toml (single source of truth).
@@ -7,10 +7,10 @@ EXPECTED_VERSION="${EXPECTED_VERSION:?EXPECTED_VERSION must be set (injected by 
 
 echo "=== Testing speq-skill installation in Docker ==="
 
-# Test 1: Run install script
+# Test 1: Run setup script
 echo ""
-echo "--- Test 1: Running install.sh ---"
-./install.sh
+echo "--- Test 1: Running setup.sh ---"
+./setup.sh
 
 # Test 2: Verify speq binary installed and works
 echo ""

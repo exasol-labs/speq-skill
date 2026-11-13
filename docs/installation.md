@@ -7,7 +7,7 @@
 ## Quick install
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/exasol-labs/speq-skill/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/exasol-labs/speq-skill/main/setup.sh | bash
 ```
 
 Open Claude Code or Codex. Start with `/speq:mission` in Claude Code, or type `$` in Codex.
@@ -19,10 +19,10 @@ Open Claude Code or Codex. Start with `/speq:mission` in Claude Code, or type `$
 
 ## Companions
 
-- Optional: [Serena MCP](https://github.com/oraios/serena), installed globally. See [MCP Servers](./mcp-servers.md). `uv` ([astral.sh/uv](https://astral.sh/uv/)) is needed only if the `serena` command is missing and you let the installer install it.
-- Optional: [Context7 MCP](https://github.com/upstash/context7), installed globally. The installer does not install it. See [MCP Servers](./mcp-servers.md). Context7 sends your documentation queries to a hosted service.
+- Optional: [Serena MCP](https://github.com/oraios/serena), installed globally. See [MCP Servers](./mcp-servers.md). `uv` ([astral.sh/uv](https://astral.sh/uv/)) is needed only if the `serena` command is missing and you let the setup script install it.
+- Optional: [Context7 MCP](https://github.com/upstash/context7), installed globally. The setup script does not install it. See [MCP Servers](./mcp-servers.md). Context7 sends your documentation queries to a hosted service.
 
-## What the installer does
+## What the setup script does
 
 | Component | Location |
 |-----------|----------|
@@ -40,7 +40,7 @@ Open Claude Code or Codex. Start with `/speq:mission` in Claude Code, or type `$
 
 ```bash
 git clone https://github.com/exasol-labs/speq-skill && cd speq-skill
-./scripts/local-install.sh
+./scripts/local-setup.sh
 ```
 
 This needs the Rust toolchain. Install it via [rustup](https://rustup.rs/).
@@ -59,7 +59,7 @@ In Claude Code, `/plugin` shows the `speq:*` skills. In Codex, type `$` and sele
 
 ## Update
 
-Re-run the install script and run `/speq:audit` to update the spec library.
+Re-run the setup script and run `/speq:audit` to update the spec library.
 
 ## Uninstall
 

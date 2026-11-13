@@ -1,5 +1,5 @@
 #!/bin/bash
-# Integration test: verify install.sh handles updates (run install twice)
+# Integration test: verify setup.sh handles updates (run install twice)
 set -euo pipefail
 
 # Expected version is injected by test-docker.sh from Cargo.toml (single source of truth).
@@ -10,7 +10,7 @@ echo "=== Testing speq-skill update in Docker ==="
 # Step 1: First install
 echo ""
 echo "--- Step 1: First install ---"
-./install.sh
+./setup.sh
 
 # Step 2: Verify first install
 echo ""
@@ -45,8 +45,8 @@ echo "PASS: Codex marketplace exists after first install"
 
 # Step 3: Second install (update)
 echo ""
-echo "--- Step 3: Running install.sh again (update) ---"
-./install.sh
+echo "--- Step 3: Running setup.sh again (update) ---"
+./setup.sh
 
 # Step 4: Verify update
 echo ""

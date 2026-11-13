@@ -6,7 +6,7 @@
 - **CLI**: use the local build only — `./target/debug/speq <cmd>` (`./target/release/speq <cmd>` after a release build). Do not use the global `speq` or `cargo run --`.
 - **Skill names**: use `/speq-*` in this repo. The installed plugin uses `/speq:*`. `build.sh` renames them. Do not rename by hand.
 - **Version**: `Cargo.toml` is the only source of the version number. Read it through `scripts/lib/version.sh` (`get_version`). Do not hardcode the version anywhere else.
-- **Docker tests**: run them only through `./tests/docker/test-docker.sh`. Never run a script in `tests/docker/` directly on the host. They call `./install.sh` and overwrite `~/.local/bin/speq`, `~/.speq-skill/`, and the Codex config.
+- **Docker tests**: run them only through `./tests/docker/test-docker.sh`. Never run a script in `tests/docker/` directly on the host. They call `./setup.sh` and overwrite `~/.local/bin/speq`, `~/.speq-skill/`, and the Codex config.
 - **Tests**: put integration test specs in files under `tests/fixtures/`. Do not write specs as inline strings.
 - **Commits**: use Conventional Commits — `<type>[scope]: <description>`. Types: `feat`, `fix`, `perf`, `refactor`, `test`, `docs`, `spec`, `chore`. Mark a breaking change with `!` after the type, or a `BREAKING CHANGE:` footer.
 - @specs/mission.md applies and describes the `speq` CLI only.
