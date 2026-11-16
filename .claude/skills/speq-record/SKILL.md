@@ -11,7 +11,7 @@ Verify the preconditions, merge the plan's deltas into the permanent specs, prom
 
 Invoke before starting:
 - `/speq-cli` — spec validation
-- `/speq-adr-rules` — ADR rules and status lifecycle
+- `/speq-plan`'s `references/decision-log-template.md` — ADR rules and fragment layout
 - `/speq-writing-guardrails` — prose style for promoted ADRs
 
 ## Workflow
@@ -89,9 +89,9 @@ For each direction marked `ADR: yes`, write an ADR per `/speq-plan`'s `reference
 - **Title**: a short noun phrase for the choice
 - **ID**: a kebab-case slug of the title, unique across every file in `specs/_decision/`
 - **Plan**: `<plan-name>`
-- **Status**: `Accepted`. Recording the plan is the acceptance, per `/speq-adr-rules`
+- **Status**: `Accepted`. Recording the plan is the acceptance
 - **Supersedes** (optional): the slug from the direction's `supersedes <slug>`. It must name an existing ADR
-- **Context**: one or two sentences from the direction's reason: the situation that forces the choice, as present fact, per `/speq-adr-rules` rule 7a
+- **Context**: one or two sentences from the direction's reason: the situation that forces the choice, as present fact, per ADR rule 5
 - **Decision**: the direction's choice, in one to three sentences
 - **Options Considered**: only when the direction names a rejected alternative
 - **Consequences**: only when the direction states an effect on later work

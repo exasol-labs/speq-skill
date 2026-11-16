@@ -71,7 +71,7 @@ If `specs/mission.md` is absent, mark the check `✗ (no mission.md)`.
 
 #### 3b. ADR review
 
-Invoke `/speq-adr-rules`, then follow check 5 in `references/checks.md` to judge every ADR. Advisory only: edit nothing until the user says Yes.
+Read the ADR rules in `/speq-plan`'s `references/decision-log-template.md`, then follow check 5 in `references/checks.md` to judge every ADR. Advisory only: edit nothing until the user says Yes.
 
 Skip the review and mark the check `— n/a` when `specs/_decision/` holds no fragment. When the old `specs/decision-log.md` still exists, skip it too and note "migrate first": the migration puts every ADR in one fragment, and the review runs on the migrated result.
 

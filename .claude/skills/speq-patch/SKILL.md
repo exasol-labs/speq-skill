@@ -13,7 +13,7 @@ Invoke before starting:
 - `/speq-cli`: spec discovery and validation
 - `/speq-code-guardrails`: TDD
 - `/speq-code-tools`: code navigation and editing
-- `/speq-adr-rules`: whether a change earns an ADR
+- `/speq-plan`'s `references/decision-log-template.md`: the ADR rules, whether a change earns an ADR
 - `/speq-writing-guardrails`: prose style
 - `/speq-ext-library`: on demand, for library APIs
 
@@ -65,7 +65,7 @@ Edit only what the change needs.
   - Keep the feature description accurate. Every added or changed scenario has a test in the diff. `speq feature validate <domain>/<feature>` passes for each edited feature.
   - An active plan other than the patch folder holds a delta for an edited feature → name the plan and the feature in the report.
   - A feature with more than 10 scenarios or a domain with more than 8 features → name it in the report. Never reorganize the library.
-- **ADR.** Apply `/speq-adr-rules`. The default is none. Write at most one new fragment `specs/_decision/NNN-<patch-name>.md`: NNN = existing fragment count plus one, zero-padded to 3 digits, H1 `# Decisions: <patch-name>`, `**Plan:** <patch-name>`, `**Status:** Accepted`, layout per `/speq-plan`'s `references/decision-log-template.md`. Never edit another fragment. `speq decision-log validate` passes.
+- **ADR.** Apply the ADR rules in `/speq-plan`'s `references/decision-log-template.md`. The default is none. Write at most one new fragment `specs/_decision/NNN-<patch-name>.md`: NNN = existing fragment count plus one, zero-padded to 3 digits, H1 `# Decisions: <patch-name>`, `**Plan:** <patch-name>`, `**Status:** Accepted`, layout per `/speq-plan`'s `references/decision-log-template.md`. Never edit another fragment. `speq decision-log validate` passes.
 - **Architecture.** `specs/architecture.md` absent → no edit. Otherwise edit its affected section only when the change alters a component, boundary, interface, data flow, constraint, or external dependency it describes. Keep the format of `/speq-plan`'s `references/architecture-template.md` and check the edited file against its rules. On failure, restore the file and report.
 - **Docs.** Edit the project's user docs (by default `README.md` and `docs/`) only where the change alters documented behavior.
 
@@ -79,7 +79,7 @@ Delete the patch folder `specs/_plans/<patch-name>/`. Then report:
 
 - the patch name, the changed files, and the number of review findings fixed
 - each suite and the lint command with its result
-- the new ADR with its `/speq-adr-rules` rule-2 criterion and ADR search result, or none
+- the new ADR with its ADR rule-2 criterion and ADR search result, or none
 - the changed `specs/architecture.md` sections, or none
 - the size limit the user chose to exceed with its measured value, the affected plans, the library-size notes, and any `specs/mission.md` inaccuracy
 

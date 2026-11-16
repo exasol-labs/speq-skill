@@ -13,7 +13,7 @@ Invoke before starting:
 - `/speq-cli`: spec discovery and validation
 - `/speq-code-tools`: codebase exploration
 - `/speq-design-philosophy`: module boundaries, decision ownership, and dependency direction for the implementation design
-- `/speq-adr-rules`: when a decision becomes an ADR. Default is no
+- `references/decision-log-template.md`: the ADR rules. Default is no ADR
 - `/speq-writing-guardrails`: prose style
 - `/speq-ext-library`: on demand, for current library docs
 
@@ -84,7 +84,7 @@ Once the name is set, write `specs/_plans/<plan-name>/intent.md` with the H1 `# 
 
 Write the artifacts in this order. Do not start a step before the previous one is done.
 
-1. **Read the context.** `speq feature get <domain>/<feature>` for each related feature. If `specs/architecture.md` exists, read the sections the plan touches. Check the plan against every accepted ADR in the digest, per `/speq-adr-rules` rule 5; read the full fragment of any ADR the plan touches. Before you author a NEW feature or state that no spec covers a behavior, run `/speq-cli`'s absence check.
+1. **Read the context.** `speq feature get <domain>/<feature>` for each related feature. If `specs/architecture.md` exists, read the sections the plan touches. Check the plan against every accepted ADR in the digest, per ADR rule 4 in `references/decision-log-template.md`; read the full fragment of any ADR the plan touches. Before you author a NEW feature or state that no spec covers a behavior, run `/speq-cli`'s absence check.
 
 2. **Spec deltas.** For each feature in scope, write `specs/_plans/<plan-name>/<domain>/<feature>/spec.md`:
    - The feature exists → DELTA markers per `references/delta-template.md`.

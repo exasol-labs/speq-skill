@@ -1,22 +1,36 @@
+# Decision Log Template
+
+## ADR Rules
+
+An ADR is a rare record of one durable decision in `specs/_decision/`. Most plans and patches write none.
+
+1. **Default no.** The expected number of ADRs per plan is zero. Two or more in one plan get re-judged against rules 2 and 3.
+2. **Criteria.** A decision qualifies only when one of these holds, and the ADR names it:
+   - It affects multiple components.
+   - It sets a long-lived constraint that binds future work.
+   - It is a major technology, API, persistence, security, or deployment choice.
+   - It rejects a plausible alternative, and the reason will matter to a later reader.
+3. **Never an ADR.** Naming, file placement, or folder layout. A one-off bug fix. A scope trim or task order. Implementation detail: signatures, paths, flags, versions, data layout inside one module. A workaround for one plan's own mechanics. A corollary of another decision: add it to the parent ADR's Consequences. A fact that a spec scenario, `specs/architecture.md`, or `CLAUDE.md`/`AGENTS.md` already states.
+4. **Search first.** Read the ADR digest (`/speq-cli`) and every fragment that matches. When an ADR already covers the decision, write none. When the decision changed, write a new ADR with `Supersedes: <slug>`. Never edit an old fragment. A plan that contradicts an accepted ADR conforms to it or supersedes it; a silent contradiction is a defect.
+5. **Minimum text.** One decision per ADR. Present tense, no history: no earlier attempts, review rounds, plan names, or dates. Context is one or two sentences, Decision one to three. Options Considered and Consequences appear only when they carry content.
+
+## Fragment Layout
+
+One fragment per plan or patch: `specs/_decision/NNN-<plan-name>.md`. ID is a kebab-case slug, unique across every file in `specs/_decision/`.
+
+```markdown
 # Decisions: <plan-name>
-
-<!-- One fragment per plan. Add one ## ADR block per promoted decision below. Rules: /speq-adr-rules. -->
-<!-- ID is a kebab-case slug, unique across every file in specs/_decision. -->
-<!-- Minimum text, no history, per /speq-adr-rules rule 7a. -->
-<!-- Supersedes is optional — set it only when this ADR replaces an earlier one. -->
-
-<!-- Optional sections follow /speq-record's ADR mapping (Phase 7). Omit a section the direction does not carry. -->
 
 ## ADR: <Title>
 
 **ID:** <kebab-case-slug>
 **Plan:** <plan-name>
-**Status:** Accepted <!-- written by /speq-record; recording is the acceptance -->
-**Supersedes:** <superseded-slug> <!-- optional; only when this ADR supersedes another; value = the superseded ADR's slug -->
+**Status:** Accepted
+**Supersedes:** <superseded-slug>   (optional: only when this ADR replaces another)
 
 ### Context
 
-<One or two sentences: the situation that forces the decision. Present tense, no history.>
+<One or two sentences: the situation that forces the decision.>
 
 ### Decision
 
@@ -24,7 +38,7 @@
 
 ### Options Considered
 
-<!-- Optional — include only when the entry's Alternatives names a real rejected option. -->
+(optional: only when a real alternative was rejected)
 
 | Option | Verdict |
 |--------|---------|
@@ -33,6 +47,7 @@
 
 ### Consequences
 
-<!-- Optional — include only when the entry carries a Consequences line. -->
+(optional: only when the decision has an effect on later work)
 
 <Short bullets: what becomes easier or harder.>
+```

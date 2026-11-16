@@ -23,11 +23,11 @@ Reserved names under `specs/` (not domains): `_plans/`, `_recorded/`, `_decision
 **Remediate (old format, on Yes):** [decision-log migration](#remediation-decision-log-migration).
 
 ## 5. ADR review
-Run in SKILL.md Phase 3b. Call `/speq-adr-rules` first.
+Run in SKILL.md Phase 3b. Read the ADR rules in `/speq-plan`'s `references/decision-log-template.md` first.
 
-**Detect:** skip (`— n/a`) when `specs/_decision/` holds no fragment, or when the old `specs/decision-log.md` exists (migrate first). Otherwise read every fragment in full and judge each ADR by the rules in `/speq-adr-rules`.
+**Detect:** skip (`— n/a`) when `specs/_decision/` holds no fragment, or when the old `specs/decision-log.md` exists (migrate first). Otherwise read every fragment in full and judge each ADR by those rules.
 - **Noise:** fails the rules. Remove it. Fold a corollary into its parent's `### Consequences`.
-- **Wordy:** a real decision with more text than rule 7a allows. Trim it.
+- **Wordy:** a real decision with more text than ADR rule 5 allows. Trim it.
 - **Keep** everything else. When in doubt, keep. Never remove an ADR named in another's `Supersedes` or `Superseded by`.
 
 **Signal:** `✓ N ADRs, clean` or `⚠ M noise · T wordy of N ADRs`, each listed with a one-line reason and `file:line` evidence.
@@ -89,6 +89,6 @@ Always ask. Never auto-run.
 Show the list first. The user can strike slugs. Apply the rest on Yes.
 1. Noise: delete the ADR block (its `## ADR:` heading up to the next one or the file end). Delete a fragment left empty. Leave other `NNN-` prefixes unchanged.
 2. Corollary: add its decision as one sentence to the parent's `### Consequences` first.
-3. Wordy: rewrite to the shape in `/speq-adr-rules` rules 6 to 7a. Keep the heading, `**ID:**`, `**Plan:**`, `**Status:**`, and supersede links.
+3. Wordy: rewrite to ADR rule 5 and the layout in `/speq-plan`'s `references/decision-log-template.md`. Keep the heading, `**ID:**`, `**Plan:**`, `**Status:**`, and supersede links.
 4. Run `speq decision-log validate`. It MUST pass. On failure, undo and report.
 5. Do not commit. The user reviews the diff.
