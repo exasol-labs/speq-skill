@@ -99,11 +99,3 @@ Do NOT copy placeholders below. Replace with real values.
 | Test | `<from mission.md>` | 0 failures |
 | Lint | `<from mission.md>` | 0 errors/warnings |
 | Format | `<from mission.md>` | No changes |
-
-## Implementation Tasks
-
-<!-- Write this section LAST: derive it from the finished spec deltas, Dead Code Removal, and Verification. -->
-
-- [ ] 1. Task description
-- [ ] 2. Task description
-- [ ] 3. ...

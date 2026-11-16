@@ -45,7 +45,7 @@ If `specs/_recorded/*-<plan-name>/` exists and `specs/_plans/<plan-name>/` does 
 
 ### 2. Implement
 
-If `verification-report.md` exists in the plan directory and every task in `plan.md § Implementation Tasks` is checked, skip this step.
+If `verification-report.md` exists in the plan directory and every task in `tasks.md` is checked, skip this step.
 
 Otherwise invoke `/speq-implement <plan-name>` and let it run to completion. It resumes from the first unchecked task.
 
@@ -109,6 +109,7 @@ specs/
 │   ├── architecture.md                   # Architecture delta, present only when the plan changes the architecture
 │   ├── code-review.md                    # Created by the code reviewer
 │   ├── plan-review.md                    # Created by the plan reviewer
+│   ├── tasks.md                          # Task list for resume, written by speq-implement
 │   ├── notes/pr-feedback.md              # PR comments for a plan revision; local, never committed
 │   └── verification-report.md            # Created by speq-implement
 └── _recorded/NNN-<plan-name>/            # Archived by speq-record (gitignored by default)

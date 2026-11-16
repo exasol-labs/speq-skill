@@ -47,11 +47,6 @@ Tag every finding. Group findings by axis in the output.
 - `[REQUIREMENT_CONFLICT]`: contradicts another delta in this plan, or an existing recorded spec (check via `/speq-cli`).
 - `[IMPLEMENTATION_DETAIL]`: a spec delta's `## Background` or `# Feature <name>` description states a fact that no scenario's GIVEN/WHEN/THEN step in the same spec depends on, a Background runs past 5 one-line bullets, or a Background states behavior that belongs in a scenario. For a delta on an existing feature, the scenarios are those of the target spec after the delta merges; for a NEW feature, they are the delta file's own scenarios. A Background line that only restates a THEN step is redundant, not an implementation detail — don't flag it. Fix: drop the Background line, move it into the scenario step that actually needs it, or turn behavior into a scenario.
 
-### Task breakdown: is the WBS correct and appropriately scoped?
-
-- `[TRACEABILITY_GAP]`: a spec delta with no implementing task, or a task that implements nothing in scope.
-- `[TASK_GRANULARITY]`: a task too large to verify as one unit.
-
 ### Design Depth: does the plan manage complexity well? (per `/speq-design-philosophy`)
 
 The `ADR: yes` directions in `intent.md` are the input surface for `[ADR_OVERPROMOTION]`: check each against the ADR rules in `/speq-plan`'s `references/decision-log-template.md`. `intent.md`, `plan.md`, and `architecture.md` (the delta, if present) are the input surface for `[ARCHITECTURE_DRIFT]`. The accepted ADRs (the ADR digest from `/speq-cli`, plus any fragment you open) are the input surface for `[ADR_CONFLICT]`.

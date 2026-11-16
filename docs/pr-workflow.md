@@ -56,7 +56,7 @@ Run `/speq:patch-pr <intent>` to ship it as one ready PR.
 
 ## Resume
 
-- If a run stops, for example at a usage limit, run `/speq:implement-pr <plan-name>` again. It picks up the first unchecked task in the plan and continues where the work stopped
+- If a run stops, for example at a usage limit, run `/speq:implement-pr <plan-name>` again.
 
 ## Architecture changes
 

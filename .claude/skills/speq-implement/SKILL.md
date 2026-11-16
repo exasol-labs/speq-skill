@@ -1,6 +1,6 @@
 ---
 name: speq-implement
-description: "Implements a reviewed plan: TDD through the plan's task list, one fresh-context code review, and a verification report. Use to build or execute a plan under specs/_plans/, after /speq-plan and before /speq-record. Arg: plan-name."
+description: "Implements a reviewed plan: TDD through a task list it derives from the plan, one fresh-context code review, and a verification report. Use to build or execute a plan under specs/_plans/, after /speq-plan and before /speq-record. Arg: plan-name."
 ---
 
 # Spec Implementer
@@ -29,11 +29,12 @@ Read `specs/_plans/<plan-name>/plan.md` and `intent.md`. The spec deltas they re
 
 ### Phase 2: Implement
 
-`plan.md § Implementation Tasks` is the task list and the persistent progress record. Each task is a checkbox: `- [ ]` pending, `- [x]` done.
+`specs/_plans/<plan-name>/tasks.md` is the task list. It exists to enable resume. Each task is a checkbox: `- [ ]` pending, `- [x]` done.
 
-1. Mirror the unchecked tasks with TaskCreate, so progress is visible in the session.
-2. Work through the tasks in order. For each task: TDD per `/speq-code-guardrails`, then check it off in `plan.md` (`- [ ]` → `- [x]`) and mark the runtime task completed.
-3. Never check a task while a test it touches fails. If you cannot finish a task, leave it unchecked and report why.
+1. If `tasks.md` is absent, write it: break the spec deltas, Dead Code Removal, and Verification in `plan.md` into tasks in implementation order. Each task is small enough to verify as one unit and traces to one of them.
+2. Mirror the unchecked tasks with TaskCreate, so progress is visible in the session.
+3. Work through the tasks in order. For each task: TDD per `/speq-code-guardrails`, then check it off in `tasks.md` (`- [ ]` → `- [x]`) and mark the runtime task completed.
+4. Never check a task while a test it touches fails. If you cannot finish a task, leave it unchecked and report why.
 
 ### Phase 3: Code Review
 
@@ -90,7 +91,7 @@ Ready for: /speq-record <plan-name>
 
 ## Resume
 
-Running again resumes: start at the first unchecked task in `plan.md § Implementation Tasks`. With every task checked, continue at Phase 3.
+Running again resumes: start at the first unchecked task in `tasks.md`. With every task checked, continue at Phase 3.
 
 ## Anti-Patterns
 

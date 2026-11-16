@@ -34,8 +34,6 @@ Invoke before starting:
 - **Proof is tests and manual runs**: `speq` commands (`speq plan validate`, `speq feature get`) check the plan, not the product, so never list them as test or manual evidence.
 - **One copy**: never embed spec content in `plan.md` or `intent.md`; reference the delta files.
 - **Specs describe the software, not its tests**: a spec delta states features, behavior, and constraints of the software. Never encode e2e tests, test suites, Docker setups, or the test environment as scenarios or Background. `specs/mission.md` encodes how to test; reference it from the plan's Verification section.
-- **The user decides, the plan states its directions**: `## Interview` holds only what the user said. Every choice the plan makes without a user answer is an entry in `## Directions`, which the user reviews in step 6. Never bury a choice in a delta or a task.
-- **Specs first, tasks last**: write the spec deltas before anything else in the plan, and the task list after everything else.
 
 ## Workflow
 
@@ -64,9 +62,8 @@ Apply the Socratic Method by asking the user. Never assume. Decompose the proble
 - **Edge cases and failures**: empty, invalid, or boundary input, and what happens on error
 - **Boundaries**: what is explicitly out of scope
 - **Compatibility**: breaking changes, migration of existing data or specs
-- **Done**: how the user will judge that the change works
 
-**Split check.** If the work spans more than one independent phase, or more than about 4 features, propose one plan per phase. Plan the first phase now. End its `plan.md` Context with a `Follow-up plans` list (name and one-line scope each).
+**Split check.** A plan may be too big when it holds parts that ship and verify on their own (two or more user-visible outcomes where neither needs the other), or when the deltas hold more than about 12 new or changed scenarios. Then ask the user whether to split, and propose the parts. The user decides the scope. On a split, plan the part the user picks, and end its `plan.md` Context with a `Follow-up plans` list (name and one-line scope each).
 
 Keep each exchange as one line: `- Q: <question> → A: <answer>`, a few words each.
 
@@ -102,14 +99,12 @@ Write the artifacts in this order. Do not start a step before the previous one i
 
 5. **Directions.** Add every choice you made without a user answer to `## Directions` in `intent.md`, per `references/intent-template.md`. Gaps you found while authoring land here too. Keep the section short: the template's rules say what earns an entry.
 
-6. **`plan.md` body.** Write every section of `references/plan-template.md` except `## Implementation Tasks`:
+6. **`plan.md` body.** Write every section of `references/plan-template.md`:
    - Context, Features (referencing the delta files), and Impact (breaking changes called out, or "None").
    - Dead Code Removal: existing code and tests the change or the new tests make redundant.
    - Verification. Scenario Coverage maps each new or changed scenario to an integration test (file path + test name), one test per scenario by default. Manual Testing gives concrete commands against the built software and their expected output, one per feature. Checklist commands come from `specs/mission.md`.
 
-7. **`## Implementation Tasks`, last.** Derive the tasks from the finished deltas, Dead Code Removal, and Verification, in implementation order, as `- [ ]` checkboxes. Every task traces to one of them.
-
-8. **Final validation**: `speq plan validate <plan-name>`.
+7. **Final validation**: `speq plan validate <plan-name>`.
 
 ### 5. Adversarial Plan Review
 
@@ -143,7 +138,7 @@ It writes `specs/_plans/<plan-name>/plan-review.md` and returns `PLAN REVIEW: BL
 
 ### 6. Review Directions
 
-Present every direction to the user, grouped by topic, each with what it affects in the plan. Ask which ones to change. For each correction, rewrite the direction with the user's answer, revise the deltas, `plan.md`, and tasks it affects, and run `speq plan validate <plan-name>`. A direction the user does not correct stands.
+Present every direction to the user, grouped by topic, each with what it affects in the plan. Ask which ones to change. For each correction, rewrite the direction with the user's answer, revise the deltas and `plan.md` where it affects them, and run `speq plan validate <plan-name>`. A direction the user does not correct stands.
 
 ### 7. Explain Next Steps
 
@@ -171,6 +166,5 @@ specs/
 |---------|-----------|
 | Skipping the clarifying interview | Content comes from user answers, never assumptions |
 | Deciding a gap silently | The user never sees the choice; it surfaces as a defect after implementation |
-| Writing tasks before the deltas exist | The tasks then describe a design the specs do not hold |
 | Running a second review after the fix pass | One review, one fix pass; unresolved findings go to the user |
 | Persisting non-blocking findings or looping on them | Report-only; they never gate |
