@@ -9,7 +9,7 @@ Follow these rules for governed prose.
 
 ## Scope
 
-- Govern: prose in `plan.md`, `spec.md`, `mission.md`, `architecture.md` (project and plan level), `intent.md`, ADR fragments in `specs/_decision/`, `review-findings.md`, verification reports, implementation summaries, GitHub PRs, issues, and comments.
+- Govern: prose in `plan.md`, `spec.md`, `mission.md`, `architecture.md` (project and plan level), `intent.md`, ADR fragments in `specs/_decision/`, `code-review.md`, `plan-review.md`, verification reports, implementation summaries, GitHub PRs, issues, and comments.
 - Leave unchanged: Gherkin, Background bullets, tables, ASCII diagrams, delta markers, and validator-owned RFC keyword casing.
 
 ## Rules

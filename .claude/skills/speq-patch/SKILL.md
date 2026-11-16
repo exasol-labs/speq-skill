@@ -50,8 +50,8 @@ The change exceeds the size limit when it needs a new feature spec or a new doma
 
 1. Collect the changed files per `/speq-implement` Phase 3 step 1, with base `HEAD`, leaving out the patch folder.
 2. Write the patch folder's `plan.md`: H1 `# Plan: <patch-name>`, then `## Summary` with the change intent `$1`.
-3. `review-findings.md` absent from the patch folder → spawn the code reviewer once per `/speq-implement` Phase 3 step 2, `<plan-name>` set to `<patch-name>`. Present → a stopped run already reviewed: never spawn a second review.
-4. Read `specs/_plans/<patch-name>/review-findings.md`. Fix every finding that is not yet fixed, then rerun the suites per step 4.
+3. `code-review.md` absent from the patch folder → spawn the code reviewer once per `/speq-implement` Phase 3 step 2, `<plan-name>` set to `<patch-name>`. Present → a stopped run already reviewed: never spawn a second review.
+4. Read `specs/_plans/<patch-name>/code-review.md`. Fix every finding that is not yet fixed, then rerun the suites per step 4.
 
 ### 6. Specs, ADRs, Architecture, Docs
 

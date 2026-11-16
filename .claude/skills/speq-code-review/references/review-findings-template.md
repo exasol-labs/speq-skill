@@ -1,6 +1,6 @@
 # Code Review Findings Template
 
-The code reviewer writes this document to `specs/_plans/<plan-name>/review-findings.md`.
+The code reviewer writes this document to `specs/_plans/<plan-name>/code-review.md`.
 
 ## Rules
 

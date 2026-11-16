@@ -81,4 +81,4 @@ The PR stays a draft. `speq-implement-pr` is the only skill that marks it ready.
 
 ### Report
 
-Give the PR link. Print `plan.md`'s `## Impact` section, the `ADR candidates:` line, and the `Architecture:` line from the PR body. Mention the non-blocking findings from `specs/_plans/<plan-name>/review/review.md`, read from the file, not from memory. If the fix pass ran, name it in one line ("N review findings fixed"). Tell the user to review the PR, comment on it, and run `/speq-plan-pr <PR number>` again to apply the comments, or `/speq-implement-pr <plan-name>` to build.
+Give the PR link. Print `plan.md`'s `## Impact` section, the `ADR candidates:` line, and the `Architecture:` line from the PR body. Mention the non-blocking findings from `specs/_plans/<plan-name>/plan-review.md`, read from the file, not from memory. If the fix pass ran, name it in one line ("N review findings fixed"). Tell the user to review the PR, comment on it, and run `/speq-plan-pr <PR number>` again to apply the comments, or `/speq-implement-pr <plan-name>` to build.

@@ -13,7 +13,7 @@ Also invoke: `/speq-design-philosophy`, `/speq-adr-rules`, `/speq-cli` (check th
 
 - Read: `plan.md`, `intent.md` (`## Interview` holds the user's answers, `## Directions` the plan's own choices), every `specs/_plans/<plan-name>/**/spec.md` delta, and `specs/_plans/<plan-name>/architecture.md` when present.
 - Read-only on every artifact but your own. The session that spawned you changes the plan, never you.
-- Single write: `specs/_plans/<plan-name>/review/review.md`, plus the `review/` directory if absent.
+- Single write: `specs/_plans/<plan-name>/plan-review.md`.
 
 ## Method
 
@@ -71,10 +71,10 @@ The `ADR: yes` directions in `intent.md` are the input surface for `[ADR_OVERPRO
 
 ## Output Format
 
-Write the findings document to `specs/_plans/<plan-name>/review/review.md` per `references/review-findings-template.md`, creating the `review/` directory if absent. Then return exactly one line and nothing else:
+Write the findings document to `specs/_plans/<plan-name>/plan-review.md` per `references/review-findings-template.md`. Then return exactly one line and nothing else:
 
 ```
-PLAN REVIEW: BLOCKERS: <n>, FINDINGS: <n>, INTENT: <n> — specs/_plans/<plan-name>/review/review.md
+PLAN REVIEW: BLOCKERS: <n>, FINDINGS: <n>, INTENT: <n> — specs/_plans/<plan-name>/plan-review.md
 ```
 
 `INTENT` counts the Intent Fidelity BLOCKERs alone: a subset of `BLOCKERS`, matching the document's Summary block.

@@ -12,7 +12,7 @@ Also invoke: `/speq-code-guardrails`, `/speq-design-philosophy`, `/speq-code-too
 ## Scope
 
 - Review ONLY the files in the changed-files list from your prompt, against the plan it names.
-- Write exactly one file: `specs/_plans/<plan-name>/review-findings.md`. Fix nothing: the session that spawned you fixes the findings.
+- Write exactly one file: `specs/_plans/<plan-name>/code-review.md`. Fix nothing: the session that spawned you fixes the findings.
 - Do NOT suggest feature additions or refactor working code beyond guardrail compliance.
 - Every `Fix:` must be executable without further interpretation.
 
@@ -106,8 +106,8 @@ The Evidence Rule applies here: raise a finding in this category only with a mea
 
 ## Output Format
 
-Write the findings document to `specs/_plans/<plan-name>/review-findings.md` per `references/review-findings-template.md`. Then return exactly one line and nothing else:
+Write the findings document to `specs/_plans/<plan-name>/code-review.md` per `references/review-findings-template.md`. Then return exactly one line and nothing else:
 
 ```
-CODE REVIEW: <n> findings — specs/_plans/<plan-name>/review-findings.md
+CODE REVIEW: <n> findings — specs/_plans/<plan-name>/code-review.md
 ```

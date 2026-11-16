@@ -36,7 +36,7 @@ Read `specs/_plans/<plan-name>/plan.md` and `intent.md`. The spec deltas they re
 Code review runs ONCE per implementation.
 
 1. **Collect changed files**: `git diff --name-only <base>` for tracked changes plus `git ls-files --others --exclude-standard` for new files. Leave out the plan directory. Work is uncommitted, so diff against the working tree. A commit-range diff (`<base>...HEAD`) would miss all of it.
-2. **Spawn the code reviewer** as a sub-agent. Use the model and effort the user asked for in their prompt, if any. Otherwise set neither, so the sub-agent inherits yours. Skip this if `review-findings.md` already exists: a stopped run already reviewed. Prompt:
+2. **Spawn the code reviewer** as a sub-agent. Use the model and effort the user asked for in their prompt, if any. Otherwise set neither, so the sub-agent inherits yours. Skip this if `code-review.md` already exists: a stopped run already reviewed. Prompt:
    ```
    Invoke /speq-code-review and follow it.
 
@@ -45,10 +45,10 @@ Code review runs ONCE per implementation.
 
    ## Context
    - Plan: specs/_plans/{plan_name}/plan.md
-   - Write findings to specs/_plans/{plan_name}/review-findings.md; return only the one-line verdict.
+   - Write findings to specs/_plans/{plan_name}/code-review.md; return only the one-line verdict.
    ```
    It returns `CODE REVIEW: <n> findings — <path>`.
-3. **Fix every finding** in `review-findings.md`, TDD where behavior changes. Do not review again: Phase 4 verifies the fixes.
+3. **Fix every finding** in `code-review.md`, TDD where behavior changes. Do not review again: Phase 4 verifies the fixes.
 
 ### Phase 4: Verification
 
