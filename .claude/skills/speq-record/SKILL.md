@@ -84,7 +84,7 @@ A spec with more than 10 scenarios, or a domain with more than 8 features, needs
 
 Read `## Directions` in `specs/_plans/<plan-name>/intent.md`. If it is absent or no direction is marked `ADR: yes`, skip this phase.
 
-For each direction marked `ADR: yes`, write an ADR per `/speq-plan`'s `references/decision-log-permanent-template.md`:
+For each direction marked `ADR: yes`, write an ADR per `/speq-plan`'s `references/decision-log-template.md`:
 
 - **Title**: a short noun phrase for the choice
 - **ID**: a kebab-case slug of the title, unique across every file in `specs/_decision/`
