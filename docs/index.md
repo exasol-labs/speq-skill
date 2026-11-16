@@ -15,4 +15,3 @@
 | [Spec Library](./spec-library.md)              | Spec format, BDD, and RFC keywords                                 |
 | [Decision Log](./decision-log.md)              | Design decisions, ADRs, validation, and the display command        |
 | [CLI Reference](./cli-reference.md)            | All CLI commands                                                   |
-| [MCP Servers](./mcp-servers.md)                | Serena, Context7, both optional                                    |

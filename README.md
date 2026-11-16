@@ -84,20 +84,12 @@ For a small fix or tweak, `/speq:patch` skips the plan and applies the change in
 | [PR Workflow](./docs/pr-workflow.md)           | Plan and implement via a feat/ branch + Pull Request         |
 | [Decision Log](./docs/decision-log.md)         | Design decisions, ADR fragment format, validation, and show  |
 | [CLI Reference](./docs/cli-reference.md)       | All CLI commands                                             |
-| [MCP Servers](./docs/mcp-servers.md)           | Optional Serena and Context7 setup                           |
 
 ---
 
 ## Important
 
 `speq-skill` is a plugin for Claude Code, Codex, and other compatible AI coding agents. This project provides workflow structure and spec management only—**the coding agent generates all code, specs, other artifacts, and tool calls**.
-
-## Companions
-
-speq-skill works well with [Serena](https://github.com/oraios/serena) for code navigation and [Context7](https://github.com/upstash/context7) for library documentation. Both are optional, and your agent uses them when they are installed. See [MCP Servers](./docs/mcp-servers.md).
-
-> [!NOTE]
-> Serena and Context7 are separate open-source projects with their own licenses and terms available in the linked repositories. Context7 sends your documentation queries to a hosted service and offers a free tier.
 
 ## Acknowledgments
 

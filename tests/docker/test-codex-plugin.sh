@@ -59,14 +59,6 @@ if ! grep -Fq "source = \"${HOME}/.speq-skill/codex\"" "${HOME}/.codex/config.to
 fi
 echo "PASS: Codex marketplace registered"
 
-# No terminal in this container, so setup.sh must not register servers
-if grep -Eq '^\[mcp_servers\.serena\]' "${HOME}/.codex/config.toml"; then
-    echo "FAIL: setup.sh registered Serena without asking"
-    cat "${HOME}/.codex/config.toml"
-    exit 1
-fi
-echo "PASS: Serena not registered without a terminal"
-
 for skill in cli code-guardrails implement mission patch plan record; do
     if [[ ! -f "${HOME}/.codex/skills/speq-${skill}/SKILL.md" ]]; then
         echo "FAIL: Codex skill missing: speq-${skill}"
