@@ -5,7 +5,7 @@
 <!-- Minimum text, no history, per /speq-adr-rules rule 7a. -->
 <!-- Supersedes is optional — set it only when this ADR replaces an earlier one. -->
 
-<!-- Optional sections follow /speq-spec-merge's ADR mapping. Omit a section the entry does not carry. -->
+<!-- Optional sections follow /speq-record's ADR mapping (Phase 7). Omit a section the direction does not carry. -->
 
 ## ADR: <Title>
 

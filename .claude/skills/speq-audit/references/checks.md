@@ -13,7 +13,7 @@ Reserved names under `specs/` (not domains): `_plans/`, `_recorded/`, `_decision
 **Remediate:** none. Report the validator messages. The user fixes the spec.
 
 ## 3. Library thresholds
-**Detect:** compare each feature and domain against the thresholds in `/speq-spec-merge` ("Check Library Thresholds"). Count `### Scenario:` blocks per feature and feature dirs per domain.
+**Detect:** flag a feature with more than 10 scenarios and a domain with more than 8 features. Count `### Scenario:` blocks per feature and feature dirs per domain.
 **Signal:** `⚠ <domain>/<feature>: N scenarios`, `⚠ <domain>: N features`, or `✓ max X scenarios · Y features`.
 **Remediate:** advisory. Recommend `/speq-plan` to split. Never auto-split.
 
@@ -76,7 +76,7 @@ Run in SKILL.md Phase 3a. It yields (a) library domains and features the mission
 ---
 
 ## Remediation: decision-log migration
-Apply on Yes. Convert the old single `specs/decision-log.md` (`## ADR-NNN` blocks) to per-plan fragments with the field mapping in `/speq-spec-merge` ("Promote ADRs to Permanent Decision Log"). The old file has no per-plan attribution, so put all ADRs in one fragment `specs/_decision/NNN-<name>.md` (NNN = existing fragment count plus one, zero-padded, H1 `# Decisions: <name>`) unless a block names its plan. Convert each `ADR-NNN` reference to the target's new slug. Drop all dates. Delete `specs/decision-log.md`, then run `speq decision-log validate`. It MUST pass.
+Apply on Yes. Convert the old single `specs/decision-log.md` (`## ADR-NNN` blocks) to per-plan fragments in the layout of `/speq-plan`'s `references/decision-log-permanent-template.md`: Context from the old rationale, Decision from the old decision, and Options Considered and Consequences only where the old block has them. The old file has no per-plan attribution, so put all ADRs in one fragment `specs/_decision/NNN-<name>.md` (NNN = existing fragment count plus one, zero-padded, H1 `# Decisions: <name>`) unless a block names its plan. Convert each `ADR-NNN` reference to the target's new slug. Drop all dates. Delete `specs/decision-log.md`, then run `speq decision-log validate`. It MUST pass.
 
 ## Remediation: domain/feature restructure
 Always ask. Never auto-run.
