@@ -12,7 +12,7 @@ Run the clarifying interview, write the plan, then have a plan reviewer with a f
 Invoke before starting:
 - `/speq-cli`: spec discovery and validation
 - `/speq-code-tools`: codebase exploration
-- `/speq-design-philosophy`: design principles for the decisions in `decision-log.md`
+- `/speq-design-philosophy`: module boundaries, decision ownership, and dependency direction for the implementation design
 - `/speq-adr-rules`: when a decision becomes an ADR. Default is no
 - `/speq-writing-guardrails`: prose style
 - `/speq-ext-library`: on demand, for current library docs
@@ -82,7 +82,7 @@ Write the artifacts in this order. Do not start a step before the previous one i
 
    **Prose drift check**: after a scenario delta on an existing feature, check that feature's `## Background` and `# Feature: <name>` description. When the scenario change makes either inaccurate, add a `DELTA:CHANGED` block for that section too.
 
-3. **Architecture delta.** If the plan changes a component, boundary, interface, data flow, constraint, or external dependency, write `specs/_plans/<plan-name>/architecture.md` per `references/architecture-delta-template.md`. Copy each changed section from `specs/architecture.md`, edit it, and set the BASE hash with `git hash-object specs/architecture.md`. If `specs/architecture.md` is absent, write no delta and state `Architecture: no change: specs/architecture.md absent` in the decision log entry.
+3. **Architecture delta.** Shape every new module, interface, or boundary per `/speq-design-philosophy`'s Quick Diagnostic. If the plan changes a component, boundary, interface, data flow, constraint, or external dependency, write `specs/_plans/<plan-name>/architecture.md` per `references/architecture-delta-template.md`. Copy each changed section from `specs/architecture.md`, edit it, and set the BASE hash with `git hash-object specs/architecture.md`. If `specs/architecture.md` is absent, write no delta and state `Architecture: no change: specs/architecture.md absent` in the decision log entry.
 
 4. **Validate the deltas**: `speq plan validate <plan-name>`. Fix failures before you go on. Common fixes: close delta markers (`<!-- /CHANGED -->`, `<!-- /NEW -->`, `<!-- /REMOVED -->`), uppercase RFC 2119 keywords, bold step keywords (`*GIVEN*`, `*WHEN*`, `*THEN*`, `*AND*`).
 
