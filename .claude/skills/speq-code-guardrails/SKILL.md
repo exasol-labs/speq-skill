@@ -51,11 +51,6 @@ Run ONLY the test you created/changed, not the full suite.
 | **Boy Scout** | Leave code cleaner than you found it |
 | **Root Cause** | **Five Whys** — fix the source, not the symptom |
 
-## Design
-
-- Law of Demeter: talk only to immediate collaborators
-- Dependency direction, module depth, and boundary placement: see `/speq-design-philosophy`
-
 ## Functions
 
 - Small and focused
