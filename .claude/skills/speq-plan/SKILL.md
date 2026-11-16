@@ -132,7 +132,7 @@ It writes `specs/_plans/<plan-name>/review/review.md` and returns `PLAN REVIEW: 
 - **`INTENT > 0`:** the reviewer holds that the plan solves a different problem than the one asked. Ask the user about those findings before any fix. The user accepts the plan as-is, or gives guidance and you revise.
 - **`INTENT == 0` and `BLOCKERS > 0`:** fix the blockers per `references/revision-mode.md`. Do not review again.
 - **Any blocker you could not resolve, or a failed `speq plan validate`:** ask the user, one line of context each plus a pointer to the review file.
-- **Non-blocking findings** never loop and are never persisted. Carry them into step 7's report. An `[UNSTATED_ASSUMPTION]`, `[UNCONFIRMED_DECISION]`, or `[INTENT_GAP]` finding becomes an entry in `## Directions`, whatever its severity.
+- **Non-blocking findings** never loop and are never persisted. Carry them into step 7's report. An `[UNSTATED_ASSUMPTION]` or `[INTENT_GAP]` finding becomes an entry in `## Directions`, whatever its severity.
 
 ### 6. Review Directions
 

@@ -4,7 +4,7 @@ The plan reviewer writes this document to `specs/_plans/<plan-name>/review/revie
 
 ## Rules
 
-1. Emit all six axis sections in taxonomy order: Intent Fidelity, Feasibility, Requirement Quality, Task Breakdown, Design Depth, Prose Quality.
+1. Emit all five axis sections in taxonomy order: Intent Fidelity, Feasibility, Requirement Quality, Task Breakdown, Design Depth.
 2. Every finding: a `#### [TAG] SEVERITY` heading plus `Location`, `Issue`, `Fix`.
 3. The Summary block carries three counts: total blockers, total advisories, and `Intent Fidelity blockers`. The verdict line's `INTENT:` field is the third count and must match the Summary exactly.
 
@@ -14,7 +14,7 @@ The plan reviewer writes this document to `specs/_plans/<plan-name>/review/revie
 # Plan Review Findings: <plan-name>
 
 ## Summary
-- Axes checked: 6/6
+- Axes checked: 5/5
 - Total findings: <M> (Blockers: <X>, Findings: <Y>)
 - Intent Fidelity blockers: <I>
 
@@ -36,9 +36,6 @@ The plan reviewer writes this document to `specs/_plans/<plan-name>/review/revie
 ...
 
 ## Design Depth
-...
-
-## Prose Quality
 ...
 ```
 
