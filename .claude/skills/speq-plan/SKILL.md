@@ -1,6 +1,6 @@
 ---
 name: speq-plan
-description: "Plans a feature or change through a clarifying interview, producing spec deltas, plan.md, and intent.md with adversarial review. Use to plan, spec, design, or scope a feature, change, removal, refactor, or fix, before any implementation."
+description: "Plans a feature or change through a clarifying interview, producing spec deltas, plan.md, and intent.md with a fresh-context review. Use to plan, spec, design, or scope a feature, change, removal, refactor, or fix, before any implementation."
 ---
 
 # Spec Planner
@@ -106,7 +106,7 @@ Write the artifacts in this order. Do not start a step before the previous one i
 
 7. **Final validation**: `speq plan validate <plan-name>`.
 
-### 5. Adversarial Plan Review
+### 5. Plan Review
 
 Spawn the plan reviewer once as a sub-agent. There is one review round.
 Set its model to `opus`. <!-- claude-only -->
