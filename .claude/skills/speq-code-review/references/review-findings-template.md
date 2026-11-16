@@ -26,16 +26,3 @@ The code reviewer writes this document to `specs/_plans/<plan-name>/code-review.
 - Issue: <defect, with evidence>
 - Fix: <imperative instruction>
 ```
-
-## Example
-
-```markdown
-## Findings
-
-### src/ingest/parser
-
-#### [MAGIC_NUMBER] Retry count is a bare literal
-- Location: line 42
-- Issue: the retry loop in `parse_with_retry` bounds itself on the literal 3
-- Fix: In src/ingest/parser, extract the literal 3 in `parse_with_retry` into a module-scope named constant MAX_PARSE_RETRIES and use it in the loop bound
-```
