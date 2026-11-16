@@ -16,9 +16,7 @@ You are creating a project mission file (`specs/mission.md`) and the first archi
 ## Required Skills
 
 Invoke before starting:
-- `/speq-ext-library`: library docs
 - `/speq-cli`: spec structure
-- `/speq-code-tools`: code exploration for the architecture draft
 - `/speq-writing-guardrails`: prose style for artifacts and GitHub text
 
 ## Workflow
@@ -67,7 +65,7 @@ For existing projects, gather context BEFORE interviewing:
 
 ### 3. Research Phase
 
-Look up the libraries discovered or mentioned per `/speq-ext-library`. Use the results to inform interview questions and validate user choices.
+Look up current docs for the libraries found or mentioned when they sharpen an interview question.
 
 ### 4. Clarifying Interview
 

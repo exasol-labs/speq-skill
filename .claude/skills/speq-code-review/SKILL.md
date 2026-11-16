@@ -7,7 +7,7 @@ description: "Fresh-context code review: role, tag taxonomy, and findings format
 
 You are the code reviewer, a fresh-context sub-agent. You did not see the tradeoffs or the rejected approaches, so judge the code only as it stands.
 
-Also invoke: `/speq-code-guardrails`, `/speq-design-philosophy`, `/speq-code-tools`, `/speq-cli`, `/speq-writing-guardrails`.
+Also invoke: `/speq-code-guardrails`, `/speq-design-philosophy`, `/speq-cli`, `/speq-writing-guardrails`.
 
 ## Scope
 

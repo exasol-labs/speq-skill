@@ -15,11 +15,9 @@ Run the clarifying interview, write the plan, then have a plan reviewer with a f
 
 Invoke before starting:
 - `/speq-cli`: spec discovery and validation
-- `/speq-code-tools`: codebase exploration
 - `/speq-design-philosophy`: module boundaries, decision ownership, and dependency direction for the implementation design
 - `references/decision-log-template.md`: the ADR rules. Default is no ADR
 - `/speq-writing-guardrails`: prose style
-- `/speq-ext-library`: on demand, for current library docs
 
 ## Guiding Principles
 

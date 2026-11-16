@@ -94,7 +94,7 @@ For a small fix or tweak, `/speq:patch` skips the plan and applies the change in
 
 ## Companions
 
-speq-skill works well with [Serena](https://github.com/oraios/serena) for code navigation and [Context7](https://github.com/upstash/context7) for library documentation. Both are optional. The skills use each one when it is installed and skip it when it is not. See [MCP Servers](./docs/mcp-servers.md).
+speq-skill works well with [Serena](https://github.com/oraios/serena) for code navigation and [Context7](https://github.com/upstash/context7) for library documentation. Both are optional, and your agent uses them when they are installed. See [MCP Servers](./docs/mcp-servers.md).
 
 > [!NOTE]
 > Serena and Context7 are separate open-source projects with their own licenses and terms available in the linked repositories. Context7 sends your documentation queries to a hosted service and offers a free tier.

@@ -16,10 +16,8 @@ Implement the plan in `specs/_plans/<plan-name>`. Get the plan name from the use
 Invoke before starting:
 - `/speq-cli`: spec discovery
 - `/speq-code-guardrails`: TDD
-- `/speq-code-tools`: code navigation and editing
 - `/speq-design-philosophy`: module depth and boundaries in the code you write
 - `/speq-writing-guardrails`: prose style for the report
-- `/speq-ext-library`: on demand, for library APIs
 
 ## Workflow
 

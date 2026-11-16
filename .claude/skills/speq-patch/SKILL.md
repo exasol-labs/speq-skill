@@ -16,10 +16,8 @@ You take one small change to a tested, reviewed working tree. You run no git wri
 Invoke before starting:
 - `/speq-cli`: spec discovery and validation
 - `/speq-code-guardrails`: TDD
-- `/speq-code-tools`: code navigation and editing
 - `/speq-plan`'s `references/decision-log-template.md`: the ADR rules, whether a change earns an ADR
 - `/speq-writing-guardrails`: prose style
-- `/speq-ext-library`: on demand, for library APIs
 
 ## Rules
 

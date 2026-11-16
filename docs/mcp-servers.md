@@ -4,12 +4,12 @@
 
 # MCP Servers
 
-speq-skill works well with [Serena](https://github.com/oraios/serena), an MCP (Model Context Protocol) server for code navigation, and [Context7](https://github.com/upstash/context7), an MCP server for library documentation. Both are optional. The skills use each one when it is installed and skip it when it is not. You install Serena and/or Context7 once, globally. The skills find its tools at run time.
+speq-skill works well with [Serena](https://github.com/oraios/serena), an MCP (Model Context Protocol) server for code navigation, and [Context7](https://github.com/upstash/context7), an MCP server for library documentation. Both are optional. You install them once, globally. Your coding agent uses them through their own server instructions; the skills do not depend on them.
 
-| Server | What your agent gets | Used by |
-|--------|----------------------|---------|
-| Serena | Symbol-level code navigation and editing | `/speq:code-tools` |
-| Context7 (optional) | Current library documentation | `/speq:ext-library` |
+| Server | What your agent gets |
+|--------|----------------------|
+| Serena | Symbol-level code navigation and editing |
+| Context7 | Current library documentation |
 
 ## Why Serena
 
@@ -35,17 +35,3 @@ codex mcp add serena -- serena start-mcp-server --project-from-cwd --context=cod
 ```
 
 See the [Serena documentation](https://github.com/oraios/serena) for advanced configuration.
-
-## What if Serena is missing
-
-- The skills carry on with the generic read, search, and edit tools
-
-## How the skills use them
-
-```
-Explore codebase   → Serena     structure, symbols, references
-Research libraries → Context7   method signatures, usage examples (when installed)
-Edit code          → Serena     precise, symbol-level changes
-```
-
-Without Context7, the skills rely on built-in knowledge for library APIs.
