@@ -206,7 +206,7 @@ mod spec_validation {
             .args(["plan", "validate", "lowercase-steps"])
             .assert()
             .success()
-            .stdout(predicate::str::contains("should be uppercase"));
+            .stdout(predicate::str::contains("must be uppercase"));
     }
 
     #[test]
@@ -219,7 +219,7 @@ mod spec_validation {
             .args(["plan", "validate", "lowercase-rfc"])
             .assert()
             .success()
-            .stdout(predicate::str::contains("should be uppercase"));
+            .stdout(predicate::str::contains("must be uppercase"));
     }
 
     #[test]
@@ -258,73 +258,6 @@ mod spec_validation {
             .assert()
             .code(1)
             .stdout(predicate::str::contains("ERROR"));
-    }
-}
-
-mod decision_log {
-    use super::*;
-
-    #[test]
-    fn plan_with_valid_decision_log_passes() {
-        let tmp = TempDir::new().unwrap();
-        setup_fixture(&tmp, "with-decisions");
-
-        cmd()
-            .current_dir(tmp.path())
-            .args(["plan", "validate", "with-decisions"])
-            .assert()
-            .success();
-    }
-
-    #[test]
-    fn plan_without_decision_log_passes() {
-        let tmp = TempDir::new().unwrap();
-        setup_fixture(&tmp, "valid-plan");
-
-        cmd()
-            .current_dir(tmp.path())
-            .args(["plan", "validate", "valid-plan"])
-            .assert()
-            .success();
-    }
-
-    #[test]
-    fn plan_decision_log_no_sections_fails() {
-        let tmp = TempDir::new().unwrap();
-        setup_fixture(&tmp, "decisions-no-sections");
-
-        cmd()
-            .current_dir(tmp.path())
-            .args(["plan", "validate", "decisions-no-sections"])
-            .assert()
-            .code(1)
-            .stdout(predicate::str::contains("section"));
-    }
-
-    #[test]
-    fn plan_decision_log_bad_promote_warns() {
-        let tmp = TempDir::new().unwrap();
-        setup_fixture(&tmp, "decisions-bad-promote");
-
-        cmd()
-            .current_dir(tmp.path())
-            .args(["plan", "validate", "decisions-bad-promote"])
-            .assert()
-            .success()
-            .stdout(predicate::str::contains("maybe"));
-    }
-
-    #[test]
-    fn plan_decision_log_bad_h1_fails() {
-        let tmp = TempDir::new().unwrap();
-        setup_fixture(&tmp, "decisions-bad-h1");
-
-        cmd()
-            .current_dir(tmp.path())
-            .args(["plan", "validate", "decisions-bad-h1"])
-            .assert()
-            .code(1)
-            .stdout(predicate::str::contains("wrong-name"));
     }
 }
 

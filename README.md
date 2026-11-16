@@ -48,11 +48,8 @@ This is a plugin for Claude Code or Codex for lightweight spec-driven developmen
 3. A **permanent** and growing spec library
 4. A workflow that keeps the specs **small** to avoid context cluttering
 5. A workflow that keeps **asking me instead of making assumptions**
-6. **Semantic anchors** that ground AI behavior in established methodologies
 
 It combines skills with a simple CLI called `speq` that lists and reads the permanent spec library. The coding agent lists the features, then reads only the relevant ones during planning and during the implementation. This avoids reading unnecessary specs into the context window.
-
-Each skill is grounded in [semantic anchors](./docs/semantic-anchors.md) — named references to established methodologies (like London School TDD, BLUF, ADR) that steer AI behavior toward well-documented practices.
 
 ---
 
@@ -73,7 +70,7 @@ Each skill is grounded in [semantic anchors](./docs/semantic-anchors.md) — nam
 
 Specs live in `specs/<domain>/<feature>/spec.md`. `specs/architecture.md` holds the current architecture. Plans stage in `specs/_plans/<plan-name>/`. The separation keeps your spec library clean while work is in progress.
 
-For a small fix or tweak, `/speq:patch` skips the plan and applies the change in one run. `/speq:patch-pr` also ships it as one ready PR. See [Patch](./docs/patch.md).
+For a small fix or tweak, `/speq:patch` skips the plan and applies the change in one run. `/speq:patch-pr` also ships it as one ready PR. See [Workflow](./docs/workflow.md#ship-a-small-change).
 
 ---
 
@@ -85,11 +82,8 @@ For a small fix or tweak, `/speq:patch` skips the plan and applies the change in
 | [Workflow](./docs/workflow.md)                 | One-time mission setup, then Plan → Implement → Record cycle |
 | [FAQ](./docs/faq.md)                           | Add features, fix bugs, start greenfield or brownfield       |
 | [PR Workflow](./docs/pr-workflow.md)           | Plan and implement via a feat/ branch + Pull Request         |
-| [Patch](./docs/patch.md)                       | Apply a small fix without a plan, or ship it as a ready PR   |
 | [Decision Log](./docs/decision-log.md)         | Design decisions, ADR fragment format, validation, and show  |
 | [CLI Reference](./docs/cli-reference.md)       | All CLI commands                                             |
-| [MCP Servers](./docs/mcp-servers.md)           | Optional Serena and Context7 setup                           |
-| [Semantic Anchors](./docs/semantic-anchors.md) | Named methodologies grounding each skill                     |
 
 ---
 
@@ -97,17 +91,10 @@ For a small fix or tweak, `/speq:patch` skips the plan and applies the change in
 
 `speq-skill` is a plugin for Claude Code, Codex, and other compatible AI coding agents. This project provides workflow structure and spec management only—**the coding agent generates all code, specs, other artifacts, and tool calls**.
 
-## Companions
-
-speq-skill works well with [Serena](https://github.com/oraios/serena) for code navigation and [Context7](https://github.com/upstash/context7) for library documentation. Both are optional. The skills use each one when it is installed and skip it when it is not. See [MCP Servers](./docs/mcp-servers.md).
-
-> [!NOTE]
-> Serena and Context7 are separate open-source projects with their own licenses and terms available in the linked repositories. Context7 sends your documentation queries to a hosted service and offers a free tier.
-
 ## Acknowledgments
 
-- The `code-reviewer` agent's YAGNI / Over-Engineering review category was inspired by the tag taxonomy of [ponytail](https://github.com/DietrichGebert/ponytail).
-- The [semantic anchor](./docs/semantic-anchors.md) approach — naming established methodologies (e.g. London School TDD) directly in skill instructions — draws on the [LLM-Coding/Semantic-Anchors](https://github.com/LLM-Coding/Semantic-Anchors) catalog.
+- The code review's dead-code and over-engineering checks were inspired by the tag taxonomy of [ponytail](https://github.com/DietrichGebert/ponytail).
+- The semantic anchor approach — naming established methodologies (e.g. BDD and ADRs) directly in skill instructions — draws on the [LLM-Coding/Semantic-Anchors](https://github.com/LLM-Coding/Semantic-Anchors) catalog.
 
 ## License
 

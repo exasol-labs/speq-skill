@@ -24,7 +24,7 @@
 - If a spec does, the plan restores the code
 - If no spec covers the case, or the spec is wrong, the plan adds or corrects the scenario
 - Then run `/speq:implement` and `/speq:record`
-- For a small fix, run `/speq:patch <symptom>` instead. It fixes the code and edits only the specs and docs the fix needs. `/speq:patch-pr <symptom>` does the same and opens one ready PR. See [Patch](./patch.md)
+- For a small fix, run `/speq:patch <symptom>` instead. It fixes the code and edits only the specs and docs the fix needs. `/speq:patch-pr <symptom>` does the same and opens one ready PR. See [Workflow](./workflow.md#ship-a-small-change)
 
 ## How do I start a greenfield project?
 
@@ -55,7 +55,7 @@
 ## Where do I find decisions?
 
 - Run `speq decision-log show` to print every accepted ADR. The files live in `specs/_decision/`
-- A plan in progress keeps its design choices in `specs/_plans/<plan-name>/decision-log.md`
+- A plan in progress keeps the user's answers and its own directions in `specs/_plans/<plan-name>/intent.md`
 - At the end of `/speq:plan` you see any proposed ADR and can drop it
 - See [Decision Log](./decision-log.md)
 
@@ -67,9 +67,9 @@
 ## How do I check that the spec library is healthy?
 
 - Run `/speq:audit`
-- It reports problems with structure, ADRs, the mission, and unrecorded plans
+- It reports validator errors, unrecorded plans, mission drift, and ADR noise
 - It asks before each fix
 
 ## How do I upgrade to a newer version?
 
-- Run `/speq:audit`
+- Re-run the setup script. See [Installation](./installation.md#update)

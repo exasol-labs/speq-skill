@@ -8,6 +8,5 @@
   "repository": "https://github.com/exasol-labs/speq-skill",
   "license": "MIT",
   "keywords": ["spec-driven", "tdd", "specifications", "planning", "workflow"],
-  "skills": "./skills/",
-  "agents": AGENTS_PLACEHOLDER
+  "skills": "./skills/"
 }

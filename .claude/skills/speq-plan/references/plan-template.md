@@ -12,7 +12,7 @@ One-paragraph description of what this plan achieves (max two sentences).
 
 ## Context
 
-Required for new features and significant changes. Skip for small fixes. A bullet list of the problem and the forces behind this change, one fact per bullet. No decisions: a choice with a rejected alternative goes in `decision-log.md`; a small local choice is a phrase in a task line. Structural changes to the system (components, boundaries, data flow, interfaces, constraints, external dependencies) go in the architecture delta, `architecture.md` in the plan directory, not here. Point to the delta from a bullet.
+Required for new features and significant changes. Skip for small fixes. A bullet list of the problem and the forces behind this change, one fact per bullet. No decisions: a choice the user did not make is a direction in `intent.md`. Structural changes to the system (components, boundaries, data flow, interfaces, constraints, external dependencies) go in the architecture delta, `architecture.md` in the plan directory, not here. Point to the delta from a bullet.
 
 - <fact about the problem or a force behind this change>
 - <fact>
@@ -52,23 +52,6 @@ Optional: For changes affecting existing data/structure
 |---------|-----|
 | ... | ... |
 
-## Implementation Tasks
-
-1. Task description
-2. Task description
-3. ...
-
-## Parallelization
-
-Optional.
-
-| Group | Tasks | Depends on | Knowledge |
-|-------|-------|------------|-----------|
-| A: <cluster name> | 1.1-1.4, 3.1 | — | spec delta `<domain>/<feature>`; `src/<module>/`, `<test-file-path>` |
-| B: <cluster name> | 2.1-2.3 | A (shares `src/<module>/`) | spec delta `<domain>/<other-feature>`; `src/<module>/`, `<test-file-path>` |
-
-- **Knowledge**: the group's spec delta path(s) plus the source and test files they govern. The implement orchestrator passes this entry to the group's agent as its orientation pointer.
-
 ## Dead Code Removal
 
 Required: Identify obsolete code to remove
@@ -88,7 +71,7 @@ Do NOT copy placeholders below. Replace with real values.
 
 ### Scenario Coverage
 
-<!-- Map EVERY scenario from feature specs to an integration test. No gaps allowed. -->
+<!-- Map every new or changed scenario to an integration test. -->
 
 | Scenario | Test Type | Test Location | Test Name |
 |----------|-----------|---------------|-----------|

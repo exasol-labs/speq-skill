@@ -181,3 +181,45 @@ fn optional_sections_absent_passes() {
         .assert()
         .success();
 }
+
+#[test]
+fn id_that_is_not_kebab_case_fails() {
+    let tmp = TempDir::new().unwrap();
+    setup_fixture(&tmp, "id-not-kebab");
+
+    cmd()
+        .current_dir(tmp.path())
+        .args(["decision-log", "validate"])
+        .assert()
+        .code(1)
+        .stdout(predicate::str::contains("Not_Kebab Case"))
+        .stdout(predicate::str::contains("001-plan-a.md"))
+        .stdout(predicate::str::contains("kebab-case"));
+}
+
+#[test]
+fn file_name_without_numeric_prefix_fails() {
+    let tmp = TempDir::new().unwrap();
+    setup_fixture(&tmp, "file-name-without-prefix");
+
+    cmd()
+        .current_dir(tmp.path())
+        .args(["decision-log", "validate"])
+        .assert()
+        .code(1)
+        .stdout(predicate::str::contains("plan-a.md"))
+        .stdout(predicate::str::contains("NNN-<plan-name>.md"));
+}
+
+#[test]
+fn h1_after_other_content_fails() {
+    let tmp = TempDir::new().unwrap();
+    setup_fixture(&tmp, "h1-not-first");
+
+    cmd()
+        .current_dir(tmp.path())
+        .args(["decision-log", "validate"])
+        .assert()
+        .code(1)
+        .stdout(predicate::str::contains("# Decisions: <plan-name>"));
+}

@@ -28,15 +28,14 @@ specs/
         └── spec.md
 ```
 
-`specs/architecture.md` holds the current architecture of the project. Plans change it through an optional `architecture.md` delta, and `/speq:record` merges it.
+`specs/architecture.md` holds the current architecture of the project.
 
-Every `spec.md` has five required parts:
+Every `spec.md` has four required parts:
 
 1. **`# Feature:`** — the feature name and a one-sentence description
-2. **Description** — free-text context below the feature heading
-3. **`## Background`** — bullet list of facts that apply to all scenarios
-4. **`## Scenarios`** — container for one or more scenario blocks
-5. **`### Scenario:`** — individual scenario with GIVEN/WHEN/THEN steps
+2. **`## Background`** — bullet list of facts that apply to all scenarios
+3. **`## Scenarios`** — container for one or more scenario blocks
+4. **`### Scenario:`** — individual scenario with GIVEN/WHEN/THEN steps
 
 A complete minimal spec:
 
@@ -92,7 +91,7 @@ Each step is a Markdown bullet with the keyword in italic:
 
 ## RFC 2119 keywords
 
-Specs use [RFC 2119](https://www.rfc-editor.org/rfc/rfc2119) keywords to express requirement levels. Keywords MUST be UPPERCASE.
+Specs use [RFC 2119](https://www.rfc-editor.org/rfc/rfc2119) keywords to express requirement levels.
 
 | Keyword | Meaning |
 |---------|---------|
@@ -106,19 +105,3 @@ Rules for keyword usage:
 - *THEN* steps must contain at least one RFC 2119 keyword. These steps define what the system must do.
 - *GIVEN* and *WHEN* steps can omit keywords. These steps describe context and actions, not requirements.
 - Keywords must appear in UPPERCASE so that the validator recognizes them.
-
-
-## Validation
-
-```
-speq feature validate
-```
-
-The validator checks:
-
-- Required sections are present (`# Feature:`, `## Background`, `## Scenarios`, `### Scenario:`)
-- THEN steps contain at least one RFC 2119 keyword
-- Keywords are UPPERCASE
-- Step formatting follows the `* *KEYWORD* <text>` pattern
-
-See [CLI Reference](./cli-reference.md) for full command documentation.

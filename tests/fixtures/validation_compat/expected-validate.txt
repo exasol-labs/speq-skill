@@ -10,3 +10,5 @@
 ✗ compat/then-wrapped-after-keyword (1 errors, 0 warnings)
     ERROR: Step in scenario 'Wrapped step' is missing RFC 2119 keyword: the system SHALLrespond to the request
 ✓ compat/uppercase-keyword-with-code-spans (0 errors, 0 warnings)
+
+Summary: 4 passed, 4 failed, 0 warnings

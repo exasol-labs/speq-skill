@@ -1,70 +1,106 @@
 ---
 name: speq-record
 description: "Merges implemented spec deltas into the permanent specs and archives the plan. Use after /speq-implement, or to record, merge, or archive a finished plan. Arg: plan-name."
-model: sonnet
 ---
 
-# Spec Recorder (Orchestrator)
+# Spec Recorder
 
-Thin orchestrator. It verifies preconditions and delegates the merge work to the `recorder-agent` sub-agent.
+## User Arguments
 
-## Required Skills (for the orchestrator)
+$ARGUMENTS
+
+Verify the preconditions, merge the plan's deltas into the permanent specs, promote its ADRs, and archive the plan. Recording is mechanical: merge what the deltas say, nothing more. You run no git write: the user commits, or `/speq-implement-pr` does.
+
+## Required Skills
 
 Invoke before starting:
-- `/speq-cli` — Spec validation
-
-The `recorder-agent` sub-agent invokes its own required skills.
+- `/speq-cli` — spec validation
+- `/speq-formats` — ADR rules, fragment layout, architecture formats
+- `/speq-writing-guardrails` — prose style for promoted ADRs
 
 ## Workflow
 
-### Phase 1: Resolve Plan Name (orchestrator)
+### Phase 1: Resolve Plan Name
 
 Get the plan name from the user prompt. If none is given, ask the user to choose from the plans under `specs/_plans/`.
 
-### Phase 2: Verify Preconditions (orchestrator)
+### Phase 2: Verify Preconditions
 
-```
-Check: specs/_plans/<plan-name>/verification-report.md exists?
-├─ Yes → Proceed
-└─ No  → STOP: "Run /speq-implement <plan-name> first."
-```
+No `specs/_plans/<plan-name>/verification-report.md` → stop: "Run /speq-implement <plan-name> first."
 
-### Phase 3: Delegate to recorder-agent
+Read `plan.md`, list the delta specs (`specs/_plans/<plan-name>/**/spec.md`), and run `speq feature list`.
 
-Spawn the recorder sub-agent with the plan name:
+### Phase 3: Check the Architecture Delta
 
-```
-Delegate to recorder-agent — Record <plan-name> into permanent specs
+Skip this phase when `specs/_plans/<plan-name>/architecture.md` is absent, and report `Architecture: no delta`. Otherwise the delta changes `specs/architecture.md`. The `speq` CLI does not see it, so you check and apply it by hand. Its format is in `architecture-delta-template.md` in `/speq-formats`, the target format in `architecture-template.md` in `/speq-formats`.
 
-## Plan Name
-<plan-name>
+1. **Already applied?** The delta is applied when each CHANGED section in `specs/architecture.md` already equals its block body, each NEW section exists with its block body, and each REMOVED section is gone. This happens on a rerun after a threshold decision. Then report `Architecture: already merged` and go to Phase 4.
+2. **Pre-check (read-only).**
+   - The H1 is `# Architecture Delta: <plan-name>`. DELTA markers are balanced. Each block's first non-empty line is `## <Section>` and is its only `##` line. No two blocks share an anchor. NEW and REMOVED target non-canonical sections only.
+   - `specs/architecture.md` exists, each CHANGED and REMOVED anchor exists in it, and no NEW anchor exists in it.
+   - Line rules: outside blocks only the H1, the BASE comment, and blank lines. Inside blocks only `- ` bullets, fenced blocks, and blank lines. No `###`, no tables, no prose paragraphs.
+3. **Base check.** Compare `git hash-object specs/architecture.md` with the BASE comment. If they differ, run `git cat-file -p <BASE>` and compare each CHANGED and REMOVED section with the same section in the current file. A differing section, or a missing blob, stops the record with a stale-base error: a stale BASE would overwrite another plan's changes.
 
-## Context
-- Verification report confirmed at: specs/_plans/<plan-name>/verification-report.md
-- Plan file: specs/_plans/<plan-name>/plan.md
-- Delta specs: specs/_plans/<plan-name>/**/spec.md
-- Architecture delta (optional): specs/_plans/<plan-name>/architecture.md
+Failure format: `Recording failed: architecture delta: architecture.md:<line>: <rule>`. On failure, do not fix the delta. The plan stays unarchived. Report the message and stop. The fix is a plan change: correct the plan's `architecture.md`, or refresh its BASE.
 
-## Your Task
-Merge all delta specs, and the architecture delta if present, into permanent specs per the `recorder-agent` workflow. Validate between merges. Archive the plan on success. If any library threshold is exceeded (scenarios > 10, domain features > 8), STOP before archiving and return a question for the user.
+### Phase 4: Merge Feature Deltas
 
+Run `speq plan validate <plan-name>` first: it checks marker balance, illegal marker and anchor pairs, and repeated anchors. Then, for each delta spec at `specs/_plans/<plan-name>/<domain>/<feature>/spec.md`: a new feature is copied with its markers stripped, an existing one is merged by the table below.
 
-Return a summary of merged features and the archive path.
-```
+A delta block's anchor is the first non-empty line inside the block. `### Scenario: <name>` and `## Background` match exactly. `# Feature: <name>` matches by the prefix `# Feature`, so a description delta MAY rename the feature.
 
-### Phase 4: Handle Threshold Escalations (orchestrator)
+Before you merge a delta spec, check that the target spec holds every scenario a `DELTA:CHANGED` or `DELTA:REMOVED` block names. If one is missing, stop and report the delta file and the scenario name.
 
-If the sub-agent returns threshold signals:
+| Anchor | Marker | Action |
+|--------|--------|--------|
+| `### Scenario:` | `DELTA:NEW` | Append the scenario |
+| `### Scenario:` | `DELTA:CHANGED` | Replace the scenario with the same name |
+| `### Scenario:` | `DELTA:REMOVED` | Delete the scenario with the same name |
+| `## Background`, `# Feature` | `DELTA:CHANGED` | Replace the whole section (heading plus body) in place. A line the block omits is deleted |
+| `## Background`, `# Feature` | `DELTA:NEW`, `DELTA:REMOVED` | Rejected: both sections are required and always exist |
 
-1. Ask the user for their organizational decision
-2. Respawn `recorder-agent` with the decision, OR apply a trivial edit (for example, a file rename) directly
-3. Archive only after all decisions are resolved
+After each merge, strip all `<!-- DELTA:* -->` markers and run `speq feature validate <domain>/<feature>`. If validation fails, stop and report. Do not guess fixes.
 
-If the sub-agent returns `Recording failed: architecture delta: ...`, do not respawn it and do not fix the delta yourself. The plan stays unarchived. Report the message to the user and stop. The fix is a plan change: correct `architecture.md` in the plan, or refresh its BASE after a stale-base error.
+### Phase 5: Merge the Architecture Delta
 
-### Phase 5: Confirm Completion (orchestrator)
+Skip when Phase 3 skipped or found the delta already applied.
 
-Report to user:
+1. Build the merged text in memory. CHANGED replaces the heading and body up to the next `##`, and a line the block omits is deleted. NEW appends the section at the end. REMOVED deletes the section. Strip all DELTA markers. Write the file once.
+2. **Post-check.** The H1 is `# Architecture`. The six canonical sections appear once each, in order. No `##` heading is duplicated. No DELTA text is left. The line rules hold. On failure, restore the original text, report it in the failure format, and do not archive.
+
+Report line: `Architecture: § Components (CHANGED), § Deployment (NEW)`. List the lines each CHANGED block removed, so the user can spot an accidental deletion.
+
+### Phase 6: Check Library Thresholds
+
+A spec with more than 10 scenarios, or a domain with more than 8 features, needs a reorganization. Stop before archiving, propose a concrete one (which scenarios or features move where), and ask the user. Never reorganize without that answer. Under `/speq-implement-pr`, the run is the answer: apply your proposal.
+
+### Phase 7: Promote ADRs
+
+Read `## Directions` in `specs/_plans/<plan-name>/intent.md`. If it is absent or no direction is marked `ADR: yes`, skip this phase.
+
+For each direction marked `ADR: yes`, write an ADR per `adr-rules.md` in `/speq-formats`:
+
+- **Title**: a short noun phrase for the choice
+- **ID**: a kebab-case slug of the title, unique across every file in `specs/_decision/`
+- **Plan**: `<plan-name>`
+- **Status**: `Accepted`. Recording the plan is the acceptance
+- **Supersedes** (optional): the slug from the direction's `supersedes <slug>`. It must name an existing ADR
+- **Context**: one or two sentences from the direction's reason: the situation that forces the choice, as present fact, per ADR rule 5
+- **Decision**: the direction's choice, in one to three sentences
+- **Options Considered**: only when the direction names a rejected alternative
+- **Consequences**: only when the direction states an effect on later work
+- The criterion and `§ <section>` are not mapped into the ADR
+
+Write all of them into ONE new fragment `specs/_decision/NNN-<plan-name>.md` (NNN = existing fragment count plus one, zero-padded to 3 digits), H1 `# Decisions: <plan-name>`, one `## ADR: <Title>` block per direction in `intent.md` order. Edit no other fragment: a supersede is a one-way pointer from the new ADR. Run `speq decision-log validate`.
+
+### Phase 8: Archive
+
+Only when every validation passed and every threshold decision is resolved:
+
+1. Run `speq feature validate`.
+2. `mv specs/_plans/<plan-name> specs/_recorded/NNN-<plan-name>`, where NNN = existing entry count in `specs/_recorded/` plus one, zero-padded to 3 digits. The architecture delta moves with the plan.
+
+### Phase 9: Confirm Completion
 
 ```
 ✓ Verification report confirmed
@@ -74,19 +110,3 @@ Report to user:
 ✓ Architecture merged: <sections>   (omit when no delta)
 ✓ ADRs accepted: N — <slugs>   (omit when none)
 ```
-
-## Work Split (reference)
-
-| Step | Performed by | Why |
-|------|--------------|-----|
-| Precondition checks, user questions | This skill (pins Sonnet) | Lightweight orchestration |
-| Delta merge, validation, archive | `recorder-agent` sub-agent | Fixed steps: apply markers, validate, archive |
-
-The split preserves rotation discipline: the orchestrator can respawn the sub-agent with a fresh context and keep its own state.
-
-## Anti-Patterns
-
-| Pattern | Why Wrong |
-|---------|-----------|
-| Record without verification report | Implementation not proven |
-| Archive after an architecture delta failure | The delta was not merged, so the plan must stay open |

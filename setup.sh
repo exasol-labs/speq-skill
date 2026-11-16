@@ -10,9 +10,6 @@ MARKETPLACE_DIR="$HOME/.speq-skill"
 CODEX_MARKETPLACE_NAME="speq-skill-local"
 CODEX_MARKETPLACE_ROOT="$MARKETPLACE_DIR/codex"
 CODEX_SKILLS_DIR="${CODEX_HOME:-$HOME/.codex}/skills"
-CODEX_SERENA_ADD="codex mcp add serena -- serena start-mcp-server --project-from-cwd --context=codex"
-CLAUDE_SERENA_ADD="claude mcp add --scope user serena -- serena start-mcp-server --context claude-code --project-from-cwd"
-SERENA_CLI_INSTALL="uv tool install -p 3.13 serena-agent"
 
 # Colors
 RED='\033[0;31m'
@@ -254,91 +251,6 @@ build_from_source() {
     install_codex_skills
 }
 
-# Serena comes from the user's global install. The helpers below detect it and
-# offer to install or enable it. They never install silently. Context7 is not
-# managed here: the skills use it when it is there.
-#
-# Prompts read from /dev/tty, not stdin, so they also work under
-# `curl ... | bash`. SPEQ_TTY overrides the device (used by the tests).
-has_tty() { { : < "${SPEQ_TTY:-/dev/tty}"; } 2>/dev/null; }
-
-ask_yes_no() {
-    has_tty || return 1
-    local reply
-    read -p "$1 [y/N] " -n 1 -r reply < "${SPEQ_TTY:-/dev/tty}" || return 1
-    echo ""
-    [[ $reply =~ ^[Yy]$ ]]
-}
-
-# Make sure the Serena CLI exists for the MCP registration.
-ensure_serena_cli() {
-    command -v serena &> /dev/null && return 0
-
-    if command -v uv &> /dev/null; then
-        info "Installing Serena CLI via uv..."
-        if $SERENA_CLI_INSTALL >/dev/null 2>&1; then
-            return 0
-        fi
-        warn "Serena CLI installation failed."
-        echo "  Run manually: $SERENA_CLI_INSTALL"
-    else
-        warn "uv not found. Install uv, then install the Serena CLI:"
-        echo "  curl -LsSf https://astral.sh/uv/install.sh | sh"
-        echo "  $SERENA_CLI_INSTALL"
-    fi
-    return 1
-}
-
-# offer_action <verb> <past-tense> <server> <host> <command> [prepare-function]
-offer_action() {
-    local verb="$1" past="$2" server="$3" host="$4" command="$5" prepare="${6:-}"
-
-    if ! ask_yes_no "$verb $server for $host?"; then
-        if ! has_tty; then
-            warn "$server is not $(echo "$past" | tr 'A-Z' 'a-z') for $host. Run:"
-            if [[ -n "$prepare" ]] && ! command -v serena &> /dev/null; then
-                echo "  $SERENA_CLI_INSTALL"
-            fi
-            echo "  $command"
-        fi
-        return 0
-    fi
-
-    if [[ -n "$prepare" ]] && ! $prepare; then
-        return 0
-    fi
-
-    if $command >/dev/null 2>&1; then
-        info "$past $server for $host"
-    else
-        warn "$verb $server for $host failed."
-        echo "  Run manually: $command"
-    fi
-    return 0
-}
-
-# Serena counts as installed for Claude Code when it is registered as an MCP
-# server (any scope) or when a Serena plugin is enabled.
-claude_has_serena() {
-    claude mcp get serena >/dev/null 2>&1 && return 0
-    claude plugin list 2>/dev/null | awk '
-        /❯/ { cur = ($2 ~ /^serena@/) }
-        cur && /Status:/ { found = ($0 !~ /✘|disabled/); exit }
-        END { exit !found }'
-}
-
-offer_mcp_servers() {
-    if command -v claude &> /dev/null && ! claude_has_serena; then
-        offer_action Install Installed serena "Claude Code" "$CLAUDE_SERENA_ADD" ensure_serena_cli
-    fi
-
-    if command -v codex &> /dev/null && ! codex mcp get serena >/dev/null 2>&1; then
-        offer_action Install Installed serena "Codex" "$CODEX_SERENA_ADD" ensure_serena_cli
-    fi
-    return 0
-}
-
-# Check if ~/.local/bin is in PATH
 check_path() {
     if [[ ":$PATH:" != *":$INSTALL_DIR:"* ]]; then
         warn "$INSTALL_DIR is not in your PATH"
@@ -371,9 +283,6 @@ main() {
             error "No pre-built binary for this platform. Build speq-skill from source: https://github.com/$REPO/blob/main/docs/installation.md#install-from-source"
         fi
     fi
-
-    # Serena comes from the global install
-    offer_mcp_servers
 
     # Post-install checks
     check_path

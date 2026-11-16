@@ -82,14 +82,14 @@ impl std::fmt::Display for ValidationWarning {
             ValidationWarning::LowercaseStepKeyword { keyword } => {
                 write!(
                     f,
-                    "Step keyword '{keyword}' should be uppercase: {}",
+                    "Step keyword '{keyword}' must be uppercase: {}",
                     keyword.to_uppercase()
                 )
             }
             ValidationWarning::LowercaseRfcKeyword { keyword, step } => {
                 write!(
                     f,
-                    "RFC 2119 keyword '{keyword}' should be uppercase in step: {step}"
+                    "RFC 2119 keyword '{keyword}' must be uppercase in step: {step}"
                 )
             }
         }

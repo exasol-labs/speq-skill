@@ -25,7 +25,7 @@ Enables users to securely access their accounts using credentials.
 
 ## Background
 
-All authentication attempts are rate-limited to 5 per minute per IP.
+* Authentication attempts are rate-limited to 5 per minute per IP
 
 ## Scenarios
 
@@ -45,14 +45,3 @@ All authentication attempts are rate-limited to 5 per minute per IP.
 * *AND* the system SHALL return an error message
 * *AND* the system MUST NOT reveal which credential was wrong
 ```
-
-## RFC 2119 Keywords
-
-THEN steps MUST use one of:
-
-| Keyword | Meaning |
-|---------|---------|
-| `MUST` / `SHALL` | Absolute requirement |
-| `MUST NOT` / `SHALL NOT` | Absolute prohibition |
-| `SHOULD` / `SHOULD NOT` | Recommended / not recommended |
-| `MAY` | Optional |

@@ -7,7 +7,7 @@
 A one-time `/speq:mission` to setup, then a repeating Plan → Implement → Record cycle.
 
 ```
-/speq:mission → specs/mission.md, specs/architecture.md  (once per project)
+/speq:mission → specs/mission.md (once per project)
                        │
 /speq:plan    →  /speq:implement  →  /speq:record        (repeat)
 ```
@@ -24,18 +24,20 @@ Run `/speq:mission` once per project.
 
 Run `/speq:plan <intent>`.
 
-- Interviews you about the change
-- Writes a plan in `specs/_plans/<plan-name>/`: `plan.md`, spec deltas, `decision-log.md`, and an optional `architecture.md` delta
-- Has a reviewer agent challenge the plan first
+- Interviews you about the change, and asks whether to split a plan that covers too much
+- Writes a plan in `specs/_plans/<plan-name>/`: `plan.md`, spec deltas, `intent.md`, and an optional `architecture.md` delta
+- Has a fresh-context reviewer check the plan (on opus in Claude Code)
+- Shows you every direction it took where you gave none, so you can correct it
 
 ## Implement it
 
 Run `/speq:implement <plan-name>`.
 
-- Splits the plan into tasks and hands them to sub-agents
-- Reviews the code the sub-agents wrote
+- Implements the plan with a focus on TDD and scenario verification
+- Has a fresh-context reviewer check the result (on opus in Claude Code)
 - Runs the build, tests, and lint checks
 - Writes `verification-report.md`
+- Keeps its task list in `tasks.md`, so an interrupted run resumes at the first unchecked task
 
 ## Record it
 
@@ -48,14 +50,22 @@ Run `/speq:record <plan-name>`.
 
 ## Ship a small change
 
-Run `/speq:patch <intent>` for a small fix or tweak. It skips the plan and applies the change in one run. Run `/speq:patch-pr <intent>` to also ship it as one ready PR. See [Patch](./patch.md).
+Run `/speq:patch <intent>` for a small fix or tweak.
+
+- Skips the plan and applies the change in one run
+- Writes code and tests with TDD; a fix starts with a test that reproduces the defect
+- Has a fresh-context sub-agent review the diff once, then fixes every finding
+- Edits specs directly, without delta markers, plus at most one ADR, `specs/architecture.md`, and the docs the change needs
+- Runs no git write; you review and commit
 
 ## Check the library
 
-Run `/speq:audit` to check structure, ADRs, mission drift, and unrecorded plans.
+Run `/speq:audit` to run the validators and check unrecorded plans, the architecture file, mission drift, and ADR noise.
 
 ## Good to know
 
 Plan names follow `<verb>-<scope>`, with the verb `add`, `change`, `remove`, `refactor`, or `fix`.
 
-`/speq:record` stops and asks you when a feature has more than 10 scenarios or a domain has more than 8 features. It never reorganizes without your decision.
+`/speq:record` stops and asks you when a feature has more than 10 scenarios or a domain has more than 8 features. It never reorganizes without your decision, except under `/speq:implement-pr`, which applies the proposed split.
+
+Text after a command reaches the skill as instructions, for example `/speq:implement add-plan-export use sonnet for the review`.

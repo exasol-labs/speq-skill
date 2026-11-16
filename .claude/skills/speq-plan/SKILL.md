@@ -1,55 +1,67 @@
 ---
 name: speq-plan
-description: "Plans a feature or change through a clarifying interview, producing spec deltas, plan.md, and decision-log.md with adversarial review. Use to plan, spec, design, or scope a feature, change, removal, refactor, or fix, before any implementation."
-model: sonnet
+description: "Plans a feature or change through a clarifying interview, producing spec deltas, plan.md, and intent.md with a fresh-context review. Use to plan, spec, design, or scope a feature, change, removal, refactor, or fix, before any implementation."
 ---
 
-# Spec Planner (Orchestrator)
+# Spec Planner
 
-This skill is a thin orchestrator. It runs the clarifying interview, collects context, and delegates the planning work (spec delta authoring, test mapping, task decomposition) to `planner-agent`.
+## User Arguments
 
-## Required Skills (for the orchestrator)
+$ARGUMENTS
+
+Run the clarifying interview, write the plan, then have a plan reviewer with a fresh context challenge it.
+
+## Required Skills
 
 Invoke before starting:
-- `/speq-cli`: spec discovery
+- `/speq-cli`: spec discovery and validation
+- `/speq-design-philosophy`: module boundaries, decision ownership, and dependency direction for the implementation design
+- `/speq-writing-guardrails`: prose style
 
-`planner-agent` and `plan-reviewer` invoke their own required skills.
+## Guiding Principles
+
+- **BDD (Gherkin syntax)**: scenarios use GIVEN/WHEN/THEN; integration tests by default, unit tests only for isolated pure computation
+- **RFC 2119 keywords**: THEN steps use MUST, MUST NOT, SHALL, SHALL NOT, SHOULD, SHOULD NOT, MAY (uppercase)
+
+## Rules
+
+- **Read-only investigation**: read code, tests, specs, and docs. Never build, test, or run the software; plan the commands instead.
+- **Short Background**: `## Background` is a concise summary of the context every scenario shares, 3-5 one-line bullets at most. It never encodes features, behavior, or requirements; each of those is a scenario (or a step in one). When a change adds behavior, add or change a scenario, not a Background line. When you rewrite a Background that has grown past this, cut it down in the same `DELTA:CHANGED` block.
+- **Architecture by delta**: never edit `specs/architecture.md`; `/speq-record` merges the delta. When the plan changes no architecture, write no delta.
+- **Proof is tests and manual runs**: `speq` commands (`speq plan validate`, `speq feature get`) check the plan, not the product, so never list them as test or manual evidence.
+- **One copy**: never embed spec content in `plan.md` or `intent.md`; reference the delta files.
+- **Specs describe the software, not its tests**: never encode test suites, Docker setups, or the test environment as scenarios or Background. The plan's Verification section covers testing.
 
 ## Workflow
 
-### 1. Discovery (orchestrator)
-
-Run the speq CLI:
+### 1. Discovery
 
 ```bash
 speq domain list
 speq feature list
-grep -rhE -A3 '^## ADR:|^\*\*(ID|Status):\*\*' specs/_decision/ 2>/dev/null || echo none   # ADR digest, per /speq-cli
 ```
 
-Name the features in the list that relate to the request, per `/speq-cli`'s absence check.
+Read the ADR digest per `/speq-cli`. Name the features that relate to the request, per `/speq-cli`'s absence check. Collect only enough context for good interview questions, not a full exploration.
 
-Note whether `specs/architecture.md` exists. Pass its path, do not read it.
+### 2. Clarifying Interview
 
-Collect only enough context for good interview questions, not a full exploration.
+Ask the user; never assume. Offer alternatives as options where the request leaves a design choice open.
 
-### 2. Clarifying Interview (orchestrator)
+**Gap hunt.** The goal of the interview is to find what the request leaves open, including what the user has not thought of. Before you close it, check each lens below against the request and the discovery results. Ask about every lens that applies and that the request does not settle. Skip a lens that does not apply.
 
-Apply the Socratic Method by asking the user. Never assume. Decompose the problem space with MECE partitioning:
+- **Who and what is affected**: users, callers, and existing features that touch the change
+- **Conflicts**: existing specs, ADRs, or behavior the request contradicts or changes
+- **Edge cases and failures**: empty, invalid, or boundary input, and what happens on error
+- **Boundaries**: what is explicitly out of scope
+- **Compatibility**: breaking changes, migration of existing data or specs
 
-- **Probe**: surface hidden assumptions with open-ended questions
-- **Partition**: present alternative solutions as MECE options
-- **Challenge**: test design tradeoffs with counterexamples
+**Split check.** A plan may be too big when it holds parts that ship and verify on their own (two or more user-visible outcomes where neither needs the other), or when the deltas hold more than about 12 new or changed scenarios. Then ask the user whether to split, and propose the parts. The user decides the scope. On a split, plan the part the user picks, and end its `plan.md` Context with a `Follow-up plans` list (name and one-line scope each).
 
-**Split check.** If the work spans more than one independent phase, or more than about 4 features, propose one plan per phase. Plan the first phase now. Each later plan names the earlier plan in its Existing Context.
+Keep each exchange as one line: `- Q: <question> → A: <answer>`, a few words each.
 
-Keep each exchange as one line: `- Q: <question> → A: <answer>`, a few words each. This is the only copy of the interview: step 3 writes it into `decision-log.md` and the briefs point to it.
-
-### 3. Plan Name (orchestrator)
+### 3. Plan Name
 
 Pattern: `<verb>-<feature-scope>[-<qualifier>]`
-
-Once the name is set, write `specs/_plans/<plan-name>/decision-log.md` with the H1 `# Decision Log: <plan-name>` and an `## Interview` section holding the step 2 lines. Do not paste the interview into any brief.
 
 | Verb | When |
 |------|------|
@@ -59,50 +71,42 @@ Once the name is set, write `specs/_plans/<plan-name>/decision-log.md` with the 
 | `refactor` | Restructure, same behavior |
 | `fix` | Bug or spec mismatch |
 
-### 4. Delegate to planner-agent
+Once the name is set, write `specs/_plans/<plan-name>/intent.md` with the H1 `# Intent: <plan-name>` and an `## Interview` section holding the step 2 lines. This is the only copy of the interview.
 
-Spawn the planner sub-agent with everything it needs:
+### 4. Author the Plan
 
-```
-Delegate to planner-agent — Plan <plan-name>
+Write the artifacts in this order. Do not start a step before the previous one is done.
 
-## Plan Name
-<plan-name>
+1. **Read the context.** `speq feature get <domain>/<feature>` for each related feature. If `specs/architecture.md` exists, read the sections the plan touches. Check the plan against every accepted ADR in the digest, per ADR rule 4 in `adr-rules.md` in `/speq-formats`; read the full fragment of any ADR the plan touches. Before you author a NEW feature or state that no spec covers a behavior, run `/speq-cli`'s absence check.
 
-## User Intent
-<1-3 sentence summary of what the user wants>
+2. **Spec deltas.** For each feature in scope, write `specs/_plans/<plan-name>/<domain>/<feature>/spec.md`:
+   - The feature exists → DELTA markers per `references/delta-template.md`.
+   - It does not → a full spec per `references/feature-template.md`.
 
-## Clarifying Interview Results
-Read `## Interview` in `specs/_plans/<plan-name>/decision-log.md`. Keep it as is. Do not copy it into other files.
+   **Prose drift check**: after a scenario delta on an existing feature, check that feature's `## Background` and `# Feature: <name>` description. When the scenario change makes either inaccurate, add a `DELTA:CHANGED` block for that section too.
 
-## Existing Context
-<the exact `speq domain list` / `speq feature list` / `speq feature get` calls you ran, each followed by its output (the ADR digest, not the full `speq decision-log show`; name features you want read, do not paste `speq feature get` output); name `specs/architecture.md` by path when it exists, do not paste it>
+3. **Architecture delta.** Shape every new module, interface, or boundary per `/speq-design-philosophy`'s Quick Diagnostic. If the plan changes a component, boundary, interface, data flow, constraint, or external dependency, write `specs/_plans/<plan-name>/architecture.md` per `architecture-delta-template.md` in `/speq-formats`. Copy each changed section from `specs/architecture.md`, edit it, and set the BASE hash with `git hash-object specs/architecture.md`. If `specs/architecture.md` is absent, write no delta.
 
-## External Research
-<any research already conducted, or "none — agent to research as needed">
+4. **Validate the deltas**: `speq plan validate <plan-name>`. Fix failures before you go on. Common fixes: close delta markers (`<!-- /DELTA:CHANGED -->`, `<!-- /DELTA:NEW -->`, `<!-- /DELTA:REMOVED -->`), uppercase RFC 2119 keywords, bold step keywords (`*GIVEN*`, `*WHEN*`, `*THEN*`, `*AND*`).
 
-## Your Task
-Produce spec deltas and plan.md per the `planner-agent` workflow. Tag tasks requiring deep reasoning with [expert] so the implementer orchestrator can route them to implementer-expert-agent.
+5. **Directions.** Add every choice you made without a user answer to `## Directions` in `intent.md`, per `references/intent-template.md`. Gaps you found while authoring land here too. Keep the section short: the template's rules say what earns an entry. Before you mark a direction `ADR: yes`, read the ADR rules in `adr-rules.md` in `/speq-formats`. Most plans mark none.
 
-If the interview agreed a split, end `plan.md` Context with a `Follow-up plans` list (name and one-line scope each).
+6. **`plan.md` body.** Write every section of `references/plan-template.md`:
+   - Context, Features (referencing the delta files), and Impact (breaking changes called out, or "None").
+   - Dead Code Removal: existing code and tests the change or the new tests make redundant.
+   - Verification. Scenario Coverage maps each new or changed scenario to an integration test (file path + test name), one test per scenario by default. Manual Testing gives concrete commands against the built software and their expected output, one per feature. Checklist commands come from `specs/mission.md`.
 
-Return the list of files created and the validation result.
-```
+7. **Final validation**: `speq plan validate <plan-name>`.
 
-### 5. Review planner-agent output (orchestrator)
+### 5. Plan Review
 
-When the sub-agent returns:
+Spawn the plan reviewer once as a sub-agent. There is one review round.
+Set its model to `opus`. <!-- claude-only -->
 
-1. Confirm `speq plan validate <plan-name>` passed. Re-run if uncertain.
-2. List all created files.
-3. If the sub-agent escalated a question, resolve it with the user and respawn with the clarification.
-
-### 6. Adversarial Plan Review (orchestrator)
-
-Spawn `plan-reviewer` once to challenge the plan before handoff. There is one review round.
+Prompt:
 
 ```
-Delegate to plan-reviewer — Review <plan-name>
+Invoke /speq-plan-review and follow it.
 
 ## Plan Name
 <plan-name>
@@ -111,54 +115,30 @@ Delegate to plan-reviewer — Review <plan-name>
 <verbatim original request>
 
 ## Clarifying Interview Results
-Read `## Interview` in `specs/_plans/<plan-name>/decision-log.md`.
+Read `specs/_plans/<plan-name>/intent.md`.
 
 ## Plan Artifacts
-plan.md, decision-log.md, every specs/_plans/<plan-name>/**/spec.md delta, and specs/_plans/<plan-name>/architecture.md when present
+plan.md, intent.md, every specs/_plans/<plan-name>/**/spec.md delta, and specs/_plans/<plan-name>/architecture.md when present
 ```
 
-It writes its findings to `specs/_plans/<plan-name>/review/review.md` and returns only `PLAN REVIEW: BLOCKERS: <n>, FINDINGS: <n>, INTENT: <n> — <path>`. `INTENT` counts the BLOCKERs on the Intent Fidelity axis alone.
+It writes `specs/_plans/<plan-name>/plan-review.md` and returns `PLAN REVIEW: BLOCKERS: <n>, FINDINGS: <n>, INTENT: <n> — <path>`. `INTENT` counts the BLOCKERs on the Intent Fidelity axis alone.
 
-**If `INTENT > 0`:** the reviewer holds that the plan solves a different problem than the one asked. Read the Intent-Fidelity findings from the review file. Ask the user about them before any fix pass. The user accepts the plan as-is, or gives guidance and you respawn `planner-agent` manually.
+- **`INTENT > 0`:** the reviewer holds that the plan solves a different problem than the one asked. Ask the user about those findings before any fix. The user accepts the plan as-is, or gives guidance and you revise.
+- **`INTENT == 0` and `BLOCKERS > 0`:** fix the blockers per `references/revision-mode.md`. Do not review again.
+- **Any blocker you could not resolve, or a failed `speq plan validate`:** ask the user, one line of context each plus a pointer to the review file.
+- **Non-blocking findings** never loop and are never persisted. Carry them into step 7's report. An `[UNSTATED_ASSUMPTION]` or `[INTENT_GAP]` finding becomes an entry in `## Directions`, whatever its severity.
 
-**If `INTENT == 0` and `BLOCKERS > 0`:** respawn `planner-agent` once with the path to `review/review.md`. Instruct it to read the BLOCKER findings from that file, execute each `Fix:` line, log a `[plan-review]`-prefixed `## Review Findings` entry in `decision-log.md` only for a blocker whose fix changed a design decision, re-run `speq plan validate`, and return its per-finding `Resolved:`/`Could not resolve:` report per `/speq-planning`'s Revision Mode. Do not review again.
+### 6. Review Directions
 
-**Any `Could not resolve:` line, or a failed `speq plan validate`:** ask the user, one line of context each plus a pointer to the review file. The user accepts the risk and proceeds, or gives guidance and you respawn `planner-agent` manually.
+Present every direction to the user, grouped by topic, each with what it affects in the plan. Ask which ones to change. For each correction, rewrite the direction with the user's answer, revise the deltas and `plan.md` where it affects them, and run `speq plan validate <plan-name>`. A direction the user does not correct stands.
 
-**Non-blocking findings** never loop and are never persisted. Read them from the review file and carry them into step 7's report.
-
-### 7. Explain next steps (orchestrator)
+### 7. Explain Next Steps
 
 Print to the terminal:
 
 - `plan.md`'s `## Impact` section
-- Print `ADR candidates: none`, or list the title of each `Promotes to ADR: yes` entry in `decision-log.md`
-- Report non-blocking findings from step 6, read from the review file
-- If step 6 ran a fix pass, name it in one line ("N review findings fixed") and do not restate each one
-- Tell the user to run `/speq-implement <plan-name>` to continue
-- Tell the user to run `/clear` to implement with a fresh context window
-
-## Spec Hierarchy (reference)
-
-```
-specs/
-├── <domain>/<feature>/spec.md     # Permanent
-├── _plans/<plan-name>/            # Active
-└── _recorded/<plan-name>/         # Archived
-```
-
-## Work Split (reference)
-
-| Step | Performed by |
-|------|--------------|
-| Discovery, interview, coordination | This skill |
-| Spec delta authoring, plan context and decision log, task decomposition | `planner-agent` sub-agent |
-| Adversarial review, revision loop | `plan-reviewer` sub-agent |
-
-## Anti-Patterns
-
-| Pattern | Why Wrong |
-|---------|-----------|
-| Skipping the clarifying interview | Content comes from user answers, never assumptions |
-| Running a second review after the fix pass | One review, one fix pass; unresolved findings go to the user |
-| Persisting non-blocking findings or looping on them | Report-only; they never gate |
+- `ADR candidates: none`, or each `ADR: yes` direction
+- The non-blocking findings from step 5
+- The number of directions the user corrected in step 6
+- If step 5 ran a fix pass, one line ("N review findings fixed")
+- Tell the user to run `/speq-implement <plan-name>` to continue, after `/clear` for a fresh context window

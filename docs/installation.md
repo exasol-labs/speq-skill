@@ -17,11 +17,6 @@ Open Claude Code or Codex. Start with `/speq:mission` in Claude Code, or type `$
 - macOS or Linux
 - Claude Code CLI or Codex CLI/App, installed and configured
 
-## Companions
-
-- Optional: [Serena MCP](https://github.com/oraios/serena), installed globally. See [MCP Servers](./mcp-servers.md). `uv` ([astral.sh/uv](https://astral.sh/uv/)) is needed only if the `serena` command is missing and you let the setup script install it.
-- Optional: [Context7 MCP](https://github.com/upstash/context7), installed globally. The setup script does not install it. See [MCP Servers](./mcp-servers.md). Context7 sends your documentation queries to a hosted service.
-
 ## What the setup script does
 
 | Component | Location |
@@ -34,7 +29,6 @@ Open Claude Code or Codex. Start with `/speq:mission` in Claude Code, or type `$
 
 - It downloads a pre-built `speq` binary (Linux x86_64/ARM64, macOS Apple Silicon).
 - It installs the plugin for Claude Code and Codex, and registers the local Codex marketplace when Codex is installed.
-- It asks before it installs Serena, when Serena is not registered yet.
 
 ## Install from source
 
@@ -59,7 +53,7 @@ In Claude Code, `/plugin` shows the `speq:*` skills. In Codex, type `$` and sele
 
 ## Update
 
-Re-run the setup script and run `/speq:audit` to update the spec library.
+Re-run the setup script.
 
 ## Uninstall
 

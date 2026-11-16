@@ -1,17 +1,20 @@
 ---
 name: speq-implement-pr
 description: "Builds a planned feature on its feat/plan-name branch as a follow-up to /speq-plan-pr: implements, bumps the version, runs the real test suites, records the specs if green, comments the verification, and marks the PR ready. Run again to resume. Arg: plan name, PR number, or branch name."
-model: sonnet
 ---
 
-# Spec Implementer, PR flow (Orchestrator)
+# Spec Implementer, PR flow
 
-You are a thin orchestrator on top of `speq-implement`. Drive a plan on its existing `feat/<plan-name>` branch to a ready PR through the existing skills, run unchanged:
+## User Arguments
+
+$ARGUMENTS
+
+You run on top of `speq-implement`. Drive a plan on its existing `feat/<plan-name>` branch to a ready PR through the existing skills, run unchanged:
 - `/speq-implement` builds and verifies. `/speq-record` merges the specs. You run every git/`gh` action yourself, per `/speq-git-operations`.
 - Record only after the project's real test suites are green.
 - Stop on the first failed step and report it. Running the skill again resumes the work.
 
-## Required Skills (for the orchestrator)
+## Required Skills
 
 Invoke before starting:
 - `/speq-cli`: spec discovery, to resolve plan names
@@ -24,11 +27,11 @@ Invoke before starting:
 
 ### 1. Resolve Target
 
-`$1` empty → ask the user which plan. Otherwise check out the target (for a bare plan name, that is its `feat/<plan-name>` branch):
+No user arguments → ask the user which plan. Otherwise check out the target (for a bare plan name, that is its `feat/<plan-name>` branch):
 
 ```
 Run — operation: checkout (per /speq-git-operations)
-  target: <$1: a plan name (→ feat/<plan-name>), PR number, or branch name>
+  target: <the user arguments: a plan name (→ feat/<plan-name>), PR number, or branch name>
 ```
 
 If `checkout` reports not-found (the plan exists only locally and was never pushed):
@@ -42,15 +45,15 @@ If `specs/_recorded/*-<plan-name>/` exists and `specs/_plans/<plan-name>/` does 
 
 ### 2. Implement
 
-If `verification-report.md` exists in the plan directory and every task in `tasks.md` is `[x]`, skip this step.
+If `verification-report.md` exists in the plan directory and every task in `tasks.md` is checked, skip this step.
 
-Otherwise invoke `/speq-implement <plan-name>` and let it run to completion. If `tasks.md` exists, it resumes from the first incomplete task.
+Otherwise invoke `/speq-implement <plan-name>` and let it run to completion. It resumes from the first unchecked task.
 
 ### 3. Bump Version
 
 Skip this step if the version file already differs from the default branch.
 
-Read the tech stack in `specs/mission.md` and bump the version in that stack's version file (for example `Cargo.toml` for Rust, `package.json` for Node, `pyproject.toml` for Python). Apply the next version per `/speq-git-operations` § PR title and version bump. Do not take the version from the plan's spec deltas. Run a build to keep the lockfile in sync, redirecting its output to a log: `mkdir -p target && <build-command> > target/speq-build.log 2>&1`. Branch on the exit code. If a report quotes output, quote at most `tail -n 30` of the log.
+Read the tech stack in `specs/mission.md` and bump the version in that stack's version file (for example `Cargo.toml` for Rust, `package.json` for Node, `pyproject.toml` for Python). Apply the next version per `/speq-git-operations` § PR title and version bump. Do not take the version from the plan's spec deltas. Run a build to keep the lockfile in sync, per `/speq-code-guardrails` § Running Suites.
 
 ### 4. Commit Evidence
 
@@ -59,8 +62,7 @@ Commit and push now, so the evidence artifacts reach git history before `/speq-r
 ```
 Run — operation: commit (per /speq-git-operations)
   paths: implementation files, version bump, and the whole specs/_plans/<plan-name>/
-         directory, not an itemized subset, except specs/_plans/<plan-name>/notes/
-         (local working state, never committed)
+         directory, not an itemized subset
   message: <type>(<scope>): implement <plan-name>
 
 Run — operation: push (per /speq-git-operations)
@@ -68,9 +70,9 @@ Run — operation: push (per /speq-git-operations)
 
 ### 5. Test and Record
 
-1. **Run the suites.** Run the project's real test suites (per `specs/mission.md § Commands`, typically an integration suite and an end-to-end suite), redirecting each suite's output to a log: `mkdir -p target && <suite-command> > target/speq-<suite>.log 2>&1`. Judge green or red by exit code. If any suite is red, report the failed suites with at most `tail -n 30` of the relevant log, **stop**, and leave the plan unrecorded. After the user fixes the code, run this skill again.
-2. **Record.** Invoke `/speq-record <plan-name>`. If it asks its library-threshold split question, answer yes (split). Recording accepts the ADR candidates on the plan PR. Your run is the user's go-ahead, so do not stop for an ADR question. If it returns `Recording failed: <reason>` (for example a stale architecture delta base), **stop** and report it. After the user fixes the delta or the plan, run this skill again.
-3. Note the `Archive:` path `/speq-record` returns.
+1. **Run the suites.** Run the project's real test suites (per `specs/mission.md § Commands`, typically an integration suite and an end-to-end suite), per `/speq-code-guardrails` § Running Suites. If any suite is red, report the failed suites with their log tails, **stop**, and leave the plan unrecorded. After the user fixes the code, run this skill again.
+2. **Record.** Invoke `/speq-record <plan-name>`. Recording accepts the ADR candidates on the plan PR. If it hits a library threshold, it applies its own proposed split. If it stops on a failure (for example a stale architecture delta base), **stop** and report it. Run this skill again after the user decides or fixes the plan.
+3. Note the archive path from `/speq-record`'s `✓ Plan archived:` line.
 
 ### 6. Ship
 
@@ -87,7 +89,7 @@ Run — operation: push (per /speq-git-operations)
 
    `ship-ready` reuses the draft PR `speq-plan-pr` opened (or opens one if the plan was only implemented locally) and marks it ready. A commit with nothing to commit is a no-op, so running this step again is safe.
 
-2. **Comment.** Post the verification summary. Build it from `<archive-path>/verification-report.md`, where `<archive-path>` is the `Archive:` path from step 5 or, when step 1 skipped ahead, the match of `specs/_recorded/*-<plan-name>/`. Compose it per `/speq-writing-guardrails` and `/speq-implement`'s `references/implementation-summary-template.md`:
+2. **Comment.** Post the verification summary. Build it from `<archive-path>/verification-report.md`, where `<archive-path>` is the archive path from step 5 or, when step 1 skipped ahead, the match of `specs/_recorded/*-<plan-name>/`. Compose it per `/speq-writing-guardrails` and `/speq-implement`'s `references/implementation-summary-template.md`:
 
    ```
    Run — operation: comment-pr (per /speq-git-operations)
@@ -95,28 +97,3 @@ Run — operation: push (per /speq-git-operations)
    ```
 
 3. Report the finished PR and leave it for the user's review. Never merge it.
-
-## Spec Hierarchy (reference)
-
-```
-specs/
-├── <domain>/<feature>/spec.md            # Permanent (after record)
-├── architecture.md                       # Permanent, changed by the recorder applying the plan's architecture delta
-├── _plans/<plan-name>/                   # Active until recorded: committed whole at step 4 except notes/
-│   ├── architecture.md                   # Architecture delta, present only when the plan changes the architecture
-│   ├── tasks.md                          # Created by speq-implement
-│   ├── review-findings.md                # Created by code-reviewer
-│   ├── review/review.md                  # Created by plan-reviewer
-│   ├── notes/<group-letter>.md           # Rotation hand-off notes, created by implementer agents; local, never committed
-│   └── verification-report.md            # Created by speq-implement
-└── _recorded/NNN-<plan-name>/            # Archived by speq-record (gitignored by default)
-```
-
-## Work Split (reference)
-
-| Step | Performed by |
-|------|--------------|
-| Target resolution, version bump, coordination | This skill (pins Sonnet) |
-| Task breakdown, coding, review | `speq-implement` |
-| Spec merge and archive | `speq-record` |
-| Branch, commit, push, PR create/update | This skill, directly, per `/speq-git-operations` |

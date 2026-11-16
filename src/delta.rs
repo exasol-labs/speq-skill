@@ -219,9 +219,9 @@ fn first_non_empty_line(content: &str) -> Option<&str> {
 /// One message per rule violation, empty when every block is legal.
 ///
 /// This function holds the `(DeltaKind, DeltaAnchor)` legality matrix and the
-/// repeated-anchor rule that `speq plan validate` enforces. The recorder agent
-/// applies the same rules by hand from the anti-pattern table in
-/// `/speq-spec-merge`, so a rule change here needs the same change there. The
+/// repeated-anchor rule that `speq plan validate` enforces. `/speq-record`
+/// applies the same rules by hand from its merge table and anti-patterns,
+/// so a rule change here needs the same change there. The
 /// rules hold against the delta file alone and read no target spec. Whether an
 /// anchor exists in the target spec is settled at merge time instead.
 ///

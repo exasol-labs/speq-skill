@@ -47,7 +47,7 @@ Report absence only when all three steps find nothing. Name the features, scenar
 Do not dump the whole decision log. List the accepted ADRs once per run:
 
 ```bash
-grep -rhE -A3 '^## ADR:|^\*\*(ID|Status):\*\*' specs/_decision/ 2>/dev/null || echo none
+grep -rhE -A4 '^## ADR:|^### Decision' specs/_decision/ 2>/dev/null | grep -vE '^(--|\s*|\*\*Plan:.*|### (Options|Consequences).*)$' || echo none
 ```
 
 It prints each ADR's title, ID, status, and Decision line. Read a full fragment only when its title or a term grep matches the topic. Run `speq decision-log show` at most once per run, and never pipe it through repeated `sed` or `grep` passes.

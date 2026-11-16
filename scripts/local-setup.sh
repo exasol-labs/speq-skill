@@ -7,7 +7,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
-# Shared helpers (info, warn, offer_mcp_servers, ...). setup.sh only runs
+# Shared helpers (info, warn, ...). setup.sh only runs
 # main when executed, so sourcing it defines functions and defaults only.
 # The variables below override its defaults.
 source "$PROJECT_ROOT/setup.sh"
@@ -115,9 +115,6 @@ mkdir -p "$INSTALL_DIR"
 cp -r "dist/marketplace/." "$INSTALL_DIR/"
 register_codex_plugin
 install_codex_skills
-
-# 5b. Serena comes from the global install
-offer_mcp_servers
 
 # 6. Verify installation
 echo ""

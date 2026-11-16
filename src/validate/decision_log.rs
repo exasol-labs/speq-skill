@@ -6,15 +6,11 @@ use thiserror::Error;
 #[derive(Debug)]
 pub struct DecisionLogValidationResult {
     pub errors: Vec<DecisionLogError>,
-    pub warnings: Vec<DecisionLogWarning>,
 }
 
 impl DecisionLogValidationResult {
     pub fn new() -> Self {
-        Self {
-            errors: Vec::new(),
-            warnings: Vec::new(),
-        }
+        Self { errors: Vec::new() }
     }
 
     pub fn is_success(&self) -> bool {
@@ -23,10 +19,6 @@ impl DecisionLogValidationResult {
 
     pub fn add_error(&mut self, error: DecisionLogError) {
         self.errors.push(error);
-    }
-
-    pub fn add_warning(&mut self, warning: DecisionLogWarning) {
-        self.warnings.push(warning);
     }
 }
 
@@ -38,23 +30,17 @@ impl Default for DecisionLogValidationResult {
 
 #[derive(Debug, Error, PartialEq)]
 pub enum DecisionLogError {
-    // --- Per-plan decision log (`decision-log.md`) ---
-    #[error("Missing H1 heading '# Decision Log: {plan_name}'")]
-    PlanLogMissingH1 { plan_name: String },
-
-    #[error(
-        "H1 heading does not match plan name: expected '# Decision Log: {expected}', found '{found}'"
-    )]
-    PlanLogH1Mismatch { expected: String, found: String },
-
-    #[error(
-        "No valid sections found (expected ## Interview, ## Design Decisions, or ## Review Findings)"
-    )]
-    PlanLogNoSections,
-
     // --- Permanent decision fragments (`specs/_decision/*.md`) ---
-    #[error("Fragment '{fragment}' is missing its H1 heading '# Decisions: <plan-name>'")]
+    #[error("Fragment '{fragment}' does not start with its H1 heading '# Decisions: <plan-name>'")]
     FragmentMissingH1 { fragment: String },
+
+    #[error("Fragment file '{fragment}' is not named 'NNN-<plan-name>.md' with a numeric prefix")]
+    FragmentFileName { fragment: String },
+
+    #[error(
+        "Fragment '{fragment}' ADR ID '{slug}' is not a kebab-case slug (lowercase letters and digits joined by single hyphens)"
+    )]
+    InvalidSlug { fragment: String, slug: String },
 
     #[error(
         "Fragment '{fragment}' ADR '{title}' has No identity: missing required '**ID:**' field"
@@ -78,29 +64,6 @@ pub enum DecisionLogError {
     )]
     InvalidStatus { adr: String, status: String },
 }
-
-#[derive(Debug, PartialEq)]
-pub enum DecisionLogWarning {
-    PlanLogInvalidPromotesValue { value: String },
-}
-
-impl std::fmt::Display for DecisionLogWarning {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            DecisionLogWarning::PlanLogInvalidPromotesValue { value } => {
-                write!(
-                    f,
-                    "Invalid 'Promotes to ADR' value '{value}' (expected 'yes' or 'no')"
-                )
-            }
-        }
-    }
-}
-
-const VALID_PLAN_LOG_SECTIONS: &[&str] =
-    &["## Interview", "## Design Decisions", "## Review Findings"];
-
-const PROMOTES_TO_ADR_PREFIX: &str = "Promotes to ADR:";
 
 const ADR_HEADING_PREFIX: &str = "## ADR:";
 const FRAGMENT_H1_PREFIX: &str = "# Decisions:";
@@ -157,6 +120,11 @@ pub fn validate_fragments(fragments: &[(String, String)]) -> DecisionLogValidati
 
     // Pass 1: per-fragment structural validation.
     for (name, content) in fragments {
+        if !is_valid_fragment_name(name) {
+            result.add_error(DecisionLogError::FragmentFileName {
+                fragment: name.clone(),
+            });
+        }
         if !fragment_has_valid_h1(content) {
             result.add_error(DecisionLogError::FragmentMissingH1 {
                 fragment: name.clone(),
@@ -234,60 +202,6 @@ pub fn render_permanent_log(fragments: &[(String, String)]) -> String {
         }
     }
     out
-}
-
-/// Validate a per-plan decision log (`decision-log.md`).
-///
-/// Requires the H1 `# Decision Log: <plan-name>` and at least one of
-/// `## Interview`, `## Design Decisions`, or `## Review Findings`. Warns (does
-/// not fail) on a `Promotes to ADR:` value that is not `yes`/`no`. No date is
-/// required.
-pub fn validate_plan_log(content: &str, plan_name: &str) -> DecisionLogValidationResult {
-    let mut result = DecisionLogValidationResult::new();
-    let expected_h1 = format!("# Decision Log: {plan_name}");
-
-    let mut h1_found = false;
-    let mut section_found = false;
-
-    for raw_line in content.lines() {
-        let line = raw_line.trim_end();
-
-        if !h1_found && is_h1_line(line) {
-            h1_found = true;
-            if line.trim() != expected_h1 {
-                result.add_error(DecisionLogError::PlanLogH1Mismatch {
-                    expected: expected_h1.clone(),
-                    found: line.trim().to_string(),
-                });
-            }
-            continue;
-        }
-
-        if is_plan_log_section(line) {
-            section_found = true;
-        }
-
-        if let Some(value) = extract_promotes_value(line) {
-            let normalized = value.trim().to_lowercase();
-            if normalized != "yes" && normalized != "no" {
-                result.add_warning(DecisionLogWarning::PlanLogInvalidPromotesValue {
-                    value: value.trim().to_string(),
-                });
-            }
-        }
-    }
-
-    if !h1_found {
-        result.add_error(DecisionLogError::PlanLogMissingH1 {
-            plan_name: plan_name.to_string(),
-        });
-    }
-
-    if !section_found {
-        result.add_error(DecisionLogError::PlanLogNoSections);
-    }
-
-    result
 }
 
 /// Everything collected about a single `## ADR:` block during pass 1.
@@ -371,6 +285,14 @@ fn validate_adr_block(
 
     let identity = id.clone().unwrap_or_else(|| block.title.clone());
 
+    if let Some(slug) = &id
+        && !is_kebab_case(slug)
+    {
+        result.add_error(DecisionLogError::InvalidSlug {
+            fragment: fragment.to_string(),
+            slug: slug.clone(),
+        });
+    }
     if id.is_none() {
         result.add_error(DecisionLogError::AdrMissingId {
             fragment: fragment.to_string(),
@@ -423,33 +345,38 @@ fn validate_adr_block(
     }
 }
 
-/// A fragment's first H1 must be `# Decisions: <plan-name>`.
+/// A fragment's first non-empty line must be `# Decisions: <plan-name>`.
 fn fragment_has_valid_h1(content: &str) -> bool {
-    for line in content.lines() {
-        let trimmed = line.trim_start();
-        if is_h1_line(trimmed) {
-            return trimmed.starts_with(FRAGMENT_H1_PREFIX);
+    content
+        .lines()
+        .map(str::trim_start)
+        .find(|line| !line.is_empty())
+        .is_some_and(|line| line.starts_with(FRAGMENT_H1_PREFIX))
+}
+
+/// A fragment file is named `NNN-<plan-name>.md`: a numeric prefix, a hyphen,
+/// and a non-empty plan name.
+fn is_valid_fragment_name(name: &str) -> bool {
+    let Some(stem) = name.strip_suffix(".md") else {
+        return false;
+    };
+    match stem.split_once('-') {
+        Some((prefix, plan)) => {
+            !prefix.is_empty() && prefix.chars().all(|c| c.is_ascii_digit()) && !plan.is_empty()
         }
+        None => false,
     }
-    false
 }
 
-fn is_h1_line(line: &str) -> bool {
-    let trimmed = line.trim_start();
-    trimmed.starts_with("# ")
-}
-
-fn is_plan_log_section(line: &str) -> bool {
-    let trimmed = line.trim();
-    VALID_PLAN_LOG_SECTIONS.contains(&trimmed)
-}
-
-fn extract_promotes_value(line: &str) -> Option<&str> {
-    let idx = line.find(PROMOTES_TO_ADR_PREFIX)?;
-    let after = &line[idx + PROMOTES_TO_ADR_PREFIX.len()..];
-    let trimmed = after.trim();
-    let unbolded = trimmed.strip_prefix("**").unwrap_or(trimmed);
-    Some(unbolded.trim())
+/// Lowercase ASCII letters and digits in hyphen-separated words.
+fn is_kebab_case(slug: &str) -> bool {
+    !slug.is_empty()
+        && slug.split('-').all(|word| {
+            !word.is_empty()
+                && word
+                    .chars()
+                    .all(|c| c.is_ascii_lowercase() || c.is_ascii_digit())
+        })
 }
 
 /// Extract a `**Name:**` field value, anchoring to the START of the trimmed
@@ -483,6 +410,40 @@ fn numeric_prefix(name: &str) -> u32 {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn fragment_name_rule() {
+        for name in ["001-plan-a.md", "7-x.md"] {
+            assert!(is_valid_fragment_name(name), "{name}");
+        }
+        for name in [
+            "plan-a.md",
+            "001-.md",
+            "-plan.md",
+            "a01-plan.md",
+            "001-plan-a.txt",
+        ] {
+            assert!(!is_valid_fragment_name(name), "{name}");
+        }
+    }
+
+    #[test]
+    fn kebab_case_rule() {
+        for slug in ["use-line-scanner", "v2-scanner"] {
+            assert!(is_kebab_case(slug), "{slug}");
+        }
+        for slug in [
+            "",
+            "Use-scanner",
+            "use_scanner",
+            "use--scanner",
+            "-use",
+            "use-",
+            "use scanner",
+        ] {
+            assert!(!is_kebab_case(slug), "{slug}");
+        }
+    }
 
     fn fragment(name: &str, content: &str) -> (String, String) {
         (name.to_string(), content.to_string())
@@ -641,7 +602,6 @@ mod tests {
         let a = "# Decisions: plan-a\n\n## ADR: Use scanner\n\n**ID:** use-line-scanner\n**Plan:** plan-a\n**Status:** Accepted\n\n### Context\n\nx\n\n### Decision\n\ny\n";
         let result = validate_fragments(&[fragment("001-plan-a.md", a)]);
         assert!(result.is_success(), "errors: {:?}", result.errors);
-        assert!(result.warnings.is_empty());
     }
 
     #[test]
@@ -696,71 +656,5 @@ mod tests {
         assert!(!out.contains("# Decisions:"), "out: {out}");
         assert!(out.contains("**ID:** use-line-scanner"));
         assert!(out.contains("### Decision"));
-    }
-
-    // --- plan-log validation ---
-
-    const VALID_PLAN_LOG: &str = "# Decision Log: my-plan\n\n## Design Decisions\n\n- **Decision:** Use line scanning.\n- **Promotes to ADR:** yes\n";
-
-    #[test]
-    fn valid_plan_log_passes() {
-        let result = validate_plan_log(VALID_PLAN_LOG, "my-plan");
-        assert!(result.is_success(), "errors: {:?}", result.errors);
-        assert!(result.warnings.is_empty());
-    }
-
-    #[test]
-    fn plan_log_missing_h1_fails() {
-        let content = "## Design Decisions\n";
-        let result = validate_plan_log(content, "my-plan");
-        assert!(result.errors.contains(&DecisionLogError::PlanLogMissingH1 {
-            plan_name: "my-plan".to_string(),
-        }));
-    }
-
-    #[test]
-    fn plan_log_h1_mismatch_fails() {
-        let content = "# Decision Log: wrong-name\n\n## Design Decisions\n";
-        let result = validate_plan_log(content, "my-plan");
-        assert!(result.errors.iter().any(|e| matches!(
-            e,
-            DecisionLogError::PlanLogH1Mismatch { expected, found }
-                if expected == "# Decision Log: my-plan" && found == "# Decision Log: wrong-name"
-        )));
-    }
-
-    #[test]
-    fn plan_log_no_sections_fails() {
-        let content = "# Decision Log: my-plan\n";
-        let result = validate_plan_log(content, "my-plan");
-        assert!(result.errors.contains(&DecisionLogError::PlanLogNoSections));
-    }
-
-    #[test]
-    fn plan_log_accepts_interview_section() {
-        let content = "# Decision Log: my-plan\n\n## Interview\n\n- Q: x\n";
-        let result = validate_plan_log(content, "my-plan");
-        assert!(result.is_success(), "errors: {:?}", result.errors);
-    }
-
-    #[test]
-    fn plan_log_bad_promote_warns_not_errors() {
-        let content =
-            "# Decision Log: my-plan\n\n## Design Decisions\n\n- **Promotes to ADR:** maybe\n";
-        let result = validate_plan_log(content, "my-plan");
-        assert!(result.is_success(), "errors: {:?}", result.errors);
-        assert_eq!(result.warnings.len(), 1);
-        assert!(matches!(
-            &result.warnings[0],
-            DecisionLogWarning::PlanLogInvalidPromotesValue { value } if value == "maybe"
-        ));
-    }
-
-    #[test]
-    fn plan_log_promote_yes_or_no_case_insensitive() {
-        let content = "# Decision Log: my-plan\n\n## Design Decisions\n\n- **Promotes to ADR:** YES\n- **Promotes to ADR:** No\n";
-        let result = validate_plan_log(content, "my-plan");
-        assert!(result.is_success());
-        assert!(result.warnings.is_empty());
     }
 }

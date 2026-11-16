@@ -48,10 +48,8 @@ setup_dirs() {
     mkdir -p "$MARKETPLACE_DIR/bin"
     mkdir -p "$CLAUDE_PLUGIN_DIR/.claude-plugin"
     mkdir -p "$CLAUDE_PLUGIN_DIR/skills"
-    mkdir -p "$CLAUDE_PLUGIN_DIR/agents"
     mkdir -p "$CODEX_PLUGIN_DIR/.codex-plugin"
     mkdir -p "$CODEX_PLUGIN_DIR/skills"
-    mkdir -p "$CODEX_PLUGIN_DIR/agents"
     mkdir -p "$(dirname "$CODEX_MARKETPLACE_FILE")"
 }
 
@@ -83,6 +81,7 @@ transform_common_markdown() {
         sed_in_place "s/^name: $source_name$/name: speq:$target_name/" "$file"
     else
         sed_in_place "s/^name: $source_name$/name: $target_name/" "$file"
+        sed_in_place 's/ <!-- claude-only -->//' "$file"
     fi
     namespace_slash_commands "$file"
 }
@@ -90,6 +89,8 @@ transform_common_markdown() {
 transform_codex_markdown() {
     local file="$1"
 
+    # Lines marked claude-only do not apply to Codex. Drop them before the rename below.
+    sed_in_place '/<!-- claude-only -->/d' "$file"
     sed_in_place 's/Claude Code/Codex/g' "$file"
     perl -0pi -e 's{(?<![A-Za-z0-9_./-])/speq:}{\$speq:}g' "$file"
     sed_in_place 's/AskUserQuestion/ask the user/g' "$file"
@@ -100,28 +101,9 @@ transform_codex_markdown() {
     sed_in_place 's/TaskList/review the current session plan/g' "$file"
     sed_in_place 's/Task(/spawn_agent(/g' "$file"
     sed_in_place 's/subagent_type=/agent_type=/g' "$file"
-}
-
-set_codex_skill_model() {
-    local file="$1"
-    local skill_name="$2"
-
-    case "$skill_name" in
-        speq-plan|speq-implement|speq-record|speq-plan-pr|speq-implement-pr|speq-audit)
-            sed_in_place 's/^model: sonnet$/model: gpt-5.4/' "$file"
-            if ! grep -q '^effort:' "$file"; then
-                if [[ "$OSTYPE" == "darwin"* ]]; then
-                    sed -i '' '/^model: gpt-5.4$/a\
-effort: medium
-' "$file"
-                else
-                    sed -i '/^model: gpt-5.4$/a effort: medium' "$file"
-                fi
-            fi
-            ;;
-        *)
-            ;;
-    esac
+    # Models are set for Claude only; Codex uses the user's configured model.
+    sed_in_place '/^model: /d' "$file"
+    sed_in_place '/^effort: /d' "$file"
 }
 
 copy_skill_for_platform() {
@@ -147,7 +129,6 @@ copy_skill_for_platform() {
             transform_common_markdown "$file" "$source_name" "$target_name" "$platform"
             if [[ "$platform" == "codex" ]]; then
                 transform_codex_markdown "$file"
-                set_codex_skill_model "$file" "$source_name"
             fi
         done
     else
@@ -168,71 +149,6 @@ copy_skills() {
     done
 }
 
-set_codex_agent_model() {
-    local file="$1"
-    local filename="$2"
-
-    case "$filename" in
-        planner-agent.md|plan-reviewer.md|implementer-expert-agent.md|code-reviewer.md|audit-agent.md|architecture-agent.md)
-            sed_in_place 's/^model: .*/model: gpt-5.5/' "$file"
-            ;;
-        implementer-agent.md|recorder-agent.md)
-            sed_in_place 's/^model: .*/model: gpt-5.4/' "$file"
-            ;;
-        *)
-            ;;
-    esac
-}
-
-copy_agents_for_platform() {
-    local platform="$1"
-    local plugin_dir
-
-    case "$platform" in
-        claude) plugin_dir="$CLAUDE_PLUGIN_DIR" ;;
-        codex) plugin_dir="$CODEX_PLUGIN_DIR" ;;
-        *) log_error "Unknown platform: $platform"; exit 1 ;;
-    esac
-
-    if [[ ! -d "$SOURCE_DIR/agents" ]]; then
-        return
-    fi
-
-    for agent_file in "$SOURCE_DIR/agents"/*.md; do
-        if [[ -f "$agent_file" ]]; then
-            local filename
-            filename=$(basename "$agent_file")
-            log_info "  [$platform] $filename"
-            cp "$agent_file" "$plugin_dir/agents/$filename"
-            namespace_slash_commands "$plugin_dir/agents/$filename"
-            # Frontmatter `skills:` entries are skill names, not slash commands.
-            sed_in_place 's/^  - speq-/  - speq:/' "$plugin_dir/agents/$filename"
-
-            if [[ "$platform" == "codex" ]]; then
-                transform_codex_markdown "$plugin_dir/agents/$filename"
-                set_codex_agent_model "$plugin_dir/agents/$filename" "$filename"
-            fi
-        fi
-    done
-}
-
-copy_agents() {
-    log_info "Copying agents..."
-    copy_agents_for_platform claude
-    copy_agents_for_platform codex
-}
-
-generate_agents_json_array() {
-    local entries=()
-    for agent_file in "$SOURCE_DIR/agents"/*.md; do
-        if [[ -f "$agent_file" ]]; then
-            entries+=("\"./agents/$(basename "$agent_file")\"")
-        fi
-    done
-    local IFS=,
-    echo "[${entries[*]}]"
-}
-
 stamp_file() {
     local file="$1"
     local version="$2"
@@ -250,8 +166,6 @@ generate_manifests() {
 
     cp "$SCRIPT_DIR/plugin.json" "$CLAUDE_PLUGIN_DIR/.claude-plugin/plugin.json"
     stamp_file "$CLAUDE_PLUGIN_DIR/.claude-plugin/plugin.json" "$version" "$author"
-    sed_in_place "s|AGENTS_PLACEHOLDER|$(generate_agents_json_array)|" \
-        "$CLAUDE_PLUGIN_DIR/.claude-plugin/plugin.json"
 
     cp "$SCRIPT_DIR/marketplace.json" "$MARKETPLACE_DIR/.claude-plugin/marketplace.json"
     stamp_file "$MARKETPLACE_DIR/.claude-plugin/marketplace.json" "$version" "$author"
@@ -279,7 +193,6 @@ main() {
 
     setup_dirs
     copy_skills
-    copy_agents
     generate_manifests "$version" "$author"
 
     echo ""
@@ -294,7 +207,7 @@ main() {
     log_info "Codex plugin: $CODEX_PLUGIN_DIR"
     log_info "Workflow skills: /speq:plan, /speq:implement, /speq:record, /speq:mission, /speq:audit, /speq:patch"
     log_info "PR pipeline: /speq:plan-pr, /speq:implement-pr, /speq:patch-pr"
-    log_info "Utility skills: /speq:code-tools, /speq:ext-library, /speq:code-guardrails, /speq:design-philosophy, /speq:git-discipline, /speq:cli, /speq:writing-guardrails, /speq:planning, /speq:plan-review, /speq:code-review, /speq:spec-merge, /speq:git-operations, /speq:adr-rules"
+    log_info "Utility skills: /speq:code-guardrails, /speq:design-philosophy, /speq:cli, /speq:writing-guardrails, /speq:plan-review, /speq:code-review, /speq:git-operations, /speq:formats"
     log_info "Marketplace structure built at: $MARKETPLACE_DIR"
 }
 
