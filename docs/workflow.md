@@ -7,7 +7,7 @@
 A one-time `/speq:mission` to setup, then a repeating Plan → Implement → Record cycle.
 
 ```
-/speq:mission → specs/mission.md, specs/architecture.md  (once per project)
+/speq:mission → specs/mission.md (once per project)
                        │
 /speq:plan    →  /speq:implement  →  /speq:record        (repeat)
 ```
@@ -49,7 +49,12 @@ Run `/speq:record <plan-name>`.
 
 ## Ship a small change
 
-Run `/speq:patch <intent>` for a small fix or tweak. It skips the plan and applies the change in one run. Run `/speq:patch-pr <intent>` to also ship it as one ready PR. See [Patch](./patch.md).
+Run `/speq:patch <intent>` for a small fix or tweak.
+
+- Skips the plan
+- Applies the change in one run
+- `/speq:patch-pr <intent>` also ships it as one ready PR
+- See [Patch](./patch.md)
 
 ## Check the library
 
