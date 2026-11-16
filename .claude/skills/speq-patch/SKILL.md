@@ -16,7 +16,7 @@ You take one small change to a tested, reviewed working tree. You run no git wri
 Invoke before starting:
 - `/speq-cli`: spec discovery and validation
 - `/speq-code-guardrails`: TDD
-- `/speq-plan`'s `references/decision-log-template.md`: the ADR rules, whether a change earns an ADR
+- `/speq-formats`: the ADR rules (whether a change earns an ADR) and the architecture format
 - `/speq-writing-guardrails`: prose style
 
 ## Rules
@@ -31,7 +31,7 @@ Invoke before starting:
 
 ### 1. Check Prerequisites
 
-`$1` empty → ask the user for the change intent. `specs/mission.md` absent → stop before any edit and point to `/speq-mission`. The working tree has uncommitted changes → ask whether they belong to the patch. They do not → stop and ask the user to commit or stash them. Never stash or discard them yourself.
+No user arguments → ask the user for the change intent. `specs/mission.md` absent → stop before any edit and point to `/speq-mission`. The working tree has uncommitted changes → ask whether they belong to the patch. They do not → stop and ask the user to commit or stash them. Never stash or discard them yourself.
 
 ### 2. Discover and Name
 
@@ -51,7 +51,7 @@ The change exceeds the size limit when it needs a new feature spec or a new doma
 ### 5. Review
 
 1. Collect the changed files per `/speq-implement` Phase 3 step 1, with base `HEAD`, leaving out the patch folder.
-2. Write the patch folder's `plan.md`: H1 `# Plan: <patch-name>`, then `## Summary` with the change intent `$1`.
+2. Write the patch folder's `plan.md`: H1 `# Plan: <patch-name>`, then `## Summary` with the change intent from the user arguments.
 3. `code-review.md` absent from the patch folder → spawn the code reviewer once per `/speq-implement` Phase 3 step 2, `<plan-name>` set to `<patch-name>`. Present → a stopped run already reviewed: never spawn a second review.
 4. Read `specs/_plans/<patch-name>/code-review.md`. Fix every finding that is not yet fixed, then rerun the suites per step 4.
 
@@ -67,8 +67,8 @@ Edit only what the change needs.
   - Keep the feature description accurate. Every added or changed scenario has a test in the diff. `speq feature validate <domain>/<feature>` passes for each edited feature.
   - An active plan other than the patch folder holds a delta for an edited feature → name the plan and the feature in the report.
   - A feature with more than 10 scenarios or a domain with more than 8 features → name it in the report. Never reorganize the library.
-- **ADR.** Apply the ADR rules in `/speq-plan`'s `references/decision-log-template.md`. The default is none. Write at most one new fragment `specs/_decision/NNN-<patch-name>.md`: NNN = existing fragment count plus one, zero-padded to 3 digits, H1 `# Decisions: <patch-name>`, `**Plan:** <patch-name>`, `**Status:** Accepted`, layout per `/speq-plan`'s `references/decision-log-template.md`. Never edit another fragment. `speq decision-log validate` passes.
-- **Architecture.** `specs/architecture.md` absent → no edit. Otherwise edit its affected section only when the change alters a component, boundary, interface, data flow, constraint, or external dependency it describes. Keep the format of `/speq-plan`'s `references/architecture-template.md` and check the edited file against its rules. On failure, restore the file and report.
+- **ADR.** Apply the ADR rules in `adr-rules.md` in `/speq-formats`. The default is none. Write at most one new fragment `specs/_decision/NNN-<patch-name>.md`: NNN = existing fragment count plus one, zero-padded to 3 digits, H1 `# Decisions: <patch-name>`, `**Plan:** <patch-name>`, `**Status:** Accepted`, layout per `adr-rules.md` in `/speq-formats`. Never edit another fragment. `speq decision-log validate` passes.
+- **Architecture.** `specs/architecture.md` absent → no edit. Otherwise edit its affected section only when the change alters a component, boundary, interface, data flow, constraint, or external dependency it describes. Keep the format of `architecture-template.md` in `/speq-formats` and check the edited file against its rules. On failure, restore the file and report.
 - **Docs.** Edit the project's user docs (by default `README.md` and `docs/`) only where the change alters documented behavior.
 
 ### 7. Size Check After the Change

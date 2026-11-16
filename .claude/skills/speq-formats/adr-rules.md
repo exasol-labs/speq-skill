@@ -1,4 +1,4 @@
-# Decision Log Template
+# ADR Rules and Fragment Layout
 
 ## ADR Rules
 

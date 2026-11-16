@@ -11,7 +11,7 @@
 **Remediate:** point to `/speq-record <plan>`. Never archive here.
 
 ## 3. Architecture file
-**Detect:** read-only, no CLI command exists. Check `specs/architecture.md` against the Rules in `/speq-plan`'s `references/architecture-template.md`.
+**Detect:** read-only, no CLI command exists. Check `specs/architecture.md` against the Rules in `architecture-template.md` in `/speq-formats`.
 **Signal:** `✓ present, N sections`, `✗ missing`, or `✗ bad structure: <first violation with line>`.
 **Remediate:** missing: on Yes, run `/speq-mission`. Bad structure: report only. The user fixes the file or plans the change with `/speq-plan`. Never write `specs/architecture.md` here.
 
@@ -21,7 +21,7 @@
 **Remediate (on Yes):** run `/speq-mission` seeded with the two lists. Never edit `mission.md`.
 
 ## 5. ADR review
-Read the ADR rules in `/speq-plan`'s `references/decision-log-template.md` first.
+Read the ADR rules in `adr-rules.md` in `/speq-formats` first.
 
 **Detect:** skip (`— n/a`) when `specs/_decision/` holds no fragment. Otherwise read every fragment in full, never judging from titles, age, or a sample, and judge each ADR by those rules.
 - **Noise:** fails the rules. Remove it. Fold a corollary into its parent's `### Consequences`.
@@ -37,6 +37,6 @@ Read the ADR rules in `/speq-plan`'s `references/decision-log-template.md` first
 Show the list first. The user can strike slugs. Apply the rest on Yes. This cleanup is the one exception to the rule that old fragments are never edited.
 1. Noise: delete the ADR block (its `## ADR:` heading up to the next one or the file end). Delete a fragment left empty. Leave other `NNN-` prefixes unchanged.
 2. Corollary: add its decision as one sentence to the parent's `### Consequences` first.
-3. Wordy: rewrite to ADR rule 5 and the layout in `/speq-plan`'s `references/decision-log-template.md`. Keep the heading, `**ID:**`, `**Plan:**`, `**Status:**`, and supersede links.
+3. Wordy: rewrite to ADR rule 5 and the layout in `adr-rules.md` in `/speq-formats`. Keep the heading, `**ID:**`, `**Plan:**`, `**Status:**`, and supersede links.
 4. Run `speq decision-log validate`. It MUST pass. On failure, undo and report.
 5. Do not commit. The user reviews the diff.

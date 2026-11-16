@@ -27,11 +27,11 @@ Invoke before starting:
 
 ### 1. Resolve Target
 
-`$1` empty → ask the user which plan. Otherwise check out the target (for a bare plan name, that is its `feat/<plan-name>` branch):
+No user arguments → ask the user which plan. Otherwise check out the target (for a bare plan name, that is its `feat/<plan-name>` branch):
 
 ```
 Run — operation: checkout (per /speq-git-operations)
-  target: <$1: a plan name (→ feat/<plan-name>), PR number, or branch name>
+  target: <the user arguments: a plan name (→ feat/<plan-name>), PR number, or branch name>
 ```
 
 If `checkout` reports not-found (the plan exists only locally and was never pushed):

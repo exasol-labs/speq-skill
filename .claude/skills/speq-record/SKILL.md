@@ -15,7 +15,7 @@ Verify the preconditions, merge the plan's deltas into the permanent specs, prom
 
 Invoke before starting:
 - `/speq-cli` — spec validation
-- `/speq-plan`'s `references/decision-log-template.md` — ADR rules and fragment layout
+- `/speq-formats` — ADR rules, fragment layout, architecture formats
 - `/speq-writing-guardrails` — prose style for promoted ADRs
 
 ## Workflow
@@ -32,7 +32,7 @@ Read `plan.md`, list the delta specs (`specs/_plans/<plan-name>/**/spec.md`), an
 
 ### Phase 3: Check the Architecture Delta
 
-Skip this phase when `specs/_plans/<plan-name>/architecture.md` is absent, and report `Architecture: no delta`. Otherwise the delta changes `specs/architecture.md`. The `speq` CLI does not see it, so you check and apply it by hand. Its format is in `/speq-plan`'s `references/architecture-delta-template.md`, the target format in `references/architecture-template.md`.
+Skip this phase when `specs/_plans/<plan-name>/architecture.md` is absent, and report `Architecture: no delta`. Otherwise the delta changes `specs/architecture.md`. The `speq` CLI does not see it, so you check and apply it by hand. Its format is in `architecture-delta-template.md` in `/speq-formats`, the target format in `architecture-template.md` in `/speq-formats`.
 
 1. **Already applied?** The delta is applied when each CHANGED section in `specs/architecture.md` already equals its block body, each NEW section exists with its block body, and each REMOVED section is gone. This happens on a rerun after a threshold decision. Then report `Architecture: already merged` and go to Phase 4.
 2. **Pre-check (read-only).**
@@ -78,7 +78,7 @@ A spec with more than 10 scenarios, or a domain with more than 8 features, needs
 
 Read `## Directions` in `specs/_plans/<plan-name>/intent.md`. If it is absent or no direction is marked `ADR: yes`, skip this phase.
 
-For each direction marked `ADR: yes`, write an ADR per `/speq-plan`'s `references/decision-log-template.md`:
+For each direction marked `ADR: yes`, write an ADR per `adr-rules.md` in `/speq-formats`:
 
 - **Title**: a short noun phrase for the choice
 - **ID**: a kebab-case slug of the title, unique across every file in `specs/_decision/`

@@ -28,7 +28,7 @@ Invoke `/speq-cli` and `/speq-writing-guardrails` first.
 
 Before the interview, read the manifests, build and test commands, top-level structure, README, and docs.
 
-In Create and Migration mode, draft `specs/architecture.md` from the code per `/speq-plan`'s `references/architecture-template.md`. For a large codebase, hand the mapping to the built-in Explore agent.
+In Create and Migration mode, draft `specs/architecture.md` from the code per `architecture-template.md` in `/speq-formats`. For a large codebase, hand the mapping to the built-in Explore agent.
 - Derive each section from evidence only: components from modules and imports, data flow from an entry point to storage or output, interfaces from CLI definitions, routes, and file formats, external dependencies from clients and drivers, constraints only from what code or config enforces. Never invent one.
 - Where the old mission sections disagree with the code, the draft follows the code and the item goes on a `Conflicts` list. What the code cannot show (performance targets, failure impact) goes on a `Questions` list. Skipped directories go on a `Not explored` list.
 
@@ -43,7 +43,7 @@ Routing:
 ### 4. Generate
 
 1. Write `specs/mission.md` per `references/mission-template.md`.
-2. Write `specs/architecture.md` per `/speq-plan`'s `references/architecture-template.md`, unless it already exists. With a draft, the draft plus the interview corrections is the file.
+2. Write `specs/architecture.md` per `architecture-template.md` in `/speq-formats`, unless it already exists. With a draft, the draft plus the interview corrections is the file.
 3. Fill both files with the collected information only, no placeholders.
 4. Check `specs/architecture.md` against the Rules in the architecture template.
 5. Name the files written.

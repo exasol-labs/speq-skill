@@ -77,7 +77,7 @@ Once the name is set, write `specs/_plans/<plan-name>/intent.md` with the H1 `# 
 
 Write the artifacts in this order. Do not start a step before the previous one is done.
 
-1. **Read the context.** `speq feature get <domain>/<feature>` for each related feature. If `specs/architecture.md` exists, read the sections the plan touches. Check the plan against every accepted ADR in the digest, per ADR rule 4 in `references/decision-log-template.md`; read the full fragment of any ADR the plan touches. Before you author a NEW feature or state that no spec covers a behavior, run `/speq-cli`'s absence check.
+1. **Read the context.** `speq feature get <domain>/<feature>` for each related feature. If `specs/architecture.md` exists, read the sections the plan touches. Check the plan against every accepted ADR in the digest, per ADR rule 4 in `adr-rules.md` in `/speq-formats`; read the full fragment of any ADR the plan touches. Before you author a NEW feature or state that no spec covers a behavior, run `/speq-cli`'s absence check.
 
 2. **Spec deltas.** For each feature in scope, write `specs/_plans/<plan-name>/<domain>/<feature>/spec.md`:
    - The feature exists → DELTA markers per `references/delta-template.md`.
@@ -85,11 +85,11 @@ Write the artifacts in this order. Do not start a step before the previous one i
 
    **Prose drift check**: after a scenario delta on an existing feature, check that feature's `## Background` and `# Feature: <name>` description. When the scenario change makes either inaccurate, add a `DELTA:CHANGED` block for that section too.
 
-3. **Architecture delta.** Shape every new module, interface, or boundary per `/speq-design-philosophy`'s Quick Diagnostic. If the plan changes a component, boundary, interface, data flow, constraint, or external dependency, write `specs/_plans/<plan-name>/architecture.md` per `references/architecture-delta-template.md`. Copy each changed section from `specs/architecture.md`, edit it, and set the BASE hash with `git hash-object specs/architecture.md`. If `specs/architecture.md` is absent, write no delta.
+3. **Architecture delta.** Shape every new module, interface, or boundary per `/speq-design-philosophy`'s Quick Diagnostic. If the plan changes a component, boundary, interface, data flow, constraint, or external dependency, write `specs/_plans/<plan-name>/architecture.md` per `architecture-delta-template.md` in `/speq-formats`. Copy each changed section from `specs/architecture.md`, edit it, and set the BASE hash with `git hash-object specs/architecture.md`. If `specs/architecture.md` is absent, write no delta.
 
 4. **Validate the deltas**: `speq plan validate <plan-name>`. Fix failures before you go on. Common fixes: close delta markers (`<!-- /DELTA:CHANGED -->`, `<!-- /DELTA:NEW -->`, `<!-- /DELTA:REMOVED -->`), uppercase RFC 2119 keywords, bold step keywords (`*GIVEN*`, `*WHEN*`, `*THEN*`, `*AND*`).
 
-5. **Directions.** Add every choice you made without a user answer to `## Directions` in `intent.md`, per `references/intent-template.md`. Gaps you found while authoring land here too. Keep the section short: the template's rules say what earns an entry. Before you mark a direction `ADR: yes`, read the ADR rules in `references/decision-log-template.md`. Most plans mark none.
+5. **Directions.** Add every choice you made without a user answer to `## Directions` in `intent.md`, per `references/intent-template.md`. Gaps you found while authoring land here too. Keep the section short: the template's rules say what earns an entry. Before you mark a direction `ADR: yes`, read the ADR rules in `adr-rules.md` in `/speq-formats`. Most plans mark none.
 
 6. **`plan.md` body.** Write every section of `references/plan-template.md`:
    - Context, Features (referencing the delta files), and Impact (breaking changes called out, or "None").
