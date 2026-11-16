@@ -122,13 +122,8 @@ After collecting ALL information:
 2. Generate `specs/mission.md` using `references/mission-template.md` as structure
 3. Generate `specs/architecture.md` using `references/architecture-template.md` from `/speq-plan` as structure, unless it already exists (update mode); with a step 2 draft, the draft plus the interview corrections is the file
 4. Fill the generated files with ACTUAL collected information (no placeholders)
-5. Present the generated files to user for review
-
-### 6. Review & Iterate
-
-Present the generated mission.md and architecture.md and ask: "Do these accurately capture your project? Anything to add, change, or remove?" Iterate until the user approves.
-
-Check `specs/architecture.md` against the structural rules of `/speq-audit` check 12 (first line, six `##` sections in order, no `###`, no table rows).
+5. Check `specs/architecture.md` against the Rules in `/speq-plan`'s `references/architecture-template.md`
+6. Name the files written
 
 ## Interview Guidelines
 
