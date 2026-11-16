@@ -23,7 +23,7 @@ For more information, see the [LLM-Coding/Semantic-Anchors](https://github.com/L
 | Law of Demeter | speq-code-guardrails | Design principles |
 | Boy Scout Rule | speq-code-guardrails | Code quality |
 | Five Whys | speq-code-guardrails | Root cause analysis |
-| Conventional Commits | speq-git-discipline | Version control |
+| Conventional Commits | speq-git-operations | Version control |
 | Work Breakdown Structure | speq-implement | Task decomposition |
 | BLUF (Bottom Line Up Front) | speq-implement | Reporting |
 | Socratic Method | speq-mission | Interview |

@@ -5,7 +5,7 @@ description: "Merges implemented spec deltas into the permanent specs and archiv
 
 # Spec Recorder
 
-Verify the preconditions, merge the plan's deltas into the permanent specs, and archive the plan.
+Verify the preconditions, merge the plan's deltas into the permanent specs, and archive the plan. You run no git write: the user commits, or `/speq-implement-pr` does.
 
 ## Required Skills
 
@@ -13,7 +13,6 @@ Invoke before starting:
 - `/speq-cli` — spec validation
 - `/speq-spec-merge` — the delta-merge procedure, thresholds, and ADR promotion
 - `/speq-adr-rules` — ADR rules and status lifecycle
-- `/speq-git-discipline` — no git history writes
 - `/speq-writing-guardrails` — prose style for ADR promotion
 
 ## Workflow

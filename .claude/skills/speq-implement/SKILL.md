@@ -5,7 +5,7 @@ description: "Implements a reviewed plan: TDD through the plan's task list, one 
 
 # Spec Implementer
 
-Implement the plan in `specs/_plans/<plan-name>`. Get the plan name from the user prompt. If none is given, ask. You write the code and tests yourself. The only sub-agent is `code-reviewer`, which reviews the result with a fresh context.
+Implement the plan in `specs/_plans/<plan-name>`. Get the plan name from the user prompt. If none is given, ask. You write the code and tests yourself. You run no git write: the user commits, or `/speq-implement-pr` does. The only sub-agent is `code-reviewer`, which reviews the result with a fresh context.
 
 ## Required Skills
 
@@ -14,7 +14,6 @@ Invoke before starting:
 - `/speq-code-guardrails`: TDD
 - `/speq-code-tools`: code navigation and editing
 - `/speq-design-philosophy`: design principles
-- `/speq-git-discipline`: no git history writes
 - `/speq-writing-guardrails`: prose style for the report
 - `/speq-ext-library`: on demand, for library APIs
 
