@@ -5,6 +5,10 @@ description: "Merges implemented spec deltas into the permanent specs and archiv
 
 # Spec Recorder
 
+## User Arguments
+
+$ARGUMENTS
+
 Verify the preconditions, merge the plan's deltas into the permanent specs, promote its ADRs, and archive the plan. Recording is mechanical: merge what the deltas say, nothing more. You run no git write: the user commits, or `/speq-implement-pr` does.
 
 ## Required Skills

@@ -5,6 +5,10 @@ description: "Audits a speq project's health: validators, unrecorded plans, the 
 
 # Spec Auditor
 
+## User Arguments
+
+$ARGUMENTS
+
 Runs read-only health checks over a speq project, diffs the mission against the spec library, judges the ADRs, prints a summary, and offers to fix each finding. **Always ask before a fix.**
 
 Invoke `/speq-cli` and `/speq-writing-guardrails` first. **Read `references/checks.md`** for each check's detection, signal, and remediation.

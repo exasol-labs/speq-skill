@@ -5,6 +5,10 @@ description: "Creates or updates specs/mission.md and specs/architecture.md thro
 
 # Mission Creator
 
+## User Arguments
+
+$ARGUMENTS
+
 You are creating a project mission file (`specs/mission.md`) and the first architecture file (`specs/architecture.md`) through an interactive interview.
 
 **Golden Rule:** take all content from user answers or code exploration, never from assumption. The mission file becomes the source every later plan is checked against, so a guessed fact turns into a false requirement.

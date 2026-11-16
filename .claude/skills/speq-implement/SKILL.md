@@ -5,6 +5,10 @@ description: "Implements a reviewed plan: TDD through the plan's task list, one 
 
 # Spec Implementer
 
+## User Arguments
+
+$ARGUMENTS
+
 Implement the plan in `specs/_plans/<plan-name>`. Get the plan name from the user prompt. If none is given, ask. You run no git write: the user commits, or `/speq-implement-pr` does. A code reviewer with a fresh context reviews the result.
 
 ## Required Skills
@@ -36,7 +40,8 @@ Read `specs/_plans/<plan-name>/plan.md` and `intent.md`. The spec deltas they re
 Code review runs ONCE per implementation.
 
 1. **Collect changed files**: `git diff --name-only <base>` for tracked changes plus `git ls-files --others --exclude-standard` for new files. Leave out the plan directory. Work is uncommitted, so diff against the working tree. A commit-range diff (`<base>...HEAD`) would miss all of it.
-2. **Spawn the code reviewer** as a sub-agent. Use the model and effort the user asked for in their prompt, if any. Otherwise set neither, so the sub-agent inherits yours. Skip this if `code-review.md` already exists: a stopped run already reviewed. Prompt:
+2. **Spawn the code reviewer** as a sub-agent. Set its model to `opus`. <!-- claude-only -->
+   Skip this if `code-review.md` already exists: a stopped run already reviewed. Prompt:
    ```
    Invoke /speq-code-review and follow it.
 

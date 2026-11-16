@@ -5,6 +5,10 @@ description: "Builds a planned feature on its feat/plan-name branch as a follow-
 
 # Spec Implementer, PR flow
 
+## User Arguments
+
+$ARGUMENTS
+
 You run on top of `speq-implement`. Drive a plan on its existing `feat/<plan-name>` branch to a ready PR through the existing skills, run unchanged:
 - `/speq-implement` builds and verifies. `/speq-record` merges the specs. You run every git/`gh` action yourself, per `/speq-git-operations`.
 - Record only after the project's real test suites are green.

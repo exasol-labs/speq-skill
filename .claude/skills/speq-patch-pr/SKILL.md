@@ -5,6 +5,10 @@ description: "Ships a bug fix, small feature, or tweak as one ready PR: runs /sp
 
 # Patch, PR flow (Orchestrator)
 
+## User Arguments
+
+$ARGUMENTS
+
 This skill runs `/speq-patch` on its own branch and ships the result as a ready PR. `/speq-patch` writes the code, tests, specs, and docs. You run every git/`gh` action yourself, per `/speq-git-operations`. Stop on the first failed step and report it. Running it again resumes the work.
 
 ## Required Skills

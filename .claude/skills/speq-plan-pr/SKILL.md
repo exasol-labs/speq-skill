@@ -5,6 +5,10 @@ description: "Plans a feature through the same clarifying interview as /speq-pla
 
 # Spec Planner, PR flow
 
+## User Arguments
+
+$ARGUMENTS
+
 This skill runs `/speq-plan` and ships the result as a draft PR.
 
 ## Required Skills

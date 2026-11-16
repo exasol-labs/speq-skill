@@ -5,6 +5,10 @@ description: "Plans a feature or change through a clarifying interview, producin
 
 # Spec Planner
 
+## User Arguments
+
+$ARGUMENTS
+
 Run the clarifying interview, write the plan, then have a plan reviewer with a fresh context challenge it.
 
 ## Required Skills
@@ -109,7 +113,10 @@ Write the artifacts in this order. Do not start a step before the previous one i
 
 ### 5. Adversarial Plan Review
 
-Spawn the plan reviewer once as a sub-agent. Use the model and effort the user asked for in their prompt, if any. Otherwise set neither, so the sub-agent inherits yours. There is one review round. Prompt:
+Spawn the plan reviewer once as a sub-agent. There is one review round.
+Set its model to `opus`. <!-- claude-only -->
+
+Prompt:
 
 ```
 Invoke /speq-plan-review and follow it.

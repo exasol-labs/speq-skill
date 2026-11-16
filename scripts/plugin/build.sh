@@ -81,6 +81,7 @@ transform_common_markdown() {
         sed_in_place "s/^name: $source_name$/name: speq:$target_name/" "$file"
     else
         sed_in_place "s/^name: $source_name$/name: $target_name/" "$file"
+        sed_in_place 's/ <!-- claude-only -->//' "$file"
     fi
     namespace_slash_commands "$file"
 }
@@ -88,6 +89,8 @@ transform_common_markdown() {
 transform_codex_markdown() {
     local file="$1"
 
+    # Lines marked claude-only do not apply to Codex. Drop them before the rename below.
+    sed_in_place '/<!-- claude-only -->/d' "$file"
     sed_in_place 's/Claude Code/Codex/g' "$file"
     perl -0pi -e 's{(?<![A-Za-z0-9_./-])/speq:}{\$speq:}g' "$file"
     sed_in_place 's/AskUserQuestion/ask the user/g' "$file"
