@@ -30,6 +30,7 @@ Invoke before starting:
 - **Proof is tests and manual runs**: `speq` commands (`speq plan validate`, `speq feature get`) check the plan, not the product, so never list them as test or manual evidence.
 - **One copy**: never embed spec content in `plan.md` or `decision-log.md`; reference the delta files.
 - **Specs describe the software, not its tests**: a spec delta states features, behavior, and constraints of the software. Never encode e2e tests, test suites, Docker setups, or the test environment as scenarios or Background. `specs/mission.md` encodes how to test; reference it from the plan's Verification section.
+- **The user decides, the plan assumes**: `## Interview` holds only what the user said. Every choice the plan makes without a user answer is an entry in `## Assumptions` until the user acknowledges it. Never bury a choice in a delta, a task, or a Design Decision.
 - **Specs first, tasks last**: write the spec deltas before anything else in the plan, and the task list after everything else.
 
 ## Workflow
@@ -51,6 +52,15 @@ Apply the Socratic Method by asking the user. Never assume. Decompose the proble
 - **Probe**: surface hidden assumptions with open-ended questions
 - **Partition**: present alternative solutions as MECE options
 - **Challenge**: test design tradeoffs with counterexamples
+
+**Gap hunt.** The goal of the interview is to find what the request leaves open, including what the user has not thought of. Before you close it, check each lens below against the request and the discovery results. Ask about every lens that applies and that the request does not settle. Skip a lens that does not apply.
+
+- **Who and what is affected**: users, callers, and existing features that touch the change
+- **Conflicts**: existing specs, ADRs, or behavior the request contradicts or changes
+- **Edge cases and failures**: empty, invalid, or boundary input, and what happens on error
+- **Boundaries**: what is explicitly out of scope
+- **Compatibility**: breaking changes, migration of existing data or specs
+- **Done**: how the user will judge that the change works
 
 **Split check.** If the work spans more than one independent phase, or more than about 4 features, propose one plan per phase. Plan the first phase now. End its `plan.md` Context with a `Follow-up plans` list (name and one-line scope each).
 
@@ -87,7 +97,8 @@ Write the artifacts in this order. Do not start a step before the previous one i
 4. **Validate the deltas**: `speq plan validate <plan-name>`. Fix failures before you go on. Common fixes: close delta markers (`<!-- /CHANGED -->`, `<!-- /NEW -->`, `<!-- /REMOVED -->`), uppercase RFC 2119 keywords, bold step keywords (`*GIVEN*`, `*WHEN*`, `*THEN*`, `*AND*`).
 
 5. **Decision log.** Complete `decision-log.md` from `references/decision-log-plan-template.md`. Keep `## Interview` unchanged.
-   - **Design Decisions**: log a choice only when a reviewer or implementer cannot infer it from the deltas: a plausible alternative you rejected, or a constraint that is not obvious. Expect 0 to 3 entries. Never log naming, file placement, or task order. For a new abstraction or module boundary, justify it against `/speq-design-philosophy`'s Quick Diagnostic.
+   - **Assumptions**: one entry per choice you made without a user answer: a behavior, a default, a scope cut, a design choice. Gaps you find while authoring land here too. State what you assumed and why.
+   - **Design Decisions**: log a choice only when a reviewer or implementer cannot infer it from the deltas: a plausible alternative you rejected, or a constraint that is not obvious. Its Rationale cites the `## Interview` line it rests on. A choice with no such line is an assumption first. Expect 0 to 3 entries. Never log naming, file placement, or task order. For a new abstraction or module boundary, justify it against `/speq-design-philosophy`'s Quick Diagnostic.
    - **Architecture field**: an entry with `Promotes to ADR: yes` whose Rationale names `/speq-adr-rules` rule-2 criterion 1, 2, or 3 needs an `- **Architecture:** <§ Section[, § Section] | no change: <reason>>` line. Every named section needs a block in the architecture delta.
    - **Promotion gate**: apply `/speq-adr-rules` to every entry. Default `Promotes to ADR: no`. For `yes`, name the rule-2 criterion and the ADR digest result in Rationale. Keep a promoted entry's Decision and Rationale short and factual: `/speq-record` derives the ADR from them.
    - **Review Findings**: leave empty; Revision Mode fills it.
@@ -126,15 +137,25 @@ It writes `specs/_plans/<plan-name>/review/review.md` and returns `PLAN REVIEW: 
 - **`INTENT > 0`:** the reviewer holds that the plan solves a different problem than the one asked. Ask the user about those findings before any fix. The user accepts the plan as-is, or gives guidance and you revise.
 - **`INTENT == 0` and `BLOCKERS > 0`:** fix the blockers per `references/revision-mode.md`. Do not review again.
 - **Any blocker you could not resolve, or a failed `speq plan validate`:** ask the user, one line of context each plus a pointer to the review file.
-- **Non-blocking findings** never loop and are never persisted. Carry them into step 6's report.
+- **Non-blocking findings** never loop and are never persisted. Carry them into step 7's report. An `[UNSTATED_ASSUMPTION]`, `[UNCONFIRMED_DECISION]`, or `[INTENT_GAP]` finding becomes an entry in `## Assumptions`, whatever its severity.
 
-### 6. Explain Next Steps
+### 6. Acknowledge Assumptions
+
+Present every entry in `## Assumptions` to the user, grouped by topic, each with what it affects in the plan. For each entry the user confirms it, or corrects it:
+
+- **Confirmed** → move it into `## Interview` as `- Q: Assume <assumption>? → A: yes`.
+- **Corrected** → move it into `## Interview` with the user's answer, and revise the deltas, `plan.md`, and tasks it affects. Run `speq plan validate <plan-name>`.
+
+The step ends when `## Assumptions` is empty. Delete the empty heading.
+
+### 7. Explain Next Steps
 
 Print to the terminal:
 
 - `plan.md`'s `## Impact` section
 - `ADR candidates: none`, or the title of each `Promotes to ADR: yes` entry in `decision-log.md`
 - The non-blocking findings from step 5
+- The number of assumptions the user confirmed or corrected in step 6
 - If step 5 ran a fix pass, one line ("N review findings fixed")
 - Tell the user to run `/speq-implement <plan-name>` to continue, after `/clear` for a fresh context window
 
@@ -152,6 +173,7 @@ specs/
 | Pattern | Why Wrong |
 |---------|-----------|
 | Skipping the clarifying interview | Content comes from user answers, never assumptions |
+| Deciding a gap silently | The user never sees the choice; it surfaces as a defect after implementation |
 | Writing tasks before the deltas exist | The tasks then describe a design the specs do not hold |
 | Running a second review after the fix pass | One review, one fix pass; unresolved findings go to the user |
 | Persisting non-blocking findings or looping on them | Report-only; they never gate |

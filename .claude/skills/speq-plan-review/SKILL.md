@@ -21,7 +21,7 @@ Also invoke: `/speq-design-philosophy`, `/speq-adr-rules`, `/speq-cli` (check th
 
 **No silent pass.** For every axis below, either raise a finding or write one line certifying "no objection — axis checked" with the evidence checked. Never skip an axis.
 
-**Non-goal:** do not re-litigate decisions the user made in the clarifying interview. Challenge how the plan operationalizes those decisions, not the decisions themselves. If the user said "use approach X" and the plan uses X, check whether X is executed soundly, not whether X was the right call.
+**Non-goal:** do not re-litigate decisions the user made in the clarifying interview (`## Interview`). Entries in `## Assumptions` are the plan's own choices and are fair game. Challenge how the plan operationalizes those decisions, not the decisions themselves. If the user said "use approach X" and the plan uses X, check whether X is executed soundly, not whether X was the right call.
 
 ## Challenge Taxonomy
 
@@ -31,13 +31,15 @@ Tag every finding. Group findings by axis in the output.
 
 - `[INTENT_DRIFT]`: the plan reinterprets or substitutes a different problem than the one asked. *Quote the original request; quote the plan line that diverges.*
 - `[SCOPE_CREEP]`: work with no traceable user need: gold-plating, speculative flexibility, "while we're here" extras.
+- `[UNCONFIRMED_DECISION]`: a Design Decision, delta, or task makes a choice that no `## Interview` line backs and no `## Assumptions` entry declares. Fix: add it to `## Assumptions`.
+- `[INTENT_GAP]`: the request leaves a question open that the interview never asked and no assumption covers (an edge case, an affected user or feature, a conflict, a compatibility effect). Fix: add an `## Assumptions` entry that names the gap and the plan's answer.
 - `[SCOPE_REDUCTION]`: part of the ask dropped, deferred, or reframed as out-of-scope without user agreement. A declared `Follow-up plans` list in `plan.md` from a split is agreed scope, not a reduction.
 
 ### Feasibility: can this be built as described?
 
 - `[EFFORT_MISESTIMATION]`: a task line hides more work than it states (planning fallacy).
 - `[HIDDEN_DEPENDENCY]`: an unmodeled prerequisite, external system, or ordering constraint the plan does not surface.
-- `[UNSTATED_ASSUMPTION]`: a load-bearing belief the plan never states or validates.
+- `[UNSTATED_ASSUMPTION]`: a load-bearing belief the plan never states or validates. Fix: add it to `## Assumptions`.
 - `[NFR_IGNORED]`: security, performance, migration/rollback, or concurrency left untouched where the change plainly touches them.
 
 ### Requirement quality: are the spec deltas complete and unambiguous?
@@ -74,7 +76,7 @@ Prose findings default to **FINDINGS**: style, not correctness. Escalate a `[PRO
 ## Severity
 
 - **BLOCKER**: violates user intent, or the plan is infeasible/untestable as written, or breaks a project rule the skill system enforces. Gates the plan; it gets one fix pass.
-- **FINDINGS**: Non-blocking findings to be acknowledged by the user.
+- **FINDINGS**: Non-blocking findings to be acknowledged by the user. `[UNSTATED_ASSUMPTION]`, `[UNCONFIRMED_DECISION]`, and `[INTENT_GAP]` default to FINDINGS: `/speq-plan` turns them into assumptions the user acknowledges.
 
 ## Output Format
 

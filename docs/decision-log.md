@@ -8,7 +8,7 @@ The decision log records why a plan chose its design. It has two parts: a plan-l
 
 | Part | Location | Purpose |
 |------|----------|---------|
-| Plan-level log | `specs/_plans/<plan-name>/decision-log.md` | Interview answers and design choices of one plan |
+| Plan-level log | `specs/_plans/<plan-name>/decision-log.md` | Interview answers, open assumptions, and design choices of one plan |
 | Permanent log | `specs/_decision/NNN-<plan-name>.md` | One fragment per plan or patch, holding its accepted ADRs |
 
 An ADR (Architecture Decision Record) is one durable decision. The decisions of one plan live in that plan's `decision-log.md`. Only the durable ones become ADRs. The `## Context` section of `plan.md` is a bullet list of the problem. It holds no decisions.
@@ -18,7 +18,9 @@ An ADR (Architecture Decision Record) is one durable decision. The decisions of 
 ## Lifecycle
 
 ```
-/speq:plan     writes decision-log.md. An entry marked
+/speq:plan     writes decision-log.md. Choices the user did not
+               make go to Assumptions until the user confirms
+               them. An entry marked
                "Promotes to ADR: yes" is an ADR candidate.
                Review blockers that changed a decision become
                "[plan-review]" entries.
@@ -55,12 +57,12 @@ To drop a candidate, set the entry to `Promotes to ADR: no` and run `/speq:plan`
 
 - **Decision:** A delta block's anchor is its first non-empty line.
 - **Alternatives:** Scan the whole block for the first heading
-- **Rationale:** A heading quoted inside the prose can take over the anchor.
+- **Rationale:** A heading quoted inside the prose can take over the anchor (Interview: no new marker syntax).
 - **Consequences:** Plans need no new marker syntax.
 - **Promotes to ADR:** yes
 ```
 
-`Alternatives` may read `none`. `Consequences` and `Supersedes` (the slug of the ADR this replaces) are optional.
+`## Assumptions` holds the plan's own choices that the user has not confirmed yet. `/speq:plan` asks the user about each one and moves it into `## Interview`, so a finished plan has none. `Alternatives` may read `none`. `Consequences` and `Supersedes` (the slug of the ADR this replaces) are optional.
 
 The file is optional. If present, `speq plan validate` verifies its structure.
 

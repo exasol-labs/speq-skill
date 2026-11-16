@@ -7,14 +7,27 @@ Generate actual content from the clarifying interview and plan design.
 
 ## Interview
 
+<!-- Only what the user said. Acknowledged assumptions move here. -->
+
 - Q: <question asked> → A: <user answer>
+- Q: Assume <assumption>? → A: yes
+
+## Assumptions
+
+<!-- Choices the plan made without a user answer. Open until the user acknowledges them; /speq-plan step 6 empties this section. -->
+
+### [A1] <Short assumption title>
+
+- **Assumption:** What the plan takes as given or chose.
+- **Why:** The gap it fills, and the evidence behind the choice.
+- **Affects:** The deltas, tasks, or sections that depend on it.
 
 ## Design Decisions
 
 ### [1] <Short decision title>
 
 - **Decision:** What was chosen.
-- **Rationale:** Why this choice.
+- **Rationale:** Why this choice, citing the `## Interview` line it rests on.
 - **Promotes to ADR:** no
 
 <!-- Optional fields, add only when they carry a fact:
