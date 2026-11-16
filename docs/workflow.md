@@ -24,9 +24,9 @@ Run `/speq:mission` once per project.
 
 Run `/speq:plan <intent>`.
 
-- Interviews you about the change
+- Interviews you about the change, and asks whether to split a plan that covers too much
 - Writes a plan in `specs/_plans/<plan-name>/`: `plan.md`, spec deltas, `intent.md`, and an optional `architecture.md` delta
-- Has a reviewer agent challenge the plan first
+- Has a fresh-context reviewer check the plan (on opus in Claude Code)
 - Shows you every direction it took where you gave none, so you can correct it
 
 ## Implement it
@@ -34,10 +34,10 @@ Run `/speq:plan <intent>`.
 Run `/speq:implement <plan-name>`.
 
 - Implements the plan with a focus on TDD and scenario verification
-- Has a fresh-context sub-agent review the result
+- Has a fresh-context reviewer check the result (on opus in Claude Code)
 - Runs the build, tests, and lint checks
 - Writes `verification-report.md`
-- Implementation can be resumed if it is interrupted
+- Keeps its task list in `tasks.md`, so an interrupted run resumes at the first unchecked task
 
 ## Record it
 
@@ -67,3 +67,5 @@ Run `/speq:audit` to run the validators and check unrecorded plans, the architec
 Plan names follow `<verb>-<scope>`, with the verb `add`, `change`, `remove`, `refactor`, or `fix`.
 
 `/speq:record` stops and asks you when a feature has more than 10 scenarios or a domain has more than 8 features. It never reorganizes without your decision.
+
+Text after a command reaches the skill as instructions, for example `/speq:implement add-plan-export use sonnet for the review`.

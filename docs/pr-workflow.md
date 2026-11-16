@@ -27,7 +27,7 @@ Plan and build a change as a GitHub pull request. It suits teams that already it
 
 Run `/speq:plan-pr <intent>`.
 
-- Runs the same clarifying interview and review as `/speq:plan`
+- Runs the same interview, split check, and review as `/speq:plan`
 - Creates the branch `feat/<plan-name>`, commits the plan, and opens a draft PR
 
 ## Revise from PR comments

@@ -30,12 +30,12 @@ specs/
 
 `specs/architecture.md` holds the current architecture of the project.
 
-Every `spec.md` has five required parts:
+Every `spec.md` has four required parts:
 
 1. **`# Feature:`** — the feature name and a one-sentence description
-3. **`## Background`** — bullet list of facts that apply to all scenarios
-4. **`## Scenarios`** — container for one or more scenario blocks
-5. **`### Scenario:`** — individual scenario with GIVEN/WHEN/THEN steps
+2. **`## Background`** — bullet list of facts that apply to all scenarios
+3. **`## Scenarios`** — container for one or more scenario blocks
+4. **`### Scenario:`** — individual scenario with GIVEN/WHEN/THEN steps
 
 A complete minimal spec:
 
