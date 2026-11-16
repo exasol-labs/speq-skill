@@ -58,7 +58,7 @@ Code review runs ONCE per implementation.
 
 #### 4a. Automated Checks
 
-Execute commands from plan's `## Verification > Checklist`. Redirect each command's output to a log: `mkdir -p target && <command> > target/speq-<suite>.log 2>&1`, then branch on the exit code. If a report quotes output, quote at most `tail -n 30` of the log.
+Execute the commands from the plan's `## Verification > Checklist` per `/speq-code-guardrails` § Running Suites.
 
 - Build → exit 0
 - Test → 0 failures

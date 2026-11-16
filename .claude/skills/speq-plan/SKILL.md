@@ -16,7 +16,6 @@ Run the clarifying interview, write the plan, then have a plan reviewer with a f
 Invoke before starting:
 - `/speq-cli`: spec discovery and validation
 - `/speq-design-philosophy`: module boundaries, decision ownership, and dependency direction for the implementation design
-- `references/decision-log-template.md`: the ADR rules. Default is no ADR
 - `/speq-writing-guardrails`: prose style
 
 ## Guiding Principles
@@ -90,7 +89,7 @@ Write the artifacts in this order. Do not start a step before the previous one i
 
 4. **Validate the deltas**: `speq plan validate <plan-name>`. Fix failures before you go on. Common fixes: close delta markers (`<!-- /DELTA:CHANGED -->`, `<!-- /DELTA:NEW -->`, `<!-- /DELTA:REMOVED -->`), uppercase RFC 2119 keywords, bold step keywords (`*GIVEN*`, `*WHEN*`, `*THEN*`, `*AND*`).
 
-5. **Directions.** Add every choice you made without a user answer to `## Directions` in `intent.md`, per `references/intent-template.md`. Gaps you found while authoring land here too. Keep the section short: the template's rules say what earns an entry.
+5. **Directions.** Add every choice you made without a user answer to `## Directions` in `intent.md`, per `references/intent-template.md`. Gaps you found while authoring land here too. Keep the section short: the template's rules say what earns an entry. Before you mark a direction `ADR: yes`, read the ADR rules in `references/decision-log-template.md`. Most plans mark none.
 
 6. **`plan.md` body.** Write every section of `references/plan-template.md`:
    - Context, Features (referencing the delta files), and Impact (breaking changes called out, or "None").

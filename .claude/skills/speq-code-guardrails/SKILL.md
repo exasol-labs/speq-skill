@@ -15,6 +15,10 @@ description: "TDD cycle and the code rules speq holds stricter than the usual de
 
 RED: write the test, run it, show the failure. GREEN: the least code that passes, run the test. REFACTOR: clean up, run the test and the linter. Run only the tests you touched, not the full suite.
 
+## Running Suites
+
+Redirect each build, test, or lint command's output to a log: `mkdir -p target && <command> > target/speq-<suite>.log 2>&1`. Judge the result by the exit code. Quote at most `tail -n 30` of a log in a report.
+
 ## Tests
 
 - Pure logic is tested without doubles. Orchestration is tested with doubles at its own abstractions. Adapters are tested against the real thing; a temporary directory is fine.

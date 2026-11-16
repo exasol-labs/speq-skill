@@ -16,14 +16,14 @@
 **Remediate:** missing: on Yes, run `/speq-mission`. Bad structure: report only. The user fixes the file or plans the change with `/speq-plan`. Never write `specs/architecture.md` here.
 
 ## 4. Mission sync
-Run in SKILL.md Phase 3a. It yields (a) library domains and features the mission does not mention, (b) mission capabilities with no backing spec.
+**Detect:** absent `specs/mission.md` → `✗ no mission.md`. Otherwise read its `## Core Capabilities` and `## Domain Glossary`, and build the live inventory with `speq domain list` and `speq feature list`. Match on meaning, not exact strings: before you flag a capability, run `/speq-cli`'s absence check for its terms, because a differently named feature can back it. Never flag a naming difference alone; when unsure, flag it as a question. Produce two lists: **unmentioned** (library domains and features with no capability or glossary entry) and **unbacked** (capabilities with no backing spec).
 **Signal:** `✓ in sync`, `⚠ N features unmentioned · M capabilities unbacked`, or `✗ no mission.md`.
 **Remediate (on Yes):** run `/speq-mission` seeded with the two lists. Never edit `mission.md`.
 
 ## 5. ADR review
-Run in SKILL.md Phase 3b. Read the ADR rules in `/speq-plan`'s `references/decision-log-template.md` first.
+Read the ADR rules in `/speq-plan`'s `references/decision-log-template.md` first.
 
-**Detect:** skip (`— n/a`) when `specs/_decision/` holds no fragment. Otherwise read every fragment in full and judge each ADR by those rules.
+**Detect:** skip (`— n/a`) when `specs/_decision/` holds no fragment. Otherwise read every fragment in full, never judging from titles, age, or a sample, and judge each ADR by those rules.
 - **Noise:** fails the rules. Remove it. Fold a corollary into its parent's `### Consequences`.
 - **Wordy:** a real decision with more text than ADR rule 5 allows. Trim it.
 - **Keep** everything else. When in doubt, keep. Never remove an ADR named in another's `Supersedes` or `Superseded by`.

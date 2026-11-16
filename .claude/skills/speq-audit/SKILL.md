@@ -19,28 +19,11 @@ Invoke `/speq-cli` and `/speq-writing-guardrails` first. **Read `references/chec
 
 No `specs/` directory → STOP: "No spec library found. Run /speq-mission to bootstrap."
 
-### Phase 2: Run checks (read-only)
+### Phase 2: Run Checks (read-only)
 
-Run checks 1 to 3 in `references/checks.md`. Record `✓` / `✗` / `⚠` and a one-line detail for each. **Modify nothing in this phase.**
+Run checks 1 to 5 in `references/checks.md`. Record `✓` / `✗` / `⚠` and a one-line detail for each. **Modify nothing in this phase.**
 
-### Phase 3: Judgment checks
-
-#### 3a. Mission sync
-
-Diff `specs/mission.md` against the real spec library. Advisory only: do not edit `mission.md`.
-
-1. Read `## Core Capabilities` and `## Domain Glossary`: the domains, features, and capabilities the mission claims.
-2. Build the live inventory: `speq domain list` and `speq feature list`.
-3. Match on meaning, not exact strings. Before you flag a mismatch, run `/speq-cli`'s absence check for the capability's terms: a differently named feature can back a capability. Never flag on a naming difference alone; when unsure, flag it as a question.
-4. Produce two lists: **unmentioned** (library domains/features with no capability or glossary entry) and **unbacked** (mission capabilities with no backing spec).
-
-If `specs/mission.md` is absent, mark the check `✗ (no mission.md)`.
-
-#### 3b. ADR review
-
-Follow check 5 in `references/checks.md` to judge every ADR. Read every fragment in full: never judge from titles, age, or a sample. Advisory only: edit nothing until the user says Yes.
-
-### Phase 4: Print the summary
+### Phase 3: Print the summary
 
 Lead with the verdict, then the checks table, then numbered actions, each ending with the concrete next command. Quantify every result.
 
@@ -68,10 +51,10 @@ Lead with the verdict, then the checks table, then numbered actions, each ending
 
 A clean project prints `✓ healthy` and omits the actions section. List each noisy or wordy ADR under its action.
 
-### Phase 5: Remediate (each finding gated)
+### Phase 4: Remediate (each finding gated)
 
 For each actionable finding, ask the user (**Yes / No / Skip**) and apply the remediation in `references/checks.md`. **Never act without a Yes.** After a fix, re-run the affected validator and print its one-line result. Never edit `mission.md` directly: `/speq-mission` owns it.
 
-### Phase 6: Close
+### Phase 5: Close
 
 Print the final status and any remaining manual next steps.

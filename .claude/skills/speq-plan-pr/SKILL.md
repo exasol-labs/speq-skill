@@ -51,14 +51,13 @@ Run this when step 1 found a PR for the target.
    Run — operation: read-comments (per /speq-git-operations)
      since: <timestamp of the last `spec(plan)` commit on this branch>
    ```
-2. Treat every returned comment as user feedback on the files the PR changed: the PR conversation, review summaries, and inline comments on any file. Write them to `specs/_plans/<plan-name>/notes/pr-feedback.md`, one entry per comment with its file and line when it has them. `notes/` is never committed.
-3. If no comment is new, report that and stop.
-4. Revise the plan from `notes/pr-feedback.md` per `/speq-plan`'s `references/revision-mode.md`. If a comment is ambiguous, ask the user.
-5. Run `/speq-plan` steps 5 and 6 on the revised plan.
-6. Commit and push, and answer on the PR:
+2. If no comment is new, report that and stop.
+3. Treat every comment as user feedback on the files the PR changed, with its file and line when it has them. Revise the plan per `/speq-plan`'s `references/revision-mode.md`. If a comment is ambiguous, ask the user.
+4. Run `/speq-plan` step 6 on the new or changed directions only. Run its step 5 (the plan review) again only when the revision changed a spec delta or the plan's scope.
+5. Commit and push, and answer on the PR:
    ```
    Run — operation: commit (per /speq-git-operations)
-     paths: the plan directory, excluding specs/_plans/<plan-name>/notes/
+     paths: the plan directory
      message: spec(plan): address PR feedback for <plan-name>
 
    Run — operation: push (per /speq-git-operations)
@@ -73,7 +72,7 @@ Commit the plan and open the draft PR with one composite call:
 
 ```
 Run — operation: ship-draft (per /speq-git-operations)
-  paths: the plan directory, excluding specs/_plans/<plan-name>/notes/
+  paths: the plan directory
   message: spec(plan): <plan-name>
   title: <type>(<scope>): <slug>, derived per /speq-git-operations § PR title and version bump
   body: per references/pr-body-template.md, ending "Draft pending implementation."

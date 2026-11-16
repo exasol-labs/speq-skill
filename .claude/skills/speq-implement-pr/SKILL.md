@@ -53,7 +53,7 @@ Otherwise invoke `/speq-implement <plan-name>` and let it run to completion. It 
 
 Skip this step if the version file already differs from the default branch.
 
-Read the tech stack in `specs/mission.md` and bump the version in that stack's version file (for example `Cargo.toml` for Rust, `package.json` for Node, `pyproject.toml` for Python). Apply the next version per `/speq-git-operations` § PR title and version bump. Do not take the version from the plan's spec deltas. Run a build to keep the lockfile in sync, redirecting its output to a log: `mkdir -p target && <build-command> > target/speq-build.log 2>&1`. Branch on the exit code. If a report quotes output, quote at most `tail -n 30` of the log.
+Read the tech stack in `specs/mission.md` and bump the version in that stack's version file (for example `Cargo.toml` for Rust, `package.json` for Node, `pyproject.toml` for Python). Apply the next version per `/speq-git-operations` § PR title and version bump. Do not take the version from the plan's spec deltas. Run a build to keep the lockfile in sync, per `/speq-code-guardrails` § Running Suites.
 
 ### 4. Commit Evidence
 
@@ -62,8 +62,7 @@ Commit and push now, so the evidence artifacts reach git history before `/speq-r
 ```
 Run — operation: commit (per /speq-git-operations)
   paths: implementation files, version bump, and the whole specs/_plans/<plan-name>/
-         directory, not an itemized subset, except specs/_plans/<plan-name>/notes/
-         (local working state, never committed)
+         directory, not an itemized subset
   message: <type>(<scope>): implement <plan-name>
 
 Run — operation: push (per /speq-git-operations)
@@ -71,7 +70,7 @@ Run — operation: push (per /speq-git-operations)
 
 ### 5. Test and Record
 
-1. **Run the suites.** Run the project's real test suites (per `specs/mission.md § Commands`, typically an integration suite and an end-to-end suite), redirecting each suite's output to a log: `mkdir -p target && <suite-command> > target/speq-<suite>.log 2>&1`. Judge green or red by exit code. If any suite is red, report the failed suites with at most `tail -n 30` of the relevant log, **stop**, and leave the plan unrecorded. After the user fixes the code, run this skill again.
+1. **Run the suites.** Run the project's real test suites (per `specs/mission.md § Commands`, typically an integration suite and an end-to-end suite), per `/speq-code-guardrails` § Running Suites. If any suite is red, report the failed suites with their log tails, **stop**, and leave the plan unrecorded. After the user fixes the code, run this skill again.
 2. **Record.** Invoke `/speq-record <plan-name>`. Recording accepts the ADR candidates on the plan PR. If it stops at a library threshold, relay its question to the user and **stop**. If it stops on a failure (for example a stale architecture delta base), **stop** and report it. Run this skill again after the user decides or fixes the plan.
 3. Note the archive path from `/speq-record`'s `✓ Plan archived:` line.
 

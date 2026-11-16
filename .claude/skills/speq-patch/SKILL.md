@@ -46,7 +46,7 @@ The change exceeds the size limit when it needs a new feature spec or a new doma
 ### 4. Implement and Test
 
 1. Write the code and tests, TDD per `/speq-code-guardrails`. A fix starts with a test that reproduces the defect. A removal deletes the code and the tests that covered it.
-2. Run the test suites and the lint command from `specs/mission.md § Commands`. Redirect each command's output to a log: `mkdir -p target && <command> > target/speq-<suite>.log 2>&1`, and judge green or red by exit code. Every failure counts as caused by the patch. Red → fix and rerun. After 3 red runs of the same suite, stop and report the suite, its failing tests, and at most `tail -n 30` of its log.
+2. Run the test suites and the lint command from `specs/mission.md § Commands`. Run them per `/speq-code-guardrails` § Running Suites. Every failure counts as caused by the patch. Red → fix and rerun. After 3 red runs of the same suite, stop and report the suite, its failing tests, and the log tail.
 
 ### 5. Review
 
