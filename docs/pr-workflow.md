@@ -47,6 +47,13 @@ Run `/speq:implement-pr <plan-name>`.
 - Auto splits the spec library during `/speq:record`
 - If recording fails, it stops with `Blocked: record failed: <reason>`
 
+## Ship a small change
+
+Run `/speq:patch-pr <intent>` to ship it as one ready PR.
+
+- Runs `/speq:patch` on branch `patch/<patch-name>`
+- Bumps the version and opens a ready PR; never merges
+
 ## Resume
 
 - If a run stops, for example at a usage limit, run `/speq:implement-pr <plan-name>` again. It picks up the first unchecked task in the plan and continues where the work stopped

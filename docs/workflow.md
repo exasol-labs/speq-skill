@@ -51,10 +51,11 @@ Run `/speq:record <plan-name>`.
 
 Run `/speq:patch <intent>` for a small fix or tweak.
 
-- Skips the plan
-- Applies the change in one run
-- `/speq:patch-pr <intent>` also ships it as one ready PR
-- See [Patch](./patch.md)
+- Skips the plan and applies the change in one run
+- Writes code and tests with TDD; a fix starts with a test that reproduces the defect
+- Has a fresh-context sub-agent review the diff once, then fixes every finding
+- Edits specs directly, without delta markers, plus at most one ADR, `specs/architecture.md`, and the docs the change needs
+- Runs no git write; you review and commit
 
 ## Check the library
 

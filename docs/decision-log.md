@@ -4,59 +4,13 @@
 
 # Decision Log
 
-The decision log is the permanent record of durable decisions: ADR fragments in `specs/_decision/`. Its source is a plan's `intent.md`, which records what the user said and what the plan assumed.
+The decision log is the permanent record of durable decisions. It lives in `specs/_decision/` as one ADR fragment per plan or patch: `specs/_decision/NNN-<plan-name>.md`.
 
-| Part | Location | Purpose |
-|------|----------|---------|
-| Plan intent | `specs/_plans/<plan-name>/intent.md` | The user's interview answers and the plan's directions |
-| Permanent log | `specs/_decision/NNN-<plan-name>.md` | One fragment per plan or patch, holding its accepted ADRs |
-
-An ADR (Architecture Decision Record) is one durable decision. Only a direction marked `ADR: yes` becomes one, and only when it sets a durable decision. The `## Context` section of `plan.md` is a bullet list of the problem. It holds no decisions.
+An ADR (Architecture Decision Record) is one durable decision. Most plans set none.
 
 ---
 
-## Lifecycle
-
-```
-/speq:plan     writes intent.md. Every choice the user did not
-               make is a direction, which the user reviews.
-               A direction marked "ADR: yes" is an ADR candidate.
-
-/speq:record   writes each candidate as an ADR with
-               Status: Accepted into specs/_decision/NNN-<plan-name>.md.
-               Recording the plan is the acceptance.
-
-/speq:patch    writes an ADR with Status: Accepted into
-               specs/_decision/NNN-<patch-name>.md.
-               Committing the patch is the acceptance.
-               Under /speq:patch-pr, merging the PR is.
-```
-
-To drop a candidate, ask for the ADR token's removal when `/speq:plan` reviews its directions with you. In a PR run, comment on the draft PR and run `/speq:plan-pr` again.
-
-## Promotion rules
-
-`/speq:adr-rules` owns the rules. In short, a direction carries no ADR token by default. `ADR: yes` needs a named criterion and a prior ADR search (see `/speq:cli`).
-
-## Plan intent
-
-```markdown
-# Intent: add-prose-delta-anchors
-
-## Interview
-
-- Q: New marker syntax to target a Background? → A: No, wrap the existing heading
-
-## Directions
-
-- [D1] A delta block's anchor is its first non-empty line; a heading scan was rejected because a quoted heading would take over the anchor. ADR: yes, criterion 4, no existing ADR
-```
-
-Each direction is one dense line. `/speq:plan` shows every direction to the user, who corrects any of them before the plan is ready. Running `/speq:implement` accepts the plan.
-
-The file is optional.
-
-## Permanent log
+## Fragment format
 
 A fragment is one Markdown file. This one comes from the plan `add-prose-delta-anchors`:
 
@@ -95,4 +49,4 @@ speq decision-log validate   # structure, required fields, status values, slug r
 speq decision-log show       # prints every fragment as one "Architecture Decision Records" view
 ```
 
-Both read `specs/_decision/` and write nothing. An absent or empty directory is valid. `speq plan validate <plan-name>` checks the plan-level log.
+Both read `specs/_decision/` and write nothing. An absent or empty directory is valid.
