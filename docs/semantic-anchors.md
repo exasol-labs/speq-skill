@@ -20,7 +20,6 @@ For more information, see the [LLM-Coding/Semantic-Anchors](https://github.com/L
 | KISS | speq-code-guardrails | Design principles |
 | DRY | speq-code-guardrails | Design principles |
 | YAGNI | speq-code-guardrails | Design principles |
-| Law of Demeter | speq-code-guardrails | Design principles |
 | Boy Scout Rule | speq-code-guardrails | Code quality |
 | Five Whys | speq-code-guardrails | Root cause analysis |
 | Conventional Commits | speq-git-operations | Version control |
