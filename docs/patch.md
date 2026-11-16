@@ -25,7 +25,7 @@ Run `/speq:patch <intent>`.
 - Reads the existing specs and decisions, and asks only when the intent has more than one reading
 - Writes the code and tests with TDD. A fix starts with a test that reproduces the defect
 - Runs the test suites and the lint command after the change and fixes every failure. After 3 red runs of the same suite, it stops and reports the failing tests
-- Has `code-reviewer` review the diff once, then fixes every finding
+- Has a fresh-context sub-agent review the diff once, then fixes every finding
 - Edits only the specs, ADRs, architecture, and docs the change needs
 - Runs no git command that writes. You review the changes and commit them
 

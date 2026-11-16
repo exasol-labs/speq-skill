@@ -103,8 +103,8 @@ specs/
 ├── architecture.md                       # Permanent, changed by the recorder applying the plan's architecture delta
 ├── _plans/<plan-name>/                   # Active until recorded: committed whole at step 4 except notes/
 │   ├── architecture.md                   # Architecture delta, present only when the plan changes the architecture
-│   ├── review-findings.md                # Created by code-reviewer
-│   ├── review/review.md                  # Created by plan-reviewer
+│   ├── review-findings.md                # Created by the code reviewer
+│   ├── review/review.md                  # Created by the plan reviewer
 │   ├── notes/pr-feedback.md              # PR comments for a plan revision; local, never committed
 │   └── verification-report.md            # Created by speq-implement
 └── _recorded/NNN-<plan-name>/            # Archived by speq-record (gitignored by default)

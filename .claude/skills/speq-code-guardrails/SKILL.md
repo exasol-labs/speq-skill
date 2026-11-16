@@ -1,6 +1,6 @@
 ---
 name: speq-code-guardrails
-description: "TDD cycle and code quality guardrails for /speq-implement, /speq-patch, and the code-reviewer agent. Not for general coding."
+description: "TDD cycle and code quality guardrails for /speq-implement, /speq-patch, and the code-review sub-agent. Not for general coding."
 ---
 
 # Code Guardrails

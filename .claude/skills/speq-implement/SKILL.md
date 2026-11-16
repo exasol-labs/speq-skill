@@ -5,7 +5,7 @@ description: "Implements a reviewed plan: TDD through the plan's task list, one 
 
 # Spec Implementer
 
-Implement the plan in `specs/_plans/<plan-name>`. Get the plan name from the user prompt. If none is given, ask. You write the code and tests yourself. You run no git write: the user commits, or `/speq-implement-pr` does. The only sub-agent is `code-reviewer`, which reviews the result with a fresh context.
+Implement the plan in `specs/_plans/<plan-name>`. Get the plan name from the user prompt. If none is given, ask. You write the code and tests yourself. You run no git write: the user commits, or `/speq-implement-pr` does. The only sub-agent is the code reviewer, which reviews the result with a fresh context.
 
 ## Required Skills
 
@@ -36,9 +36,9 @@ Read `specs/_plans/<plan-name>/plan.md` and `decision-log.md`. The spec deltas t
 Code review runs ONCE per implementation.
 
 1. **Collect changed files**: `git diff --name-only <base>` for tracked changes plus `git ls-files --others --exclude-standard` for new files. Leave out the plan directory. Work is uncommitted, so diff against the working tree. A commit-range diff (`<base>...HEAD`) would miss all of it.
-2. **Spawn `code-reviewer`** (skip if `review-findings.md` already exists: a stopped run already reviewed):
+2. **Spawn the code reviewer** with your spawn-agent tool: a fresh sub-agent, no custom agent type. Use the model and effort the user asked for in their prompt, if any. Otherwise set neither, so the sub-agent inherits yours. Skip this if `review-findings.md` already exists: a stopped run already reviewed. Prompt:
    ```
-   Review implementation quality
+   Invoke /speq-code-review and follow it.
 
    ## Changed Files
    {changed_files_list}

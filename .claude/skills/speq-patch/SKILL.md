@@ -1,6 +1,6 @@
 ---
 name: speq-patch
-description: "Applies a bug fix, small feature, or tweak in the working tree in one run: implements and tests it, has code-reviewer review the diff once, and edits only the specs, ADRs, architecture, and docs it needs. Runs no git writes. Arg: change intent text."
+description: "Applies a bug fix, small feature, or tweak in the working tree in one run: implements and tests it, has a fresh-context sub-agent review the diff once, and edits only the specs, ADRs, architecture, and docs it needs. Runs no git writes. Arg: change intent text."
 ---
 
 # Patch (Orchestrator)
@@ -50,7 +50,7 @@ The change exceeds the size limit when it needs a new feature spec or a new doma
 
 1. Collect the changed files per `/speq-implement` Phase 3 step 1, with base `HEAD`, leaving out the patch folder.
 2. Write the patch folder's `plan.md`: H1 `# Plan: <patch-name>`, then `## Summary` with the change intent `$1`.
-3. `review-findings.md` absent from the patch folder → spawn `code-reviewer` once with `/speq-implement` Phase 3 step 2's brief, `<plan-name>` set to `<patch-name>`. Present → a stopped run already reviewed: never spawn a second review.
+3. `review-findings.md` absent from the patch folder → spawn the code reviewer once per `/speq-implement` Phase 3 step 2, `<plan-name>` set to `<patch-name>`. Present → a stopped run already reviewed: never spawn a second review.
 4. Read `specs/_plans/<patch-name>/review-findings.md`. Fix every finding that is not yet fixed, then rerun the suites per step 4.
 
 ### 6. Specs, ADRs, Architecture, Docs

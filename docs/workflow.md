@@ -33,7 +33,7 @@ Run `/speq:plan <intent>`.
 Run `/speq:implement <plan-name>`.
 
 - Works through the plan's task list with TDD
-- Has a fresh-context code-reviewer sub-agent review the result
+- Has a fresh-context sub-agent review the result
 - Runs the build, tests, and lint checks
 - Writes `verification-report.md`
 

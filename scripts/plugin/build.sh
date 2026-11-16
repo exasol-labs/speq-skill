@@ -48,10 +48,8 @@ setup_dirs() {
     mkdir -p "$MARKETPLACE_DIR/bin"
     mkdir -p "$CLAUDE_PLUGIN_DIR/.claude-plugin"
     mkdir -p "$CLAUDE_PLUGIN_DIR/skills"
-    mkdir -p "$CLAUDE_PLUGIN_DIR/agents"
     mkdir -p "$CODEX_PLUGIN_DIR/.codex-plugin"
     mkdir -p "$CODEX_PLUGIN_DIR/skills"
-    mkdir -p "$CODEX_PLUGIN_DIR/agents"
     mkdir -p "$(dirname "$CODEX_MARKETPLACE_FILE")"
 }
 
@@ -148,54 +146,6 @@ copy_skills() {
     done
 }
 
-copy_agents_for_platform() {
-    local platform="$1"
-    local plugin_dir
-
-    case "$platform" in
-        claude) plugin_dir="$CLAUDE_PLUGIN_DIR" ;;
-        codex) plugin_dir="$CODEX_PLUGIN_DIR" ;;
-        *) log_error "Unknown platform: $platform"; exit 1 ;;
-    esac
-
-    if [[ ! -d "$SOURCE_DIR/agents" ]]; then
-        return
-    fi
-
-    for agent_file in "$SOURCE_DIR/agents"/*.md; do
-        if [[ -f "$agent_file" ]]; then
-            local filename
-            filename=$(basename "$agent_file")
-            log_info "  [$platform] $filename"
-            cp "$agent_file" "$plugin_dir/agents/$filename"
-            namespace_slash_commands "$plugin_dir/agents/$filename"
-            # Frontmatter `skills:` entries are skill names, not slash commands.
-            sed_in_place 's/^  - speq-/  - speq:/' "$plugin_dir/agents/$filename"
-
-            if [[ "$platform" == "codex" ]]; then
-                transform_codex_markdown "$plugin_dir/agents/$filename"
-            fi
-        fi
-    done
-}
-
-copy_agents() {
-    log_info "Copying agents..."
-    copy_agents_for_platform claude
-    copy_agents_for_platform codex
-}
-
-generate_agents_json_array() {
-    local entries=()
-    for agent_file in "$SOURCE_DIR/agents"/*.md; do
-        if [[ -f "$agent_file" ]]; then
-            entries+=("\"./agents/$(basename "$agent_file")\"")
-        fi
-    done
-    local IFS=,
-    echo "[${entries[*]}]"
-}
-
 stamp_file() {
     local file="$1"
     local version="$2"
@@ -213,8 +163,6 @@ generate_manifests() {
 
     cp "$SCRIPT_DIR/plugin.json" "$CLAUDE_PLUGIN_DIR/.claude-plugin/plugin.json"
     stamp_file "$CLAUDE_PLUGIN_DIR/.claude-plugin/plugin.json" "$version" "$author"
-    sed_in_place "s|AGENTS_PLACEHOLDER|$(generate_agents_json_array)|" \
-        "$CLAUDE_PLUGIN_DIR/.claude-plugin/plugin.json"
 
     cp "$SCRIPT_DIR/marketplace.json" "$MARKETPLACE_DIR/.claude-plugin/marketplace.json"
     stamp_file "$MARKETPLACE_DIR/.claude-plugin/marketplace.json" "$version" "$author"
@@ -242,7 +190,6 @@ main() {
 
     setup_dirs
     copy_skills
-    copy_agents
     generate_manifests "$version" "$author"
 
     echo ""

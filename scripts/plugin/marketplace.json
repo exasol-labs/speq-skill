@@ -14,7 +14,7 @@
     {
       "name": "speq-skill",
       "source": "./plugins/speq-skill",
-      "description": "Spec-driven development workflow skills and agents",
+      "description": "Spec-driven development workflow skills",
       "version": "VERSION_PLACEHOLDER",
       "author": {
         "name": "AUTHOR_PLACEHOLDER"

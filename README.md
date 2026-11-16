@@ -106,7 +106,7 @@ speq-skill works well with [Serena](https://github.com/oraios/serena) for code n
 
 ## Acknowledgments
 
-- The `code-reviewer` agent's YAGNI / Over-Engineering review category was inspired by the tag taxonomy of [ponytail](https://github.com/DietrichGebert/ponytail).
+- The code review's YAGNI / Over-Engineering review category was inspired by the tag taxonomy of [ponytail](https://github.com/DietrichGebert/ponytail).
 - The [semantic anchor](./docs/semantic-anchors.md) approach — naming established methodologies (e.g. London School TDD) directly in skill instructions — draws on the [LLM-Coding/Semantic-Anchors](https://github.com/LLM-Coding/Semantic-Anchors) catalog.
 
 ## License

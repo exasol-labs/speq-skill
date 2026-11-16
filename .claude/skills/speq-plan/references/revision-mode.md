@@ -1,6 +1,6 @@
 ## Revision Mode
 
-Revise the plan from a feedback file: a `plan-reviewer` findings file (`review/review.md`) or PR comments the user left (`notes/pr-feedback.md`). The file is the only source of the feedback.
+Revise the plan from a feedback file: a plan-review findings file (`review/review.md`) or PR comments the user left (`notes/pr-feedback.md`). The file is the only source of the feedback.
 
 - **Review findings:** address only the BLOCKER findings. Execute each one's `Fix:` line: an imperative naming the artifact, section, and concrete change. Revise exactly what it points to. Do not rewrite unrelated content. Do not act on FINDINGS-severity findings.
 - **PR comments:** treat each comment as user feedback on the plan files. Make the change it asks for. If it conflicts with the user's intent or another comment, ask the user.

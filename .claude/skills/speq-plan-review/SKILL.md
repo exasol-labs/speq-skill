@@ -1,11 +1,19 @@
 ---
 name: speq-plan-review
-description: "Adversarial plan-review method: challenge taxonomy, severity rules, and findings format. Used by the plan-reviewer agent when reviewing a plan."
+description: "Fresh-context adversarial plan review: role, challenge taxonomy, severity rules, and findings format for the review sub-agent that /speq-plan spawns."
 ---
 
 # Adversarial Plan Review
 
-Build the case against approval, not for it.
+You are the plan reviewer (diabolus advocatus), a fresh-context sub-agent. Build the case against approval, not for it. You did not see the planning conversation, so judge the plan only by its artifacts and the user's intent.
+
+Also invoke: `/speq-design-philosophy`, `/speq-adr-rules`, `/speq-cli` (check the plan's claims against the real spec library), `/speq-writing-guardrails`.
+
+## Scope
+
+- Read: `plan.md`, `decision-log.md` (its `## Interview` holds the clarifying Q&A), every `specs/_plans/<plan-name>/**/spec.md` delta, and `specs/_plans/<plan-name>/architecture.md` when present.
+- Read-only on every artifact but your own. The session that spawned you changes the plan, never you.
+- Single write: `specs/_plans/<plan-name>/review/review.md`, plus the `review/` directory if absent.
 
 ## Method
 

@@ -1,9 +1,22 @@
 ---
 name: speq-code-review
-description: "Code review tag taxonomy and findings format for the code-reviewer agent during /speq-implement. Not for general code review."
+description: "Fresh-context code review: role, tag taxonomy, and findings format for the review sub-agent that /speq-implement and /speq-patch spawn. Not for general code review."
 ---
 
-# Code Review Taxonomy
+# Code Review
+
+You are the code reviewer, a fresh-context sub-agent. You did not see the tradeoffs or the rejected approaches, so judge the code only as it stands.
+
+Also invoke: `/speq-code-guardrails`, `/speq-design-philosophy`, `/speq-code-tools`, `/speq-cli`, `/speq-writing-guardrails`.
+
+## Scope
+
+- Review ONLY the files in the changed-files list from your prompt, against the plan it names.
+- Write exactly one file: `specs/_plans/<plan-name>/review-findings.md`. Fix nothing: the session that spawned you fixes the findings.
+- Do NOT suggest feature additions or refactor working code beyond guardrail compliance.
+- Every `Fix:` must be executable without further interpretation.
+
+## Taxonomy
 
 Analyze each changed file for the categories below.
 

@@ -5,7 +5,7 @@ description: "Plans a feature or change through a clarifying interview, producin
 
 # Spec Planner
 
-Run the clarifying interview, write the plan yourself, then have `plan-reviewer` challenge it with a fresh context. `plan-reviewer` is the only sub-agent.
+Run the clarifying interview, write the plan yourself, then have a fresh-context plan reviewer challenge it. The plan reviewer is the only sub-agent.
 
 ## Required Skills
 
@@ -103,10 +103,10 @@ Write the artifacts in this order. Do not start a step before the previous one i
 
 ### 5. Adversarial Plan Review
 
-Spawn `plan-reviewer` once. There is one review round.
+Spawn the plan reviewer once with your spawn-agent tool: a fresh sub-agent, no custom agent type. Use the model and effort the user asked for in their prompt, if any. Otherwise set neither, so the sub-agent inherits yours. There is one review round. Prompt:
 
 ```
-Review <plan-name>
+Invoke /speq-plan-review and follow it.
 
 ## Plan Name
 <plan-name>
