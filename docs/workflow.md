@@ -27,7 +27,7 @@ Run `/speq:plan <intent>`.
 - Interviews you about the change
 - Writes a plan in `specs/_plans/<plan-name>/`: `plan.md`, spec deltas, `intent.md`, and an optional `architecture.md` delta
 - Has a reviewer agent challenge the plan first
-- Asks you to confirm or correct every assumption it made
+- Shows you every direction it took where you gave none, so you can correct it
 
 ## Implement it
 

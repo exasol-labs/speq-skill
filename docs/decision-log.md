@@ -8,10 +8,10 @@ The decision log is the permanent record of durable decisions: ADR fragments in 
 
 | Part | Location | Purpose |
 |------|----------|---------|
-| Plan intent | `specs/_plans/<plan-name>/intent.md` | The user's interview answers and the plan's assumptions |
+| Plan intent | `specs/_plans/<plan-name>/intent.md` | The user's interview answers and the plan's directions |
 | Permanent log | `specs/_decision/NNN-<plan-name>.md` | One fragment per plan or patch, holding its accepted ADRs |
 
-An ADR (Architecture Decision Record) is one durable decision. Only a confirmed assumption marked `ADR: yes` becomes one. The `## Context` section of `plan.md` is a bullet list of the problem. It holds no decisions.
+An ADR (Architecture Decision Record) is one durable decision. Only a direction marked `ADR: yes` becomes one, and only when it sets a durable decision. The `## Context` section of `plan.md` is a bullet list of the problem. It holds no decisions.
 
 ---
 
@@ -19,9 +19,8 @@ An ADR (Architecture Decision Record) is one durable decision. Only a confirmed 
 
 ```
 /speq:plan     writes intent.md. Every choice the user did not
-               make is an assumption until the user confirms it.
-               A confirmed assumption marked "ADR: yes" is an
-               ADR candidate.
+               make is a direction, which the user reviews.
+               A direction marked "ADR: yes" is an ADR candidate.
 
 /speq:record   writes each candidate as an ADR with
                Status: Accepted into specs/_decision/NNN-<plan-name>.md.
@@ -33,11 +32,11 @@ An ADR (Architecture Decision Record) is one durable decision. Only a confirmed 
                Under /speq:patch-pr, merging the PR is.
 ```
 
-To drop a candidate, ask for the ADR token's removal when `/speq:plan` confirms its assumptions. In a PR run, comment on the draft PR and run `/speq:plan-pr` again.
+To drop a candidate, ask for the ADR token's removal when `/speq:plan` reviews its directions with you. In a PR run, comment on the draft PR and run `/speq:plan-pr` again.
 
 ## Promotion rules
 
-`/speq:adr-rules` owns the rules. In short, an assumption carries no ADR token by default. `ADR: yes` needs a named criterion and a prior ADR search (see `/speq:cli`).
+`/speq:adr-rules` owns the rules. In short, a direction carries no ADR token by default. `ADR: yes` needs a named criterion and a prior ADR search (see `/speq:cli`).
 
 ## Plan intent
 
@@ -48,12 +47,12 @@ To drop a candidate, ask for the ADR token's removal when `/speq:plan` confirms 
 
 - Q: New marker syntax to target a Background? → A: No, wrap the existing heading
 
-## Assumptions
+## Directions
 
-- [A1] confirmed: A delta block's anchor is its first non-empty line; a heading scan was rejected because a quoted heading would take over the anchor. ADR: yes, criterion 4, no existing ADR
+- [D1] A delta block's anchor is its first non-empty line; a heading scan was rejected because a quoted heading would take over the anchor. ADR: yes, criterion 4, no existing ADR
 ```
 
-Each assumption is one dense line with status `open` or `confirmed`. `/speq:plan` asks the user about every `open` one before the plan is ready, and `/speq:implement` refuses to start while one is open.
+Each direction is one dense line. `/speq:plan` shows every direction to the user, who corrects any of them before the plan is ready. Running `/speq:implement` accepts the plan.
 
 The file is optional. If present, `speq plan validate` checks its H1, its sections, and that every `ADR:` value is `yes` or `no`.
 

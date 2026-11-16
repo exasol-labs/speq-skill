@@ -4,6 +4,6 @@
 
 - Q: Parse with a full Markdown AST? → A: No, line scanning
 
-## Assumptions
+## Directions
 
-- [A1] confirmed: Anchor = first non-empty line of a delta block; a heading scan was rejected because quoted headings would take over the anchor. ADR: yes
+- [D1] Anchor = first non-empty line of a delta block; a heading scan was rejected because quoted headings would take over the anchor. ADR: yes

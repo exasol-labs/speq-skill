@@ -174,10 +174,10 @@ pub fn validate_plan(
 }
 
 /// Validate a plan's optional `intent.md`: the user's interview answers and
-/// the plan's assumptions. Returns `(errors, warnings)`.
+/// the plan's directions. Returns `(errors, warnings)`.
 ///
 /// Requires the H1 `# Intent: <plan-name>` and at least one of `## Interview`
-/// or `## Assumptions`. An `ADR:` value on an assumption line that is not
+/// or `## Directions`. An `ADR:` value on a direction line that is not
 /// `yes` or `no` is a warning, not an error.
 fn validate_intent(content: &str, plan_name: &str) -> (Vec<String>, Vec<String>) {
     let expected_h1 = format!("# Intent: {plan_name}");
@@ -185,7 +185,7 @@ fn validate_intent(content: &str, plan_name: &str) -> (Vec<String>, Vec<String>)
     let mut warnings = Vec::new();
     let mut h1: Option<&str> = None;
     let mut section_found = false;
-    let mut in_assumptions = false;
+    let mut in_directions = false;
 
     for line in content.lines().map(str::trim) {
         if h1.is_none() && line.starts_with("# ") {
@@ -193,11 +193,11 @@ fn validate_intent(content: &str, plan_name: &str) -> (Vec<String>, Vec<String>)
             continue;
         }
         if line.starts_with("## ") {
-            in_assumptions = line == "## Assumptions";
-            section_found |= in_assumptions || line == "## Interview";
+            in_directions = line == "## Directions";
+            section_found |= in_directions || line == "## Interview";
             continue;
         }
-        if in_assumptions && let Some(idx) = line.find("ADR:") {
+        if in_directions && let Some(idx) = line.find("ADR:") {
             let value = line[idx + 4..]
                 .split_whitespace()
                 .next()
@@ -219,8 +219,7 @@ fn validate_intent(content: &str, plan_name: &str) -> (Vec<String>, Vec<String>)
         _ => {}
     }
     if !section_found {
-        errors
-            .push("No valid sections found (expected ## Interview or ## Assumptions)".to_string());
+        errors.push("No valid sections found (expected ## Interview or ## Directions)".to_string());
     }
 
     (errors, warnings)
@@ -303,7 +302,7 @@ mod tests {
     use std::fs;
     use tempfile::TempDir;
 
-    const VALID_INTENT: &str = "# Intent: my-plan\n\n## Interview\n\n- Q: a? → A: b\n\n## Assumptions\n\n- [A1] confirmed: anchor is the first line. ADR: yes\n";
+    const VALID_INTENT: &str = "# Intent: my-plan\n\n## Interview\n\n- Q: a? → A: b\n\n## Directions\n\n- [D1] anchor is the first line. ADR: yes\n";
 
     #[test]
     fn intent_valid_passes() {
@@ -332,7 +331,8 @@ mod tests {
 
     #[test]
     fn intent_bad_adr_value_warns() {
-        let content = "# Intent: my-plan\n\n## Assumptions\n\n- [A1] open: x. ADR: maybe\n- [A2] open: y (ADR: No)\n";
+        let content =
+            "# Intent: my-plan\n\n## Directions\n\n- [D1] x. ADR: maybe\n- [D2] y (ADR: No)\n";
         let (errors, warnings) = validate_intent(content, "my-plan");
         assert!(errors.is_empty());
         assert_eq!(
@@ -342,7 +342,7 @@ mod tests {
     }
 
     #[test]
-    fn intent_adr_outside_assumptions_is_ignored() {
+    fn intent_adr_outside_directions_is_ignored() {
         let content = "# Intent: my-plan\n\n## Interview\n\n- Q: ADR: whatever? → A: no\n";
         let (_, warnings) = validate_intent(content, "my-plan");
         assert!(warnings.is_empty());

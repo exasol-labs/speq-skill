@@ -85,32 +85,32 @@ After all merges:
 
 ## Promote ADRs to Permanent Decision Log
 
-Read `## Assumptions` in `specs/_plans/<plan-name>/intent.md` (if it exists).
+Read `## Directions` in `specs/_plans/<plan-name>/intent.md` (if it exists).
 
-For each `confirmed` assumption marked `ADR: yes`:
+For each direction marked `ADR: yes`:
 
 1. Convert it to ADR format using `/speq-plan`'s `references/decision-log-permanent-template.md`:
    - **Title** — a short noun phrase for the choice
    - **ID** — a kebab-case slug derived from the title; MUST be unique across every file in `specs/_decision/`
    - **Plan** — `<plan-name>`
    - **Status** — `Accepted`. Recording the plan is the acceptance, per `/speq-adr-rules`
-   - **Supersedes** (optional) — the slug from the assumption's `supersedes <slug>`. Check that it names an existing ADR slug
-   - **Context** — one or two sentences from the assumption's reason: the situation that forces the choice, stated as present fact, per `/speq-adr-rules` rule 7a
-   - **Decision** — the assumption's choice, in one to three sentences
-   - **Options Considered** — ONLY when the assumption names a rejected alternative
-   - **Consequences** — ONLY when the assumption states an effect on later work
+   - **Supersedes** (optional) — the slug from the direction's `supersedes <slug>`. Check that it names an existing ADR slug
+   - **Context** — one or two sentences from the direction's reason: the situation that forces the choice, stated as present fact, per `/speq-adr-rules` rule 7a
+   - **Decision** — the direction's choice, in one to three sentences
+   - **Options Considered** — ONLY when the direction names a rejected alternative
+   - **Consequences** — ONLY when the direction states an effect on later work
    - The `§ <section>` and the criterion are not mapped into the ADR. The merge in "Apply Architecture Delta" already applied the sections
    - Otherwise the ADR is short-form: field block + `### Context` + `### Decision` only
 
 2. Write ONE new fragment file `specs/_decision/NNN-<plan-name>.md`:
    - NNN = (count of existing files in `specs/_decision/`) + 1, zero-padded to 3 digits
    - H1: `# Decisions: <plan-name>`
-   - Emit one `## ADR: <Title>` block per promoted assumption, in `intent.md` order
+   - Emit one `## ADR: <Title>` block per promoted direction, in `intent.md` order
    - MUST NOT edit any other file in `specs/_decision/` — a supersede reference is a one-way pointer from the new ADR's `**Supersedes:**` field to the target slug
 
 3. Validate: `speq decision-log validate`
 
-If `intent.md` is absent or has no `ADR: yes` assumption, skip silently.
+If `intent.md` is absent or has no `ADR: yes` direction, skip silently.
 
 ## Finalize
 

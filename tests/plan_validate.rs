@@ -299,7 +299,7 @@ mod intent {
             .args(["plan", "validate", "intent-no-sections"])
             .assert()
             .code(1)
-            .stdout(predicate::str::contains("## Interview or ## Assumptions"));
+            .stdout(predicate::str::contains("## Interview or ## Directions"));
     }
 
     #[test]

@@ -5,9 +5,9 @@ Validates the optional plan-level `intent.md` during plan validation. Catches a 
 ## Background
 
 * Plans are stored in `specs/_plans/<plan-name>/`
-* A plan MAY contain an `intent.md` file with the user's interview answers and the plan's assumptions
-* An intent file uses H1 `# Intent: <plan-name>` and at least one of `## Interview`, `## Assumptions`
-* An assumption line MAY carry an `ADR:` value of `yes` or `no`
+* A plan MAY contain an `intent.md` file with the user's interview answers and the plan's directions
+* An intent file uses H1 `# Intent: <plan-name>` and at least one of `## Interview`, `## Directions`
+* A direction line MAY carry an `ADR:` value of `yes` or `no`
 
 ## Scenarios
 
@@ -27,14 +27,14 @@ Validates the optional plan-level `intent.md` during plan validation. Catches a 
 
 ### Scenario: Validate plan with intent.md having no sections
 
-* *GIVEN* a plan named "intent-no-sections" exists with an `intent.md` containing H1 but neither an `## Interview` nor an `## Assumptions` section
+* *GIVEN* a plan named "intent-no-sections" exists with an `intent.md` containing H1 but neither an `## Interview` nor an `## Directions` section
 * *WHEN* the user runs `speq plan validate intent-no-sections`
-* *THEN* the system SHALL report an error that the intent file MUST contain an "Interview" or "Assumptions" section
+* *THEN* the system SHALL report an error that the intent file MUST contain an "Interview" or "Directions" section
 * *AND* the system SHALL exit with non-zero code
 
-### Scenario: Validate plan with an invalid ADR value on an assumption
+### Scenario: Validate plan with an invalid ADR value on a direction
 
-* *GIVEN* a plan named "intent-bad-adr" exists with an assumption line under `## Assumptions` whose `ADR:` value is neither `yes` nor `no`
+* *GIVEN* a plan named "intent-bad-adr" exists with a direction line under `## Directions` whose `ADR:` value is neither `yes` nor `no`
 * *WHEN* the user runs `speq plan validate intent-bad-adr`
 * *THEN* the system SHOULD report a warning that the `ADR` value MUST be `yes` or `no`
 * *AND* the system SHALL exit with code 0

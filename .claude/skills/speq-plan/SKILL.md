@@ -30,7 +30,7 @@ Invoke before starting:
 - **Proof is tests and manual runs**: `speq` commands (`speq plan validate`, `speq feature get`) check the plan, not the product, so never list them as test or manual evidence.
 - **One copy**: never embed spec content in `plan.md` or `intent.md`; reference the delta files.
 - **Specs describe the software, not its tests**: a spec delta states features, behavior, and constraints of the software. Never encode e2e tests, test suites, Docker setups, or the test environment as scenarios or Background. `specs/mission.md` encodes how to test; reference it from the plan's Verification section.
-- **The user decides, the plan assumes**: `## Interview` holds only what the user said. Every choice the plan makes without a user answer is an entry in `## Assumptions`, open until the user acknowledges it. Never bury a choice in a delta or a task.
+- **The user decides, the plan states its directions**: `## Interview` holds only what the user said. Every choice the plan makes without a user answer is an entry in `## Directions`, which the user reviews in step 6. Never bury a choice in a delta or a task.
 - **Specs first, tasks last**: write the spec deltas before anything else in the plan, and the task list after everything else.
 
 ## Workflow
@@ -96,7 +96,7 @@ Write the artifacts in this order. Do not start a step before the previous one i
 
 4. **Validate the deltas**: `speq plan validate <plan-name>`. Fix failures before you go on. Common fixes: close delta markers (`<!-- /CHANGED -->`, `<!-- /NEW -->`, `<!-- /REMOVED -->`), uppercase RFC 2119 keywords, bold step keywords (`*GIVEN*`, `*WHEN*`, `*THEN*`, `*AND*`).
 
-5. **Assumptions.** Add every choice you made without a user answer to `## Assumptions` in `intent.md`, per `references/intent-template.md`. Gaps you found while authoring land here too. Keep the section short: the template's rules say what earns an entry.
+5. **Directions.** Add every choice you made without a user answer to `## Directions` in `intent.md`, per `references/intent-template.md`. Gaps you found while authoring land here too. Keep the section short: the template's rules say what earns an entry.
 
 6. **`plan.md` body.** Write every section of `references/plan-template.md` except `## Implementation Tasks`:
    - Context, Features (referencing the delta files), and Impact (breaking changes called out, or "None").
@@ -132,25 +132,20 @@ It writes `specs/_plans/<plan-name>/review/review.md` and returns `PLAN REVIEW: 
 - **`INTENT > 0`:** the reviewer holds that the plan solves a different problem than the one asked. Ask the user about those findings before any fix. The user accepts the plan as-is, or gives guidance and you revise.
 - **`INTENT == 0` and `BLOCKERS > 0`:** fix the blockers per `references/revision-mode.md`. Do not review again.
 - **Any blocker you could not resolve, or a failed `speq plan validate`:** ask the user, one line of context each plus a pointer to the review file.
-- **Non-blocking findings** never loop and are never persisted. Carry them into step 7's report. An `[UNSTATED_ASSUMPTION]`, `[UNCONFIRMED_DECISION]`, or `[INTENT_GAP]` finding becomes an entry in `## Assumptions`, whatever its severity.
+- **Non-blocking findings** never loop and are never persisted. Carry them into step 7's report. An `[UNSTATED_ASSUMPTION]`, `[UNCONFIRMED_DECISION]`, or `[INTENT_GAP]` finding becomes an entry in `## Directions`, whatever its severity.
 
-### 6. Acknowledge Assumptions
+### 6. Review Directions
 
-Present every `open` assumption to the user, grouped by topic, each with what it affects in the plan. For each one the user confirms it, or corrects it:
-
-- **Confirmed** → set its status to `confirmed`.
-- **Corrected** → rewrite it with the user's answer, set it to `confirmed`, and revise the deltas, `plan.md`, and tasks it affects. Run `speq plan validate <plan-name>`.
-
-The step ends when no assumption is `open`.
+Present every direction to the user, grouped by topic, each with what it affects in the plan. Ask which ones to change. For each correction, rewrite the direction with the user's answer, revise the deltas, `plan.md`, and tasks it affects, and run `speq plan validate <plan-name>`. A direction the user does not correct stands.
 
 ### 7. Explain Next Steps
 
 Print to the terminal:
 
 - `plan.md`'s `## Impact` section
-- `ADR candidates: none`, or each `ADR: yes` assumption
+- `ADR candidates: none`, or each `ADR: yes` direction
 - The non-blocking findings from step 5
-- The number of assumptions the user confirmed or corrected in step 6
+- The number of directions the user corrected in step 6
 - If step 5 ran a fix pass, one line ("N review findings fixed")
 - Tell the user to run `/speq-implement <plan-name>` to continue, after `/clear` for a fresh context window
 

@@ -30,7 +30,7 @@ Run — operation: checkout (per /speq-git-operations)
 
 ### 2. New Plan
 
-1. Run `/speq-plan` steps 1 to 6: discovery, the clarifying interview, the plan name, plan authoring, the one review with its fix pass, and the acknowledgment of assumptions. Skip its step 7.
+1. Run `/speq-plan` steps 1 to 6: discovery, the clarifying interview, the plan name, plan authoring, the one review with its fix pass, and the review of directions. Skip its step 7.
 2. Create the branch. The plan files are uncommitted, so they carry over:
    ```
    Run — operation: create-branch (per /speq-git-operations)
