@@ -72,8 +72,8 @@ Run — operation: push (per /speq-git-operations)
 ### 5. Test and Record
 
 1. **Run the suites.** Run the project's real test suites (per `specs/mission.md § Commands`, typically an integration suite and an end-to-end suite), redirecting each suite's output to a log: `mkdir -p target && <suite-command> > target/speq-<suite>.log 2>&1`. Judge green or red by exit code. If any suite is red, report the failed suites with at most `tail -n 30` of the relevant log, **stop**, and leave the plan unrecorded. After the user fixes the code, run this skill again.
-2. **Record.** Invoke `/speq-record <plan-name>`. If it asks its library-threshold split question, answer yes (split). Recording accepts the ADR candidates on the plan PR. Your run is the user's go-ahead, so do not stop for an ADR question. If it returns `Recording failed: <reason>` (for example a stale architecture delta base), **stop** and report it. After the user fixes the delta or the plan, run this skill again.
-3. Note the `Archive:` path `/speq-record` returns.
+2. **Record.** Invoke `/speq-record <plan-name>`. Recording accepts the ADR candidates on the plan PR. If it stops at a library threshold, relay its question to the user and **stop**. If it stops on a failure (for example a stale architecture delta base), **stop** and report it. Run this skill again after the user decides or fixes the plan.
+3. Note the archive path from `/speq-record`'s `✓ Plan archived:` line.
 
 ### 6. Ship
 
@@ -90,7 +90,7 @@ Run — operation: push (per /speq-git-operations)
 
    `ship-ready` reuses the draft PR `speq-plan-pr` opened (or opens one if the plan was only implemented locally) and marks it ready. A commit with nothing to commit is a no-op, so running this step again is safe.
 
-2. **Comment.** Post the verification summary. Build it from `<archive-path>/verification-report.md`, where `<archive-path>` is the `Archive:` path from step 5 or, when step 1 skipped ahead, the match of `specs/_recorded/*-<plan-name>/`. Compose it per `/speq-writing-guardrails` and `/speq-implement`'s `references/implementation-summary-template.md`:
+2. **Comment.** Post the verification summary. Build it from `<archive-path>/verification-report.md`, where `<archive-path>` is the archive path from step 5 or, when step 1 skipped ahead, the match of `specs/_recorded/*-<plan-name>/`. Compose it per `/speq-writing-guardrails` and `/speq-implement`'s `references/implementation-summary-template.md`:
 
    ```
    Run — operation: comment-pr (per /speq-git-operations)

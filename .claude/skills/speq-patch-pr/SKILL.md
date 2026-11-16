@@ -23,7 +23,7 @@ Invoke before starting:
 
 ### 1. Check Prerequisites and Name
 
-1. `gh auth status` fails, or the repository has no `origin` remote → stop before any edit and name the missing piece.
+1. The GitHub CLI is not authenticated, or the repository has no `origin` remote → stop before any edit and name the missing piece.
 2. Run `/speq-patch` steps 1 to 3: prerequisites, discovery, the patch name, and the first size check.
 3. Derive the PR title from `<patch-name>` per `/speq-git-operations` § PR title and version bump.
 
@@ -35,7 +35,7 @@ Run `checkout` with `patch/<patch-name>`.
 
 ### 3. Patch
 
-Run `/speq-patch` steps 4 to 8, but keep the patch folder: step 5 deletes it. Keep the report for the PR body. Skip its closing line.
+Run `/speq-patch` steps 4 to 8, but keep the patch folder: step 8 deletes it. Keep the report for the PR body. Skip its closing line.
 
 ### 4. Bump Version
 
@@ -49,7 +49,7 @@ Bump the version file and sync the lockfile per `/speq-implement-pr` step 3, at 
 
 ```
 Run operation: ship-ready (per /speq-git-operations)
-  paths: every file /speq-patch changed except the patch folder, the version file, and the lockfile
+  paths: every file /speq-patch changed, the version file, and the lockfile; never the patch folder
   message: <the PR title>
   title: <the PR title>
   body: per references/pr-body-template.md

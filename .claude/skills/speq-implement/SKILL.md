@@ -41,7 +41,8 @@ Read `specs/_plans/<plan-name>/plan.md` and `intent.md`. The spec deltas they re
 Code review runs ONCE per implementation.
 
 1. **Collect changed files**: `git diff --name-only <base>` for tracked changes plus `git ls-files --others --exclude-standard` for new files. Leave out the plan directory. Work is uncommitted, so diff against the working tree. A commit-range diff (`<base>...HEAD`) would miss all of it.
-2. **Spawn the code reviewer** as a sub-agent. Set its model to `opus`. <!-- claude-only -->
+2. **Spawn the code reviewer** as a sub-agent.
+   Set its model to `opus`. <!-- claude-only -->
    Skip this if `code-review.md` already exists: a stopped run already reviewed. Prompt:
    ```
    Invoke /speq-code-review and follow it.

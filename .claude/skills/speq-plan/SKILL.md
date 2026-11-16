@@ -42,10 +42,9 @@ Invoke before starting:
 ```bash
 speq domain list
 speq feature list
-grep -rhE -A3 '^## ADR:|^\*\*(ID|Status):\*\*' specs/_decision/ 2>/dev/null || echo none   # ADR digest, per /speq-cli
 ```
 
-Name the features that relate to the request, per `/speq-cli`'s absence check. Collect only enough context for good interview questions, not a full exploration.
+Read the ADR digest per `/speq-cli`. Name the features that relate to the request, per `/speq-cli`'s absence check. Collect only enough context for good interview questions, not a full exploration.
 
 ### 2. Clarifying Interview
 
@@ -95,7 +94,7 @@ Write the artifacts in this order. Do not start a step before the previous one i
 
 3. **Architecture delta.** Shape every new module, interface, or boundary per `/speq-design-philosophy`'s Quick Diagnostic. If the plan changes a component, boundary, interface, data flow, constraint, or external dependency, write `specs/_plans/<plan-name>/architecture.md` per `references/architecture-delta-template.md`. Copy each changed section from `specs/architecture.md`, edit it, and set the BASE hash with `git hash-object specs/architecture.md`. If `specs/architecture.md` is absent, write no delta.
 
-4. **Validate the deltas**: `speq plan validate <plan-name>`. Fix failures before you go on. Common fixes: close delta markers (`<!-- /CHANGED -->`, `<!-- /NEW -->`, `<!-- /REMOVED -->`), uppercase RFC 2119 keywords, bold step keywords (`*GIVEN*`, `*WHEN*`, `*THEN*`, `*AND*`).
+4. **Validate the deltas**: `speq plan validate <plan-name>`. Fix failures before you go on. Common fixes: close delta markers (`<!-- /DELTA:CHANGED -->`, `<!-- /DELTA:NEW -->`, `<!-- /DELTA:REMOVED -->`), uppercase RFC 2119 keywords, bold step keywords (`*GIVEN*`, `*WHEN*`, `*THEN*`, `*AND*`).
 
 5. **Directions.** Add every choice you made without a user answer to `## Directions` in `intent.md`, per `references/intent-template.md`. Gaps you found while authoring land here too. Keep the section short: the template's rules say what earns an entry.
 

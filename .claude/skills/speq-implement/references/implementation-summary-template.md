@@ -1,6 +1,6 @@
 # Implementation Summary Template
 
-`/speq-implement` prints this in Phase 7. `/speq-implement-pr` posts it as a PR comment in Phase C, composed from `verification-report.md` and not from the printed text. The comment summarizes the tests run and the test evidence collected. The report keeps the full evidence trail.
+`/speq-implement` prints this at the end. `/speq-implement-pr` posts it as a PR comment in its Ship step, composed from `verification-report.md` and not from the printed text. The comment summarizes the tests run and the test evidence collected. The report keeps the full evidence trail.
 
 ## Skeleton
 

@@ -26,7 +26,7 @@ If the argument is a plan name, PR number, or branch, check it out:
 
 ```
 Run — operation: checkout (per /speq-git-operations)
-  target: <the raw argument>
+  target: <a PR number or branch; for a bare plan name, feat/<plan-name>>
 ```
 
 - **Found, with a PR:** go to step 3 (revise).
@@ -64,7 +64,7 @@ Run this when step 1 found a PR for the target.
    Run — operation: push (per /speq-git-operations)
 
    Run — operation: comment-pr (per /speq-git-operations)
-     comment_body: one line per comment, `Resolved` or `Could not resolve` with the reason
+     body: one line per comment, `Resolved` or `Could not resolve` with the reason
    ```
 
 ### Ship

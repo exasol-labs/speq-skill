@@ -6,7 +6,7 @@
 **Remediate:** none. Report the validator messages. The user fixes the file.
 
 ## 2. Unrecorded plans
-**Detect:** a `specs/_plans/*/` dir with `verification-report.md` is implemented but not archived. `plan.md` alone is un-implemented. `open-questions.md` means blocked on purpose. Note both, flag neither.
+**Detect:** a `specs/_plans/*/` dir with `verification-report.md` is implemented but not archived. `tasks.md` without `verification-report.md` is in progress, and `plan.md` alone is not started. Note both, flag neither.
 **Signal:** `✗ N unrecorded: <names>` or `✓ none`.
 **Remediate:** point to `/speq-record <plan>`. Never archive here.
 
@@ -34,7 +34,7 @@ Run in SKILL.md Phase 3b. Read the ADR rules in `/speq-plan`'s `references/decis
 ---
 
 ## Remediation: ADR cleanup
-Show the list first. The user can strike slugs. Apply the rest on Yes.
+Show the list first. The user can strike slugs. Apply the rest on Yes. This cleanup is the one exception to the rule that old fragments are never edited.
 1. Noise: delete the ADR block (its `## ADR:` heading up to the next one or the file end). Delete a fragment left empty. Leave other `NNN-` prefixes unchanged.
 2. Corollary: add its decision as one sentence to the parent's `### Consequences` first.
 3. Wordy: rewrite to ADR rule 5 and the layout in `/speq-plan`'s `references/decision-log-template.md`. Keep the heading, `**ID:**`, `**Plan:**`, `**Status:**`, and supersede links.

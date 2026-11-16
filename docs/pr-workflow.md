@@ -44,8 +44,8 @@ Run `/speq:implement-pr <plan-name>`.
 - Implements the plan on the same branch and pushes to the same PR
 - Runs the real test suites. It records the specs only if they pass
 - Marks the PR ready for review
-- Auto splits the spec library during `/speq:record`
-- If recording fails, it stops with `Blocked: record failed: <reason>`
+- Stops and asks you when `/speq:record` hits a library threshold
+- Stops and reports when recording fails
 
 ## Ship a small change
 
