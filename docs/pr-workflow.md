@@ -49,7 +49,7 @@ Run `/speq:implement-pr <plan-name>`.
 
 ## Resume
 
-- If a run stops, for example at a usage limit, run `/speq:implement-pr <plan-name>` again. It picks up the plan's `tasks.md` and continues where the work stopped
+- If a run stops, for example at a usage limit, run `/speq:implement-pr <plan-name>` again. It picks up the first unchecked task in the plan and continues where the work stopped
 
 ## Architecture changes
 

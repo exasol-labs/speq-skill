@@ -52,23 +52,6 @@ Optional: For changes affecting existing data/structure
 |---------|-----|
 | ... | ... |
 
-## Implementation Tasks
-
-1. Task description
-2. Task description
-3. ...
-
-## Parallelization
-
-Optional.
-
-| Group | Tasks | Depends on | Knowledge |
-|-------|-------|------------|-----------|
-| A: <cluster name> | 1.1-1.4, 3.1 | — | spec delta `<domain>/<feature>`; `src/<module>/`, `<test-file-path>` |
-| B: <cluster name> | 2.1-2.3 | A (shares `src/<module>/`) | spec delta `<domain>/<other-feature>`; `src/<module>/`, `<test-file-path>` |
-
-- **Knowledge**: the group's spec delta path(s) plus the source and test files they govern. The implement orchestrator passes this entry to the group's agent as its orientation pointer.
-
 ## Dead Code Removal
 
 Required: Identify obsolete code to remove
@@ -116,3 +99,11 @@ Do NOT copy placeholders below. Replace with real values.
 | Test | `<from mission.md>` | 0 failures |
 | Lint | `<from mission.md>` | 0 errors/warnings |
 | Format | `<from mission.md>` | No changes |
+
+## Implementation Tasks
+
+<!-- Write this section LAST: derive it from the finished spec deltas, Dead Code Removal, and Verification. -->
+
+- [ ] 1. Task description
+- [ ] 2. Task description
+- [ ] 3. ...

@@ -96,11 +96,5 @@ The Evidence Rule applies here: raise a finding in this category only with a mea
 Write the findings document to `specs/_plans/<plan-name>/review-findings.md` per `references/review-findings-template.md`. Then return exactly one line and nothing else:
 
 ```
-CODE REVIEW: <n> findings — standard: <n>, expert: <n> — specs/_plans/<plan-name>/review-findings.md
+CODE REVIEW: <n> findings — specs/_plans/<plan-name>/review-findings.md
 ```
-
-## Routing
-
-You partition the findings. The orchestrator never sees them individually. Place each finding under `## Standard fixes` or `## Expert fixes` in the findings document. The partition decides which single agent applies the whole fix pass: any Expert finding routes both sections to `implementer-expert-agent`. With no Expert finding, `implementer-agent` applies `## Standard fixes`.
-
-Every tag across all categories is eligible for either section. Route a finding to `## Expert fixes` when its fix has cross-file, concurrency, or subtle-correctness implications: removing a dependency or abstraction with several call sites, correcting a dependency-direction or boundary violation, or any change whose failure mode is a passing test over wrong behavior. Everything else goes to `## Standard fixes`. You hold the context for this call. Decide it here, do not defer it.

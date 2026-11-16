@@ -23,7 +23,7 @@ Reserved names under `specs/` (not domains): `_plans/`, `_recorded/`, `_decision
 **Remediate (old format, on Yes):** [decision-log migration](#remediation-decision-log-migration).
 
 ## 5. ADR review
-Run by the orchestrator (SKILL.md Phase 3b). Call `/speq-adr-rules` first.
+Run in SKILL.md Phase 3b. Call `/speq-adr-rules` first.
 
 **Detect:** skip (`— n/a`) when `specs/_decision/` holds no fragment, or when the old `specs/decision-log.md` exists (migrate first). Otherwise read every fragment in full and judge each ADR by the rules in `/speq-adr-rules`.
 - **Noise:** fails the rules. Remove it. Fold a corollary into its parent's `### Consequences`.
@@ -59,14 +59,14 @@ Run by the orchestrator (SKILL.md Phase 3b). Call `/speq-adr-rules` first.
 **Remediate (inline, on Yes):** remove the offending line.
 
 ## 11. Mission sync
-Delegated to `audit-agent` (SKILL.md Phase 3a). It returns (a) library domains and features the mission does not mention, (b) mission capabilities with no backing spec.
+Run in SKILL.md Phase 3a. It yields (a) library domains and features the mission does not mention, (b) mission capabilities with no backing spec.
 **Signal:** `✓ in sync`, `⚠ N features unmentioned · M capabilities unbacked`, or `✗ no mission.md`.
-**Remediate (on Yes):** spawn `/speq-mission` seeded with the two lists. Never edit `mission.md`.
+**Remediate (on Yes):** run `/speq-mission` seeded with the two lists. Never edit `mission.md`.
 
 ## 12. Architecture file
 **Detect:** read-only, no CLI command exists. Check `specs/architecture.md` against the Rules in `/speq-plan`'s `references/architecture-template.md`. Also flag the old layout: the file is missing and `specs/mission.md` still holds `## Architecture`, `## External Dependencies`, or technical or performance constraint lines.
 **Signal:** `✓ present, N sections`, `✗ missing`, `✗ missing, mission.md holds the old sections`, or `✗ bad structure: <first violation with line>`.
-**Remediate (on Yes):** missing or old layout: spawn `/speq-mission` for its migration interview. Bad structure: report only. The user fixes the file or plans the change with `/speq-plan`. Never write `specs/architecture.md` here.
+**Remediate (on Yes):** missing or old layout: run `/speq-mission` for its migration interview. Bad structure: report only. The user fixes the file or plans the change with `/speq-plan`. Never write `specs/architecture.md` here.
 
 ## 13. Serena
 **Detect:** `ToolSearch` with the query `serena`. Any tool name containing `serena` is a match. Serena is optional and Context7 is not checked.
@@ -76,17 +76,17 @@ Delegated to `audit-agent` (SKILL.md Phase 3a). It returns (a) library domains a
 ---
 
 ## Remediation: decision-log migration
-Delegate to a spawned worker (Yes required). Convert the old single `specs/decision-log.md` (`## ADR-NNN` blocks) to per-plan fragments with the field mapping in `/speq-spec-merge` ("Promote ADRs to Permanent Decision Log"). The old file has no per-plan attribution, so put all ADRs in one fragment `specs/_decision/NNN-<name>.md` (NNN = existing fragment count plus one, zero-padded, H1 `# Decisions: <name>`) unless a block names its plan. Convert each `ADR-NNN` reference to the target's new slug. Drop all dates. Delete `specs/decision-log.md`, then run `speq decision-log validate`. It MUST pass.
+Apply on Yes. Convert the old single `specs/decision-log.md` (`## ADR-NNN` blocks) to per-plan fragments with the field mapping in `/speq-spec-merge` ("Promote ADRs to Permanent Decision Log"). The old file has no per-plan attribution, so put all ADRs in one fragment `specs/_decision/NNN-<name>.md` (NNN = existing fragment count plus one, zero-padded, H1 `# Decisions: <name>`) unless a block names its plan. Convert each `ADR-NNN` reference to the target's new slug. Drop all dates. Delete `specs/decision-log.md`, then run `speq decision-log validate`. It MUST pass.
 
 ## Remediation: domain/feature restructure
 Always ask. Never auto-run.
 1. Build the move list: for each offending `spec.md`, propose `specs/<domain>/<feature>/spec.md`, inferring domain and feature from the path or the `# Feature:` heading.
 2. Show the full `mv` list and confirm.
-3. On Yes, spawn a worker to `mkdir -p` and `mv` each `spec.md` with its sibling files.
+3. On Yes, `mkdir -p` and `mv` each `spec.md` with its sibling files.
 4. Run `speq feature validate`. It MUST pass. On failure, stop and report.
 
 ## Remediation: ADR cleanup
-Show the list first. The user can strike slugs. Delegate the rest to a spawned worker (Yes required).
+Show the list first. The user can strike slugs. Apply the rest on Yes.
 1. Noise: delete the ADR block (its `## ADR:` heading up to the next one or the file end). Delete a fragment left empty. Leave other `NNN-` prefixes unchanged.
 2. Corollary: add its decision as one sentence to the parent's `### Consequences` first.
 3. Wordy: rewrite to the shape in `/speq-adr-rules` rules 6 to 7a. Keep the heading, `**ID:**`, `**Plan:**`, `**Status:**`, and supersede links.

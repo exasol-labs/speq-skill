@@ -78,10 +78,10 @@ After all merges:
 
 | Metric | Threshold | Action |
 |--------|-----------|--------|
-| Scenarios per spec | >10 | Return to orchestrator for user decision |
-| Domain features | >8 | Return to orchestrator for user decision |
+| Scenarios per spec | >10 | Ask the user |
+| Domain features | >8 | Ask the user |
 
-**Never assume:** library reorganization is a user decision. Return a concrete question to the orchestrator.
+**Never assume:** library reorganization is a user decision. Ask the user a concrete question.
 
 ## Promote ADRs to Permanent Decision Log
 
@@ -117,15 +117,15 @@ If `decision-log.md` is absent or has no "Promotes to ADR: yes" entries, skip si
 1. Final validation: `speq feature validate`. If an architecture delta was applied, confirm the post-check of "Apply Architecture Delta" passed
 2. Archive: `mv specs/_plans/<plan-name> specs/_recorded/NNN-<plan-name>`, where NNN = (count of existing entries in `specs/_recorded/`) + 1, zero-padded to 3 digits
 
-If a threshold is exceeded, return BEFORE archiving and ask the orchestrator to clarify with the user.
+If a threshold is exceeded, stop BEFORE archiving and ask the user.
 
 ## Anti-Patterns
 
 | Pattern | Why Wrong |
 |---------|-----------|
 | Rewriting scenario wording during merge | Recording is a mechanical operation |
-| `DELTA:CHANGED` or `DELTA:REMOVED` naming a scenario absent from the target spec | Rejected — recorder-agent stops instead of silently merging nothing |
-| Heading left outside the marker, so the block's first line is not a recognized anchor | Rejected — `plan validate` and recorder-agent cannot tell what the block targets |
+| `DELTA:CHANGED` or `DELTA:REMOVED` naming a scenario absent from the target spec | Rejected — `/speq-record` stops instead of silently merging nothing |
+| Heading left outside the marker, so the block's first line is not a recognized anchor | Rejected — `plan validate` and `/speq-record` cannot tell what the block targets |
 | Two delta blocks of one file sharing an anchor, whatever their marker kinds | Rejected — the merged result would depend on block order; write one block carrying the final text |
 | Writing `Status: Proposed` on promotion | Rejected — `/speq-record` accepts the ADR, per `/speq-adr-rules` |
 | `DELTA:NEW` or `DELTA:REMOVED` on a canonical architecture section | Rejected — canonical sections always exist; use `DELTA:CHANGED` |

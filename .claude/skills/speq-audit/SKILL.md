@@ -1,14 +1,13 @@
 ---
 name: speq-audit
 description: "Audits a speq project's health: specs, decision logs, plans, mission sync, unrecorded plans, and gitignore hygiene. Use when asked to audit, health-check, or check a project build with speq-skill."
-model: sonnet
 ---
 
-# Spec Auditor (Orchestrator)
+# Spec Auditor
 
-Thin orchestrator. It runs read-only health checks over a speq project, delegates the mission ↔ spec-library sync check to `audit-agent`, judges the ADRs itself, prints a summary, and offers to fix each finding. **Always ask before a fix.**
+Runs read-only health checks over a speq project, diffs the mission against the spec library, judges the ADRs, prints a summary, and offers to fix each finding. **Always ask before a fix.**
 
-## Required Skills (for the orchestrator)
+## Required Skills
 
 Invoke before starting:
 - `/speq-cli` — spec discovery and the `validate` commands
@@ -16,11 +15,11 @@ Invoke before starting:
 
 Each check in `references/checks.md` names the skill that owns its rules. Invoke that skill instead of working from memory.
 
-The `audit-agent` sub-agent invokes `/speq-cli` itself. **Read `references/checks.md`** for the per-check detection recipes, thresholds, and remediation procedures.
+**Read `references/checks.md`** for the per-check detection recipes, thresholds, and remediation procedures.
 
 ## Workflow
 
-### Phase 1: Preconditions (orchestrator)
+### Phase 1: Preconditions
 
 ```
 Check: specs/ directory exists?
@@ -28,7 +27,7 @@ Check: specs/ directory exists?
 └─ No  → STOP: "No spec library found. Run /speq-mission to bootstrap."
 ```
 
-### Phase 2: Run checks (orchestrator, READ-ONLY)
+### Phase 2: Run checks (READ-ONLY)
 
 Run every check in `references/checks.md`, recording a `✓` / `✗` / `⚠` and a one-line detail for each. The Serena check records `ℹ` (hint) instead of `⚠`. A hint is not a finding, so it never counts toward `N findings` and never gets a remediation. **Modify nothing in this phase.** The checks:
 
@@ -39,7 +38,7 @@ Layout
 
 Decisions
 4. Decision log — old `specs/decision-log.md` vs `specs/_decision/`; `speq decision-log validate`
-5. ADR review — judged by the orchestrator (Phase 3b)
+5. ADR review — judged in Phase 3b
 
 Plans
 6. Active-plan validity — `speq plan validate <plan>` per active plan
@@ -51,42 +50,32 @@ Git ignores
 10. Reserved dirs tracked — `_decision` and `_plans` are not ignored
 
 Mission and architecture
-11. Mission sync — delegated to `audit-agent` (Phase 3a)
+11. Mission sync — semantic diff (Phase 3a)
 12. Architecture file — `specs/architecture.md` present and valid, mission.md free of the old sections
 
 Info
 13. Serena — hint only, Serena is optional
 
-### Phase 3: Delegate the judgment checks
+### Phase 3: Judgment checks
 
-Send both delegations in one message so they run concurrently.
+#### 3a. Mission sync
 
-#### 3a. Mission sync to audit-agent
+Diff `specs/mission.md` against the real spec library. Advisory only: do not edit `mission.md`.
 
-```
-Delegate to audit-agent — Verify mission ↔ spec library
+1. Read `## Core Capabilities` and `## Domain Glossary`: the domains, features, and capabilities the mission claims.
+2. Build the live inventory: `speq domain list` and `speq feature list`.
+3. Match on meaning, not exact strings. Before you flag a mismatch, run `/speq-cli`'s absence check for the capability's terms: a differently named feature can back a capability. Never flag on a naming difference alone; when unsure, flag it as a question.
+4. Produce two lists: **unmentioned** (library domains/features with no capability or glossary entry) and **unbacked** (mission capabilities with no backing spec).
 
-## Context
-- Mission: specs/mission.md
-- Inventory: run `speq domain list` and `speq feature list`
+If `specs/mission.md` is absent, mark the check `✗ (no mission.md)`.
 
-## Your Task
-Diff the mission against the real spec library. Return two lists: (a) domains/features
-present in the library but NOT reflected in the mission's Core Capabilities / Domain
-Glossary; (b) mission capabilities with NO backing spec. Advisory only —
-do NOT edit mission.md.
-
-```
-
-If `specs/mission.md` is absent, skip the delegation and mark the check `✗ (no mission.md)`.
-
-#### 3b. ADR review (orchestrator)
+#### 3b. ADR review
 
 Invoke `/speq-adr-rules`, then follow check 5 in `references/checks.md` to judge every ADR. Advisory only: edit nothing until the user says Yes.
 
 Skip the review and mark the check `— n/a` when `specs/_decision/` holds no fragment. When the old `specs/decision-log.md` still exists, skip it too and note "migrate first": the migration puts every ADR in one fragment, and the review runs on the migrated result.
 
-### Phase 4: Print the summary (orchestrator)
+### Phase 4: Print the summary
 
 Lead with the verdict (BLUF), then the checks table, then numbered remediations. End each remediation with the concrete next-step command. Tables are exempt from prose guardrails. Keep the Summary line terse. Use this format:
 
@@ -124,32 +113,24 @@ Lead with the verdict (BLUF), then the checks table, then numbered remediations.
 
 A clean project prints `✓ healthy` and omits the actions section. List each noisy or wordy ADR under its action.
 
-### Phase 5: Remediate (orchestrator — each finding gated)
+### Phase 5: Remediate (each finding gated)
 
 For each actionable finding, ask the user (**Yes / No / Skip**). Apply per `references/checks.md`. **Never act without a Yes.** After an applied fix, re-run the affected validator and reprint its one-line result. Routing:
 
 | Finding | Remediation |
 |---------|-------------|
 | `_recorded` not ignored · wrong reserved-dir ignored · legacy `_recorded/` name | Apply inline on Yes (edit `specs/.gitignore` / `mv` the folder) |
-| Old `decision-log.md` · non-conforming domain/feature layout | Delegate to a spawned worker on Yes (see `references/checks.md`); re-validate |
+| Old `decision-log.md` · non-conforming domain/feature layout | Apply on Yes (see `references/checks.md`); re-validate |
 | Unrecorded plan | Point to `/speq-record <plan>` |
 | Over-threshold domain/feature | Recommend `/speq-plan` (structural — not auto-fixed) |
-| ADR noise or wordy ADR | Show the list first; the user can strike slugs. On Yes, spawn a worker for the ADR cleanup in `references/checks.md` |
-| Missing architecture file · mission.md still holds the old architecture sections | On Yes, spawn `/speq-mission`. It runs the one-time migration interview. Never write `specs/architecture.md` directly |
+| ADR noise or wordy ADR | Show the list first; the user can strike slugs. On Yes, apply the ADR cleanup in `references/checks.md` |
+| Missing architecture file · mission.md still holds the old architecture sections | On Yes, run `/speq-mission`. It runs the one-time migration interview. Never write `specs/architecture.md` directly |
 | Architecture file with bad structure | Report the violations. The user fixes the file, or plans the change with `/speq-plan` |
-| Mission drift | On Yes, spawn `/speq-mission` **seeded** with the audit-agent's inconsistency lists; never edit `mission.md` directly |
+| Mission drift | On Yes, run `/speq-mission` **seeded** with the Phase 3a lists; never edit `mission.md` directly |
 
-### Phase 6: Close (orchestrator)
+### Phase 6: Close
 
 Print the final status and any remaining manual next steps.
-
-## Work Split (reference)
-
-| Step | Performed by | Why |
-|------|--------------|-----|
-| CLI validators, filesystem/structure checks, summary, remediation gates | This skill (pins Sonnet) | Mechanical + conversational |
-| Mission ↔ spec-library semantic diff | `audit-agent` sub-agent | Reasoning-heavy cross-referencing |
-| ADR review | This skill, by the `/speq-adr-rules` rules | Rules are explicit. A wrong removal loses a real decision, so bias to keep |
 
 ## Anti-Patterns
 

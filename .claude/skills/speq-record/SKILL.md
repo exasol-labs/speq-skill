@@ -1,27 +1,28 @@
 ---
 name: speq-record
 description: "Merges implemented spec deltas into the permanent specs and archives the plan. Use after /speq-implement, or to record, merge, or archive a finished plan. Arg: plan-name."
-model: sonnet
 ---
 
-# Spec Recorder (Orchestrator)
+# Spec Recorder
 
-Thin orchestrator. It verifies preconditions and delegates the merge work to the `recorder-agent` sub-agent.
+Verify the preconditions, merge the plan's deltas into the permanent specs, and archive the plan.
 
-## Required Skills (for the orchestrator)
+## Required Skills
 
 Invoke before starting:
-- `/speq-cli` — Spec validation
-
-The `recorder-agent` sub-agent invokes its own required skills.
+- `/speq-cli` — spec validation
+- `/speq-spec-merge` — the delta-merge procedure, thresholds, and ADR promotion
+- `/speq-adr-rules` — ADR rules and status lifecycle
+- `/speq-git-discipline` — no git history writes
+- `/speq-writing-guardrails` — prose style for ADR promotion
 
 ## Workflow
 
-### Phase 1: Resolve Plan Name (orchestrator)
+### Phase 1: Resolve Plan Name
 
 Get the plan name from the user prompt. If none is given, ask the user to choose from the plans under `specs/_plans/`.
 
-### Phase 2: Verify Preconditions (orchestrator)
+### Phase 2: Verify Preconditions
 
 ```
 Check: specs/_plans/<plan-name>/verification-report.md exists?
@@ -29,40 +30,21 @@ Check: specs/_plans/<plan-name>/verification-report.md exists?
 └─ No  → STOP: "Run /speq-implement <plan-name> first."
 ```
 
-### Phase 3: Delegate to recorder-agent
+### Phase 3: Merge
 
-Spawn the recorder sub-agent with the plan name:
+Merge the delta specs, and the architecture delta if present, per `/speq-spec-merge`. Validate between merges. Promote ADRs per `/speq-adr-rules`: recording is the acceptance, so write `Status: Accepted`.
 
-```
-Delegate to recorder-agent — Record <plan-name> into permanent specs
+- Merge deltas only. Do not rewrite scenarios for style.
+- Leave no `DELTA:*` markers in permanent specs.
+- Edit no file in `specs/_decision/` other than the new `NNN-<plan-name>.md` fragment.
+- If any library threshold is exceeded (scenarios > 10, domain features > 8), stop before archiving and ask the user for their organizational decision. Never reorganize the library on your own.
+- If the architecture delta fails (`Recording failed: architecture delta: ...`), do not fix the delta. The plan stays unarchived. Report the message and stop. The fix is a plan change: correct `architecture.md` in the plan, or refresh its BASE after a stale-base error.
 
-## Plan Name
-<plan-name>
+### Phase 4: Archive
 
-## Context
-- Verification report confirmed at: specs/_plans/<plan-name>/verification-report.md
-- Plan file: specs/_plans/<plan-name>/plan.md
-- Delta specs: specs/_plans/<plan-name>/**/spec.md
-- Architecture delta (optional): specs/_plans/<plan-name>/architecture.md
+Archive the plan per `/speq-spec-merge` only when every validation passed and every threshold decision is resolved.
 
-## Your Task
-Merge all delta specs, and the architecture delta if present, into permanent specs per the `recorder-agent` workflow. Validate between merges. Archive the plan on success. If any library threshold is exceeded (scenarios > 10, domain features > 8), STOP before archiving and return a question for the user.
-
-
-Return a summary of merged features and the archive path.
-```
-
-### Phase 4: Handle Threshold Escalations (orchestrator)
-
-If the sub-agent returns threshold signals:
-
-1. Ask the user for their organizational decision
-2. Respawn `recorder-agent` with the decision, OR apply a trivial edit (for example, a file rename) directly
-3. Archive only after all decisions are resolved
-
-If the sub-agent returns `Recording failed: architecture delta: ...`, do not respawn it and do not fix the delta yourself. The plan stays unarchived. Report the message to the user and stop. The fix is a plan change: correct `architecture.md` in the plan, or refresh its BASE after a stale-base error.
-
-### Phase 5: Confirm Completion (orchestrator)
+### Phase 5: Confirm Completion
 
 Report to user:
 
@@ -74,15 +56,6 @@ Report to user:
 ✓ Architecture merged: <sections>   (omit when no delta)
 ✓ ADRs accepted: N — <slugs>   (omit when none)
 ```
-
-## Work Split (reference)
-
-| Step | Performed by | Why |
-|------|--------------|-----|
-| Precondition checks, user questions | This skill (pins Sonnet) | Lightweight orchestration |
-| Delta merge, validation, archive | `recorder-agent` sub-agent | Fixed steps: apply markers, validate, archive |
-
-The split preserves rotation discipline: the orchestrator can respawn the sub-agent with a fresh context and keep its own state.
 
 ## Anti-Patterns
 

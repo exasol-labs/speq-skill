@@ -32,8 +32,8 @@ Run `/speq:plan <intent>`.
 
 Run `/speq:implement <plan-name>`.
 
-- Splits the plan into tasks and hands them to sub-agents
-- Reviews the code the sub-agents wrote
+- Works through the plan's task list with TDD
+- Has a fresh-context code-reviewer sub-agent review the result
 - Runs the build, tests, and lint checks
 - Writes `verification-report.md`
 

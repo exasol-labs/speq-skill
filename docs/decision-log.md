@@ -18,11 +18,12 @@ An ADR (Architecture Decision Record) is one durable decision. The decisions of 
 ## Lifecycle
 
 ```
-/speq:plan     planner-agent writes decision-log.md. An entry marked
+/speq:plan     writes decision-log.md. An entry marked
                "Promotes to ADR: yes" is an ADR candidate.
-               plan-reviewer logs resolved blockers as "[plan-review]" entries.
+               Review blockers that changed a decision become
+               "[plan-review]" entries.
 
-/speq:record   recorder-agent writes each candidate as an ADR with
+/speq:record   writes each candidate as an ADR with
                Status: Accepted into specs/_decision/NNN-<plan-name>.md.
                Recording the plan is the acceptance.
 

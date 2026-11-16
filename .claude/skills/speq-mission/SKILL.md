@@ -14,9 +14,8 @@ You are creating a project mission file (`specs/mission.md`) and the first archi
 Invoke before starting:
 - `/speq-ext-library`: library docs
 - `/speq-cli`: spec structure
+- `/speq-code-tools`: code exploration for the architecture draft
 - `/speq-writing-guardrails`: prose style for artifacts and GitHub text
-
-Do not invoke `/speq-code-tools`: brownfield exploration (step 2) only reads manifests, directories, and docs, so plain file reads cover it. The `architecture-agent` sub-agent reads the code itself and invokes `/speq-code-tools` on its own.
 
 ## Workflow
 
@@ -42,9 +41,9 @@ specs/architecture.md exists?
 
 **Update mode.** `specs/architecture.md` exists. Skip the interview topics for Architecture, technical and performance constraints, and External Dependencies. Tell the user: "Change the architecture through /speq-plan." Interview the remaining topics as usual.
 
-Brownfield and not Update mode: step 2 spawns `architecture-agent`. Greenfield and Update mode: no spawn.
+Brownfield and not Update mode: step 2 drafts `specs/architecture.md` from the code. Greenfield and Update mode: no draft.
 
-**Migration mode.** `specs/architecture.md` is missing and `specs/mission.md` still holds the old sections. Run topics 4.9 to 4.11 once, seeded with the `architecture-agent` draft, which already reconciles the old sections with the code ("The code shows [X]. mission.md said [Y]. Which is current?"). Without a draft (no source files), seed with the old content ("mission.md lists [X] as the architecture. Is this still accurate?"). Place the approved file at `specs/architecture.md`. Remove the old Architecture and External Dependencies sections and the technical and performance constraint lines from `specs/mission.md`. Add the line `Architecture: see specs/architecture.md.` after Out of Scope.
+**Migration mode.** `specs/architecture.md` is missing and `specs/mission.md` still holds the old sections. Run topics 4.9 to 4.11 once, seeded with the step 2 draft, which already reconciles the old sections with the code ("The code shows [X]. mission.md said [Y]. Which is current?"). Without a draft (no source files), seed with the old content ("mission.md lists [X] as the architecture. Is this still accurate?"). Place the approved file at `specs/architecture.md`. Remove the old Architecture and External Dependencies sections and the technical and performance constraint lines from `specs/mission.md`. Add the line `Architecture: see specs/architecture.md.` after Out of Scope.
 
 ### 2. Brownfield Exploration
 
@@ -54,22 +53,13 @@ For existing projects, gather context BEFORE interviewing:
 2. **Commands**: look for existing scripts: `package.json` scripts, Makefile targets, `Cargo.toml` aliases, `pyproject.toml` scripts.
 3. **Structure**: list top-level directories; find the main source directories (`src`, `lib`, `app`).
 4. **Docs**: read `README.md`, `docs/`, and any existing `specs/`.
-5. **Architecture draft**: applies in brownfield Create and Migration mode when source files exist beyond manifests. Skip it in Update mode and in greenfield. Choose a draft path outside the repo (for example under `mktemp -d`). Delegate to `architecture-agent`:
+5. **Architecture draft**: applies in brownfield Create and Migration mode when source files exist beyond manifests. Skip it in Update mode and in greenfield. Draft `specs/architecture.md` from the code per `/speq-plan`'s `references/architecture-template.md`. For a large codebase, you may hand the code mapping to the built-in Explore agent.
+   - Map breadth-first: manifests and workspace members, then the source roots two levels deep, then the entry points (main, bin, server, router, handler registries). Skip test, vendor, generated, and build directories, and note what you skipped under `Not explored`.
+   - Derive each section from evidence only. Components from modules and their imports; Data Flow from an entry point to storage or output; Interfaces from CLI definitions, routes, public APIs, and file formats; External Dependencies from SDK clients, endpoints, and drivers; Constraints only from what code or config enforces.
+   - Compare each claim in the old mission sections (if any) with the code. When they disagree, the draft follows the code and the conflict goes on a `Conflicts` list. What the code cannot show (performance targets, failure impact) goes on a `Questions` list unless the old sections state it.
+   - Never invent a component, dependency, or constraint without evidence.
 
-   ```
-   Delegate to architecture-agent: Draft specs/architecture.md from the code
-
-   ## Context
-   Repo root: <path>
-   Mission path: specs/mission.md
-   Template: /speq-plan references/architecture-template.md
-   Draft path: <draft path>
-
-   ## Your Task
-   Write the draft to the draft path and the evidence to <draft path>.evidence.md. Return only the summary in your output format.
-   ```
-
-   Keep the returned summary (draft path, counts, `Conflicts`, `Questions`, `Not explored`) for step 4. Do NOT read the draft or the evidence file. The user reads the draft.
+   Keep `Conflicts`, `Questions`, and `Not explored` for step 4.
 
 ### 3. Research Phase
 
@@ -113,7 +103,7 @@ Apply **User Story Mapping** (Patton): identify activities, then decompose into 
 
 #### 4.9 Architecture
 Answers go to `specs/architecture.md`.
-- With a draft: tell the user the draft path and ask them to review it there. Ask the user one question per `Conflicts` item and replace the cold question with each `Questions` item. Tell the user what `Not explored` lists and ask about it. Corrections: the user edits the draft file, or you resume the same agent with the correction. Never rewrite the draft yourself.
+- With a draft: present it. Ask one question per `Conflicts` item and replace the cold question with each `Questions` item. Tell the user what `Not explored` lists and ask about it. Apply the corrections to the draft.
 - Without a draft: high-level architecture pattern (layered, hexagonal, event-driven, etc.)? Key components and their responsibilities? How does data flow through the system?
 
 #### 4.10 Constraints
@@ -121,7 +111,7 @@ Answers go to `specs/architecture.md`.
 - Business (GDPR, multi-tenant): answers stay in `specs/mission.md`.
 
 #### 4.11 External Dependencies
-Answers go to `specs/architecture.md`. With a draft, topics 4.10 (technical and performance) and 4.11 are covered by the same review and the same `Conflicts` and `Questions` items. Ask only what the summary leaves open.
+Answers go to `specs/architecture.md`. With a draft, topics 4.10 (technical and performance) and 4.11 are covered by the same review and the same `Conflicts` and `Questions` items. Ask only what the draft leaves open.
 - What external services/APIs does this depend on? What happens if each dependency is unavailable?
 
 ### 5. Generate Mission
@@ -130,15 +120,15 @@ After collecting ALL information:
 
 1. Create `specs/` directory if needed
 2. Generate `specs/mission.md` using `references/mission-template.md` as structure
-3. Generate `specs/architecture.md` using `references/architecture-template.md` from `/speq-plan` as structure, unless it already exists (update mode) or an `architecture-agent` draft exists (the draft is the file, see step 6)
+3. Generate `specs/architecture.md` using `references/architecture-template.md` from `/speq-plan` as structure, unless it already exists (update mode); with a step 2 draft, the draft plus the interview corrections is the file
 4. Fill the generated files with ACTUAL collected information (no placeholders)
-5. Present the generated files to user for review. For a draft, present its path only
+5. Present the generated files to user for review
 
 ### 6. Review & Iterate
 
 Present the generated mission.md and architecture.md and ask: "Do these accurately capture your project? Anything to add, change, or remove?" Iterate until the user approves.
 
-With an `architecture-agent` draft, the user approves the draft file. Then move it into place with `mv <draft path> specs/architecture.md`, so the content never enters your context. The agent already reported `structure ✓`. If the user edited the draft, check the moved file against the structural rules of `/speq-audit` check 14 (first line, six `##` sections in order, no `###`, no table rows) without reading the whole file. Delete the evidence file.
+Check `specs/architecture.md` against the structural rules of `/speq-audit` check 12 (first line, six `##` sections in order, no `###`, no table rows).
 
 ## Interview Guidelines
 

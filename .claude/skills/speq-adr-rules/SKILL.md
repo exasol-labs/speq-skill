@@ -84,7 +84,7 @@ An ADR holds the least text that states the decision. Follow `/speq-writing-guar
 ## 8. Status Lifecycle
 
 - An ADR is proposed at plan time. A `Promotes to ADR: yes` entry that passes rules 1 to 5 is the proposal. The plan skill prints it as an ADR candidate.
-- Recording the plan is the acceptance. `recorder-agent` writes `Status: Accepted` when `/speq-record` runs.
+- Recording the plan is the acceptance. `/speq-record` writes `Status: Accepted` when `/speq-record` runs.
 - To reject a proposal, change the entry to `Promotes to ADR: no` and run the plan skill again before you record. In a PR run, comment on the draft PR and run `/speq-plan-pr` again with the PR number.
 - `/speq-patch` writes an ADR with `Status: Accepted` into its own fragment. Committing the patch is the acceptance. Under `/speq-patch-pr`, merging the patch PR is the acceptance, and a reviewer rejects the ADR by asking on the PR for the fragment's removal.
 - `Deprecated` and `Superseded by <slug>` follow the existing rules.

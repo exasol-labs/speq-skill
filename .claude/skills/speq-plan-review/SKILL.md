@@ -42,8 +42,7 @@ Tag every finding. Group findings by axis in the output.
 ### Task breakdown: is the WBS correct and appropriately scoped?
 
 - `[TRACEABILITY_GAP]`: a spec delta with no implementing task, or a task that implements nothing in scope.
-- `[TASK_GRANULARITY]`: a task too large to verify as one unit, or a parallelization claim two "independent" tasks actually violate.
-- `[CLUSTER_INCOHERENCE]`: tasks in one Parallelization group must share a spec delta or a source module, and overlapping `Knowledge` entries across groups are a consolidation signal, not a parallelism opportunity. Flag a group sliced by layer, a group whose tasks share no knowledge, or two groups the plan should have merged or sequenced.
+- `[TASK_GRANULARITY]`: a task too large to verify as one unit.
 
 ### Design Depth: does the plan manage complexity well? (per `/speq-design-philosophy`)
 
@@ -66,7 +65,7 @@ Prose findings default to **FINDINGS**: style, not correctness. Escalate a `[PRO
 
 ## Severity
 
-- **BLOCKER**: violates user intent, or the plan is infeasible/untestable as written, or breaks a project rule the skill system enforces. Gates the plan; the orchestrator sends it to one `planner-agent` fix pass.
+- **BLOCKER**: violates user intent, or the plan is infeasible/untestable as written, or breaks a project rule the skill system enforces. Gates the plan; it gets one fix pass.
 - **FINDINGS**: Non-blocking findings to be acknowledged by the user.
 
 ## Output Format
@@ -79,4 +78,4 @@ PLAN REVIEW: BLOCKERS: <n>, FINDINGS: <n>, INTENT: <n> — specs/_plans/<plan-na
 
 `INTENT` counts the Intent Fidelity BLOCKERs alone: a subset of `BLOCKERS`, matching the document's Summary block.
 
-Every finding needs a location and a `Fix:` imperative addressed to `planner-agent`. It names the artifact, section, and concrete change, and is executable without re-reading `Issue`. Vague objections are not actionable for the fix pass.
+Every finding needs a location and a `Fix:` imperative addressed to the plan author. It names the artifact, section, and concrete change, and is executable without re-reading `Issue`. Vague objections are not actionable for the fix pass.

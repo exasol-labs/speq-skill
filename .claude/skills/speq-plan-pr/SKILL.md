@@ -1,14 +1,13 @@
 ---
 name: speq-plan-pr
 description: "Plans a feature through the same clarifying interview as /speq-plan, then creates the feat/plan-name branch, commits the plan, and opens a draft pull request. Arg: feature intent text, plan name, PR number, or branch name."
-model: sonnet
 ---
 
-# Spec Planner, PR flow (Orchestrator)
+# Spec Planner, PR flow
 
-This skill runs `/speq-plan` and ships the result as a draft PR. It writes no plan content itself. `planner-agent` and `plan-reviewer` do that, through `/speq-plan`.
+This skill runs `/speq-plan` and ships the result as a draft PR.
 
-## Required Skills (for the orchestrator)
+## Required Skills
 
 Invoke before starting:
 - `/speq-cli`: spec discovery
@@ -31,7 +30,7 @@ Run — operation: checkout (per /speq-git-operations)
 
 ### 2. New Plan
 
-1. Run `/speq-plan` steps 1 to 6: discovery, the clarifying interview, the plan name, `planner-agent`, and the one review with its fix pass. Skip its step 7.
+1. Run `/speq-plan` steps 1 to 5: discovery, the clarifying interview, the plan name, plan authoring, and the one review with its fix pass. Skip its step 6.
 2. Create the branch. The plan files are uncommitted, so they carry over:
    ```
    Run — operation: create-branch (per /speq-git-operations)
@@ -50,8 +49,8 @@ Run this when step 1 found a PR for the target.
    ```
 2. Treat every returned comment as user feedback on the files the PR changed: the PR conversation, review summaries, and inline comments on any file. Write them to `specs/_plans/<plan-name>/notes/pr-feedback.md`, one entry per comment with its file and line when it has them. `notes/` is never committed.
 3. If no comment is new, report that and stop.
-4. Respawn `planner-agent` with the path to `notes/pr-feedback.md`, per `/speq-planning`'s Revision Mode. If a comment is ambiguous, ask the user.
-5. Run `/speq-plan` step 6 on the revised plan.
+4. Revise the plan from `notes/pr-feedback.md` per `/speq-plan`'s `references/revision-mode.md`. If a comment is ambiguous, ask the user.
+5. Run `/speq-plan` step 5 on the revised plan.
 6. Commit and push, and answer on the PR:
    ```
    Run — operation: commit (per /speq-git-operations)

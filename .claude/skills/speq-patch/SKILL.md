@@ -15,13 +15,14 @@ Invoke before starting:
 - `/speq-code-tools`: code navigation and editing
 - `/speq-adr-rules`: whether a change earns an ADR
 - `/speq-writing-guardrails`: prose style
-- `/speq-planning`: apply only the Short Background and Specs-describe-the-software rules of its § Rules
 - `/speq-ext-library`: on demand, for library APIs
 
 ## Rules
 
 - Never touch `specs/_recorded/` or `specs/mission.md`. In `specs/_plans/`, touch only the patch folder `specs/_plans/<patch-name>/`.
 - Prose states requirements and decisions. No process narration, no history.
+- Short Background: a spec's `## Background` is 3-5 one-line bullets of shared context, never behavior. Behavior is a scenario.
+- Specs describe the software, not its tests: never encode test suites, Docker setups, or the test environment as scenarios or Background.
 - Ask about the size limit at most once per run. After a yes, report a later exceeded limit without asking.
 
 ## Workflow
@@ -47,9 +48,9 @@ The change exceeds the size limit when it needs a new feature spec or a new doma
 
 ### 5. Review
 
-1. Collect the changed files per `/speq-implement` Phase 4 step 1, with base `HEAD`, leaving out the patch folder.
+1. Collect the changed files per `/speq-implement` Phase 3 step 1, with base `HEAD`, leaving out the patch folder.
 2. Write the patch folder's `plan.md`: H1 `# Plan: <patch-name>`, then `## Summary` with the change intent `$1`.
-3. `review-findings.md` absent from the patch folder → spawn `code-reviewer` once with `/speq-implement` Phase 4 step 2's brief, `<plan-name>` set to `<patch-name>`. Present → a stopped run already reviewed: never spawn a second review.
+3. `review-findings.md` absent from the patch folder → spawn `code-reviewer` once with `/speq-implement` Phase 3 step 2's brief, `<plan-name>` set to `<patch-name>`. Present → a stopped run already reviewed: never spawn a second review.
 4. Read `specs/_plans/<patch-name>/review-findings.md`. Fix every finding that is not yet fixed, then rerun the suites per step 4.
 
 ### 6. Specs, ADRs, Architecture, Docs

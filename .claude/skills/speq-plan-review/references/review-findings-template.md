@@ -1,6 +1,6 @@
 # Plan Review Findings Template
 
-`plan-reviewer` writes this document to `specs/_plans/<plan-name>/review/review.md` and returns only a one-line verdict. Consumers: `planner-agent` (fix pass reads the BLOCKER findings and executes each `Fix:` line), the orchestrator's PR report (Findings section), and human PR reviewers.
+`plan-reviewer` writes this document to `specs/_plans/<plan-name>/review/review.md` and returns only a one-line verdict. Consumers: the `/speq-plan` session (its fix pass reads the BLOCKER findings and executes each `Fix:` line), the PR report (Findings section), and human PR reviewers.
 
 ## Rules
 
@@ -24,7 +24,7 @@
 #### [<TAG>] <BLOCKER|FINDINGS>
 - Location: <artifact> § <section>
 - Issue: <defect, quoting the offending line(s)>
-- Fix: <imperative instruction to planner-agent>
+- Fix: <imperative instruction>
 
 ## Feasibility
 ...

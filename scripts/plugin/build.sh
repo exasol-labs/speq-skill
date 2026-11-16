@@ -100,28 +100,9 @@ transform_codex_markdown() {
     sed_in_place 's/TaskList/review the current session plan/g' "$file"
     sed_in_place 's/Task(/spawn_agent(/g' "$file"
     sed_in_place 's/subagent_type=/agent_type=/g' "$file"
-}
-
-set_codex_skill_model() {
-    local file="$1"
-    local skill_name="$2"
-
-    case "$skill_name" in
-        speq-plan|speq-implement|speq-record|speq-plan-pr|speq-implement-pr|speq-audit)
-            sed_in_place 's/^model: sonnet$/model: gpt-5.4/' "$file"
-            if ! grep -q '^effort:' "$file"; then
-                if [[ "$OSTYPE" == "darwin"* ]]; then
-                    sed -i '' '/^model: gpt-5.4$/a\
-effort: medium
-' "$file"
-                else
-                    sed -i '/^model: gpt-5.4$/a effort: medium' "$file"
-                fi
-            fi
-            ;;
-        *)
-            ;;
-    esac
+    # Models are set for Claude only; Codex uses the user's configured model.
+    sed_in_place '/^model: /d' "$file"
+    sed_in_place '/^effort: /d' "$file"
 }
 
 copy_skill_for_platform() {
@@ -147,7 +128,6 @@ copy_skill_for_platform() {
             transform_common_markdown "$file" "$source_name" "$target_name" "$platform"
             if [[ "$platform" == "codex" ]]; then
                 transform_codex_markdown "$file"
-                set_codex_skill_model "$file" "$source_name"
             fi
         done
     else
@@ -166,22 +146,6 @@ copy_skills() {
             copy_skill_for_platform codex "$skill_name"
         fi
     done
-}
-
-set_codex_agent_model() {
-    local file="$1"
-    local filename="$2"
-
-    case "$filename" in
-        planner-agent.md|plan-reviewer.md|implementer-expert-agent.md|code-reviewer.md|audit-agent.md|architecture-agent.md)
-            sed_in_place 's/^model: .*/model: gpt-5.5/' "$file"
-            ;;
-        implementer-agent.md|recorder-agent.md)
-            sed_in_place 's/^model: .*/model: gpt-5.4/' "$file"
-            ;;
-        *)
-            ;;
-    esac
 }
 
 copy_agents_for_platform() {
@@ -210,7 +174,6 @@ copy_agents_for_platform() {
 
             if [[ "$platform" == "codex" ]]; then
                 transform_codex_markdown "$plugin_dir/agents/$filename"
-                set_codex_agent_model "$plugin_dir/agents/$filename" "$filename"
             fi
         fi
     done
@@ -294,7 +257,7 @@ main() {
     log_info "Codex plugin: $CODEX_PLUGIN_DIR"
     log_info "Workflow skills: /speq:plan, /speq:implement, /speq:record, /speq:mission, /speq:audit, /speq:patch"
     log_info "PR pipeline: /speq:plan-pr, /speq:implement-pr, /speq:patch-pr"
-    log_info "Utility skills: /speq:code-tools, /speq:ext-library, /speq:code-guardrails, /speq:design-philosophy, /speq:git-discipline, /speq:cli, /speq:writing-guardrails, /speq:planning, /speq:plan-review, /speq:code-review, /speq:spec-merge, /speq:git-operations, /speq:adr-rules"
+    log_info "Utility skills: /speq:code-tools, /speq:ext-library, /speq:code-guardrails, /speq:design-philosophy, /speq:git-discipline, /speq:cli, /speq:writing-guardrails, /speq:plan-review, /speq:code-review, /speq:spec-merge, /speq:git-operations, /speq:adr-rules"
     log_info "Marketplace structure built at: $MARKETPLACE_DIR"
 }
 

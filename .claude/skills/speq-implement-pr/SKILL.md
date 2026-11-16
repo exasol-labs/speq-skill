@@ -1,17 +1,16 @@
 ---
 name: speq-implement-pr
 description: "Builds a planned feature on its feat/plan-name branch as a follow-up to /speq-plan-pr: implements, bumps the version, runs the real test suites, records the specs if green, comments the verification, and marks the PR ready. Run again to resume. Arg: plan name, PR number, or branch name."
-model: sonnet
 ---
 
-# Spec Implementer, PR flow (Orchestrator)
+# Spec Implementer, PR flow
 
-You are a thin orchestrator on top of `speq-implement`. Drive a plan on its existing `feat/<plan-name>` branch to a ready PR through the existing skills, run unchanged:
+You run on top of `speq-implement`. Drive a plan on its existing `feat/<plan-name>` branch to a ready PR through the existing skills, run unchanged:
 - `/speq-implement` builds and verifies. `/speq-record` merges the specs. You run every git/`gh` action yourself, per `/speq-git-operations`.
 - Record only after the project's real test suites are green.
 - Stop on the first failed step and report it. Running the skill again resumes the work.
 
-## Required Skills (for the orchestrator)
+## Required Skills
 
 Invoke before starting:
 - `/speq-cli`: spec discovery, to resolve plan names
@@ -42,9 +41,9 @@ If `specs/_recorded/*-<plan-name>/` exists and `specs/_plans/<plan-name>/` does 
 
 ### 2. Implement
 
-If `verification-report.md` exists in the plan directory and every task in `tasks.md` is `[x]`, skip this step.
+If `verification-report.md` exists in the plan directory and every task in `plan.md § Implementation Tasks` is checked, skip this step.
 
-Otherwise invoke `/speq-implement <plan-name>` and let it run to completion. If `tasks.md` exists, it resumes from the first incomplete task.
+Otherwise invoke `/speq-implement <plan-name>` and let it run to completion. It resumes from the first unchecked task.
 
 ### 3. Bump Version
 
@@ -104,10 +103,9 @@ specs/
 ├── architecture.md                       # Permanent, changed by the recorder applying the plan's architecture delta
 ├── _plans/<plan-name>/                   # Active until recorded: committed whole at step 4 except notes/
 │   ├── architecture.md                   # Architecture delta, present only when the plan changes the architecture
-│   ├── tasks.md                          # Created by speq-implement
 │   ├── review-findings.md                # Created by code-reviewer
 │   ├── review/review.md                  # Created by plan-reviewer
-│   ├── notes/<group-letter>.md           # Rotation hand-off notes, created by implementer agents; local, never committed
+│   ├── notes/pr-feedback.md              # PR comments for a plan revision; local, never committed
 │   └── verification-report.md            # Created by speq-implement
 └── _recorded/NNN-<plan-name>/            # Archived by speq-record (gitignored by default)
 ```
@@ -116,7 +114,7 @@ specs/
 
 | Step | Performed by |
 |------|--------------|
-| Target resolution, version bump, coordination | This skill (pins Sonnet) |
-| Task breakdown, coding, review | `speq-implement` |
+| Target resolution, version bump, coordination | This skill |
+| Coding, review, verification | `speq-implement` |
 | Spec merge and archive | `speq-record` |
 | Branch, commit, push, PR create/update | This skill, directly, per `/speq-git-operations` |
