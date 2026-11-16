@@ -16,7 +16,7 @@ Used by `/speq-plan-pr` as the draft PR body.
 ## Impact                                    <!-- omit if plan.md's ## Impact says "None" -->
 <trimmed to what a user must know to decide — not the full plan.md text>
 
-ADR candidates: <none | titles of the `Promotes to ADR: yes` entries>
+ADR candidates: <none | the `ADR: yes` assumptions>
 
 Architecture: <none | none (specs/architecture.md absent) | § Components (changed), § Deployment (new)>
 ```

@@ -55,7 +55,7 @@
 ## Where do I find decisions?
 
 - Run `speq decision-log show` to print every accepted ADR. The files live in `specs/_decision/`
-- A plan in progress keeps its design choices in `specs/_plans/<plan-name>/decision-log.md`
+- A plan in progress keeps the user's answers and its own assumptions in `specs/_plans/<plan-name>/intent.md`
 - At the end of `/speq:plan` you see any proposed ADR and can drop it
 - See [Decision Log](./decision-log.md)
 

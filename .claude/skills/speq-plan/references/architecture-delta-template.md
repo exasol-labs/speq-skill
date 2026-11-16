@@ -42,7 +42,7 @@ A CHANGED block replaces the whole section body. Any line the block omits is del
 
 ## Missing Target
 
-If `specs/architecture.md` does not exist, the delta is invalid. Run `/speq-mission` first. State `Architecture: no change: specs/architecture.md absent` in the decision log.
+If `specs/architecture.md` does not exist, the delta is invalid. Run `/speq-mission` first.
 
 ## Example: CHANGED
 

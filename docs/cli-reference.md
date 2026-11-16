@@ -150,7 +150,7 @@ Checks:
 - `plan.md` is present
 - Delta markers are properly formatted
 - Spec syntax is valid
-- `decision-log.md` structure, if the file is present (absence is not an error)
+- `intent.md` structure, if the file is present (absence is not an error)
 
 ---
 

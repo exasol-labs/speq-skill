@@ -21,7 +21,7 @@ Invoke before starting:
 
 ### Phase 1: Load Plan
 
-Read `specs/_plans/<plan-name>/plan.md` and `decision-log.md`. The spec deltas they reference are the requirements. If `decision-log.md` has an `## Assumptions` entry, stop: the user acknowledges it first, per `/speq-plan` step 6. Note the merge base: `git rev-parse HEAD`.
+Read `specs/_plans/<plan-name>/plan.md` and `intent.md`. The spec deltas they reference are the requirements. If an assumption in `intent.md` is still `open`, stop: the user acknowledges it first, per `/speq-plan` step 6. Note the merge base: `git rev-parse HEAD`.
 
 ### Phase 2: Implement
 

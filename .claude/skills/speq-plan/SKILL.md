@@ -1,6 +1,6 @@
 ---
 name: speq-plan
-description: "Plans a feature or change through a clarifying interview, producing spec deltas, plan.md, and decision-log.md with adversarial review. Use to plan, spec, design, or scope a feature, change, removal, refactor, or fix, before any implementation."
+description: "Plans a feature or change through a clarifying interview, producing spec deltas, plan.md, and intent.md with adversarial review. Use to plan, spec, design, or scope a feature, change, removal, refactor, or fix, before any implementation."
 ---
 
 # Spec Planner
@@ -28,9 +28,9 @@ Invoke before starting:
 - **Short Background**: `## Background` is a concise summary of the context every scenario shares, 3-5 one-line bullets at most. It never encodes features, behavior, or requirements; each of those is a scenario (or a step in one). When a change adds behavior, add or change a scenario, not a Background line. When you rewrite a Background that has grown past this, cut it down in the same `DELTA:CHANGED` block.
 - **Architecture by delta**: never edit `specs/architecture.md`; `/speq-record` merges the delta. When the plan changes no architecture, write no delta.
 - **Proof is tests and manual runs**: `speq` commands (`speq plan validate`, `speq feature get`) check the plan, not the product, so never list them as test or manual evidence.
-- **One copy**: never embed spec content in `plan.md` or `decision-log.md`; reference the delta files.
+- **One copy**: never embed spec content in `plan.md` or `intent.md`; reference the delta files.
 - **Specs describe the software, not its tests**: a spec delta states features, behavior, and constraints of the software. Never encode e2e tests, test suites, Docker setups, or the test environment as scenarios or Background. `specs/mission.md` encodes how to test; reference it from the plan's Verification section.
-- **The user decides, the plan assumes**: `## Interview` holds only what the user said. Every choice the plan makes without a user answer is an entry in `## Assumptions` until the user acknowledges it. Never bury a choice in a delta, a task, or a Design Decision.
+- **The user decides, the plan assumes**: `## Interview` holds only what the user said. Every choice the plan makes without a user answer is an entry in `## Assumptions`, open until the user acknowledges it. Never bury a choice in a delta or a task.
 - **Specs first, tasks last**: write the spec deltas before anything else in the plan, and the task list after everything else.
 
 ## Workflow
@@ -78,7 +78,7 @@ Pattern: `<verb>-<feature-scope>[-<qualifier>]`
 | `refactor` | Restructure, same behavior |
 | `fix` | Bug or spec mismatch |
 
-Once the name is set, write `specs/_plans/<plan-name>/decision-log.md` with the H1 `# Decision Log: <plan-name>` and an `## Interview` section holding the step 2 lines. This is the only copy of the interview.
+Once the name is set, write `specs/_plans/<plan-name>/intent.md` with the H1 `# Intent: <plan-name>` and an `## Interview` section holding the step 2 lines. This is the only copy of the interview.
 
 ### 4. Author the Plan
 
@@ -92,16 +92,11 @@ Write the artifacts in this order. Do not start a step before the previous one i
 
    **Prose drift check**: after a scenario delta on an existing feature, check that feature's `## Background` and `# Feature: <name>` description. When the scenario change makes either inaccurate, add a `DELTA:CHANGED` block for that section too.
 
-3. **Architecture delta.** Shape every new module, interface, or boundary per `/speq-design-philosophy`'s Quick Diagnostic. If the plan changes a component, boundary, interface, data flow, constraint, or external dependency, write `specs/_plans/<plan-name>/architecture.md` per `references/architecture-delta-template.md`. Copy each changed section from `specs/architecture.md`, edit it, and set the BASE hash with `git hash-object specs/architecture.md`. If `specs/architecture.md` is absent, write no delta and state `Architecture: no change: specs/architecture.md absent` in the decision log entry.
+3. **Architecture delta.** Shape every new module, interface, or boundary per `/speq-design-philosophy`'s Quick Diagnostic. If the plan changes a component, boundary, interface, data flow, constraint, or external dependency, write `specs/_plans/<plan-name>/architecture.md` per `references/architecture-delta-template.md`. Copy each changed section from `specs/architecture.md`, edit it, and set the BASE hash with `git hash-object specs/architecture.md`. If `specs/architecture.md` is absent, write no delta.
 
 4. **Validate the deltas**: `speq plan validate <plan-name>`. Fix failures before you go on. Common fixes: close delta markers (`<!-- /CHANGED -->`, `<!-- /NEW -->`, `<!-- /REMOVED -->`), uppercase RFC 2119 keywords, bold step keywords (`*GIVEN*`, `*WHEN*`, `*THEN*`, `*AND*`).
 
-5. **Decision log.** Complete `decision-log.md` from `references/decision-log-plan-template.md`. Keep `## Interview` unchanged.
-   - **Assumptions**: one entry per choice you made without a user answer: a behavior, a default, a scope cut, a design choice. Gaps you find while authoring land here too. State what you assumed and why.
-   - **Design Decisions**: log a choice only when a reviewer or implementer cannot infer it from the deltas: a plausible alternative you rejected, or a constraint that is not obvious. Its Rationale cites the `## Interview` line it rests on. A choice with no such line is an assumption first. Expect 0 to 3 entries. Never log naming, file placement, or task order. For a new abstraction or module boundary, justify it against `/speq-design-philosophy`'s Quick Diagnostic.
-   - **Architecture field**: an entry with `Promotes to ADR: yes` whose Rationale names `/speq-adr-rules` rule-2 criterion 1, 2, or 3 needs an `- **Architecture:** <§ Section[, § Section] | no change: <reason>>` line. Every named section needs a block in the architecture delta.
-   - **Promotion gate**: apply `/speq-adr-rules` to every entry. Default `Promotes to ADR: no`. For `yes`, name the rule-2 criterion and the ADR digest result in Rationale. Keep a promoted entry's Decision and Rationale short and factual: `/speq-record` derives the ADR from them.
-   - **Review Findings**: leave empty; Revision Mode fills it.
+5. **Assumptions.** Add every choice you made without a user answer to `## Assumptions` in `intent.md`, per `references/intent-template.md`. Gaps you found while authoring land here too. Keep the section short: the template's rules say what earns an entry.
 
 6. **`plan.md` body.** Write every section of `references/plan-template.md` except `## Implementation Tasks`:
    - Context, Features (referencing the delta files), and Impact (breaking changes called out, or "None").
@@ -126,10 +121,10 @@ Invoke /speq-plan-review and follow it.
 <verbatim original request>
 
 ## Clarifying Interview Results
-Read `## Interview` in `specs/_plans/<plan-name>/decision-log.md`.
+Read `specs/_plans/<plan-name>/intent.md`.
 
 ## Plan Artifacts
-plan.md, decision-log.md, every specs/_plans/<plan-name>/**/spec.md delta, and specs/_plans/<plan-name>/architecture.md when present
+plan.md, intent.md, every specs/_plans/<plan-name>/**/spec.md delta, and specs/_plans/<plan-name>/architecture.md when present
 ```
 
 It writes `specs/_plans/<plan-name>/review/review.md` and returns `PLAN REVIEW: BLOCKERS: <n>, FINDINGS: <n>, INTENT: <n> — <path>`. `INTENT` counts the BLOCKERs on the Intent Fidelity axis alone.
@@ -141,19 +136,19 @@ It writes `specs/_plans/<plan-name>/review/review.md` and returns `PLAN REVIEW: 
 
 ### 6. Acknowledge Assumptions
 
-Present every entry in `## Assumptions` to the user, grouped by topic, each with what it affects in the plan. For each entry the user confirms it, or corrects it:
+Present every `open` assumption to the user, grouped by topic, each with what it affects in the plan. For each one the user confirms it, or corrects it:
 
-- **Confirmed** → move it into `## Interview` as `- Q: Assume <assumption>? → A: yes`.
-- **Corrected** → move it into `## Interview` with the user's answer, and revise the deltas, `plan.md`, and tasks it affects. Run `speq plan validate <plan-name>`.
+- **Confirmed** → set its status to `confirmed`.
+- **Corrected** → rewrite it with the user's answer, set it to `confirmed`, and revise the deltas, `plan.md`, and tasks it affects. Run `speq plan validate <plan-name>`.
 
-The step ends when `## Assumptions` is empty. Delete the empty heading.
+The step ends when no assumption is `open`.
 
 ### 7. Explain Next Steps
 
 Print to the terminal:
 
 - `plan.md`'s `## Impact` section
-- `ADR candidates: none`, or the title of each `Promotes to ADR: yes` entry in `decision-log.md`
+- `ADR candidates: none`, or each `ADR: yes` assumption
 - The non-blocking findings from step 5
 - The number of assumptions the user confirmed or corrected in step 6
 - If step 5 ran a fix pass, one line ("N review findings fixed")

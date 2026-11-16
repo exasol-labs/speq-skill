@@ -85,32 +85,32 @@ After all merges:
 
 ## Promote ADRs to Permanent Decision Log
 
-Read `specs/_plans/<plan-name>/decision-log.md` (if it exists).
+Read `## Assumptions` in `specs/_plans/<plan-name>/intent.md` (if it exists).
 
-For each entry where `Promotes to ADR: yes`:
+For each `confirmed` assumption marked `ADR: yes`:
 
-1. Convert to ADR format using `/speq-plan`'s `references/decision-log-permanent-template.md`:
-   - **Title** — from the decision entry heading
+1. Convert it to ADR format using `/speq-plan`'s `references/decision-log-permanent-template.md`:
+   - **Title** — a short noun phrase for the choice
    - **ID** — a kebab-case slug derived from the title; MUST be unique across every file in `specs/_decision/`
    - **Plan** — `<plan-name>`
    - **Status** — `Accepted`. Recording the plan is the acceptance, per `/speq-adr-rules`
-   - **Supersedes** (optional) — if the entry carries a `Supersedes` line, copy that slug. Check that it names an existing ADR slug
-   - **Context** — one or two sentences from the entry's Rationale: the situation that forces the decision, stated as present fact. No history of how the plan reached it, per `/speq-adr-rules` rule 7a. Do not copy Rationale or Alternatives prose
-   - **Decision** — from the entry's Decision bullet, in one to three sentences
-   - **Options Considered** — emit this section ONLY when the entry's Alternatives names a real rejected option (not `none`, not empty). Never infer it from prose elsewhere in the entry
-   - **Consequences** — emit this section ONLY from the entry's own Consequences line, when present. Never infer it from Rationale or any other field
-   - The entry's `Architecture` field is not mapped into the ADR. It states which sections of `specs/architecture.md` the plan changes, and the merge in "Apply Architecture Delta" already applied them
-   - When the entry carries neither (Alternatives is empty/`none` and there is no Consequences line), the assembled ADR is short-form: field block + `### Context` + `### Decision` only — no `### Options Considered`, no `### Consequences`
+   - **Supersedes** (optional) — the slug from the assumption's `supersedes <slug>`. Check that it names an existing ADR slug
+   - **Context** — one or two sentences from the assumption's reason: the situation that forces the choice, stated as present fact, per `/speq-adr-rules` rule 7a
+   - **Decision** — the assumption's choice, in one to three sentences
+   - **Options Considered** — ONLY when the assumption names a rejected alternative
+   - **Consequences** — ONLY when the assumption states an effect on later work
+   - The `§ <section>` and the criterion are not mapped into the ADR. The merge in "Apply Architecture Delta" already applied the sections
+   - Otherwise the ADR is short-form: field block + `### Context` + `### Decision` only
 
 2. Write ONE new fragment file `specs/_decision/NNN-<plan-name>.md`:
    - NNN = (count of existing files in `specs/_decision/`) + 1, zero-padded to 3 digits
    - H1: `# Decisions: <plan-name>`
-   - Emit one `## ADR: <Title>` block per promoted entry, in decision-log order
+   - Emit one `## ADR: <Title>` block per promoted assumption, in `intent.md` order
    - MUST NOT edit any other file in `specs/_decision/` — a supersede reference is a one-way pointer from the new ADR's `**Supersedes:**` field to the target slug
 
 3. Validate: `speq decision-log validate`
 
-If `decision-log.md` is absent or has no "Promotes to ADR: yes" entries, skip silently.
+If `intent.md` is absent or has no `ADR: yes` assumption, skip silently.
 
 ## Finalize
 

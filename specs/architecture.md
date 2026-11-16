@@ -33,10 +33,10 @@
 - cli (src/cli.rs): defines commands and arguments with clap derive | owns: argument definitions | depends on: none
 - main (src/main.rs): parses arguments, calls module handlers, prints results, sets the exit code | owns: output formatting of command results | depends on: cli, feature, plan, tree, validate
 - validate (src/validate/): parses spec Markdown and applies structural rules and RFC2119 checks | owns: parse results and validation reports | depends on: feature
-- validate::decision_log (src/validate/decision_log.rs): validates decision fragments in specs/_decision and plan decision logs, and assembles the permanent log | owns: none | depends on: none
+- validate::decision_log (src/validate/decision_log.rs): validates decision fragments in specs/_decision and assembles the permanent log | owns: none | depends on: none
 - feature (src/feature.rs): discovers domains and features by walking directories under specs | owns: feature path model | depends on: none
 - tree (src/tree.rs): renders the domain and feature tree view | owns: none | depends on: feature
-- plan (src/plan.rs): lists active plans and validates a plan's delta specs and decision log | owns: plan validation results | depends on: validate, delta
+- plan (src/plan.rs): lists active plans and validates a plan's delta specs and intent.md | owns: plan validation results | depends on: validate, delta
 - delta (src/delta.rs): finds delta spec files, parses delta markers, and checks anchor rules | owns: delta parse results | depends on: none
 
 ## Data Flow

@@ -11,7 +11,7 @@ Also invoke: `/speq-design-philosophy`, `/speq-adr-rules`, `/speq-cli` (check th
 
 ## Scope
 
-- Read: `plan.md`, `decision-log.md` (its `## Interview` holds the clarifying Q&A), every `specs/_plans/<plan-name>/**/spec.md` delta, and `specs/_plans/<plan-name>/architecture.md` when present.
+- Read: `plan.md`, `intent.md` (`## Interview` holds the user's answers, `## Assumptions` the plan's own choices), every `specs/_plans/<plan-name>/**/spec.md` delta, and `specs/_plans/<plan-name>/architecture.md` when present.
 - Read-only on every artifact but your own. The session that spawned you changes the plan, never you.
 - Single write: `specs/_plans/<plan-name>/review/review.md`, plus the `review/` directory if absent.
 
@@ -31,8 +31,9 @@ Tag every finding. Group findings by axis in the output.
 
 - `[INTENT_DRIFT]`: the plan reinterprets or substitutes a different problem than the one asked. *Quote the original request; quote the plan line that diverges.*
 - `[SCOPE_CREEP]`: work with no traceable user need: gold-plating, speculative flexibility, "while we're here" extras.
-- `[UNCONFIRMED_DECISION]`: a Design Decision, delta, or task makes a choice that no `## Interview` line backs and no `## Assumptions` entry declares. Fix: add it to `## Assumptions`.
-- `[INTENT_GAP]`: the request leaves a question open that the interview never asked and no assumption covers (an edge case, an affected user or feature, a conflict, a compatibility effect). Fix: add an `## Assumptions` entry that names the gap and the plan's answer.
+- `[UNCONFIRMED_DECISION]`: a delta or task makes a choice that no `## Interview` line backs and no assumption declares. Fix: add it to `## Assumptions`.
+- `[ASSUMPTION_CLUTTER]`: an assumption breaks the rules in `/speq-plan`'s `references/intent-template.md`: longer than one dense line, restates a delta or task, covers naming or placement, or duplicates another. Fix: shorten, merge, or delete it.
+- `[INTENT_GAP]`: the request leaves a question open that the interview never asked and no assumption covers (an edge case, an affected user or feature, a conflict, a compatibility effect). Fix: add an assumption that names the gap and the plan's answer.
 - `[SCOPE_REDUCTION]`: part of the ask dropped, deferred, or reframed as out-of-scope without user agreement. A declared `Follow-up plans` list in `plan.md` from a split is agreed scope, not a reduction.
 
 ### Feasibility: can this be built as described?
@@ -56,15 +57,15 @@ Tag every finding. Group findings by axis in the output.
 
 ### Design Depth: does the plan manage complexity well? (per `/speq-design-philosophy`)
 
-`decision-log.md` is the input surface for `[ADR_OVERPROMOTION]`: check every `Promotes to ADR: yes` entry against `/speq-adr-rules`. `decision-log.md`, `plan.md`, and `architecture.md` (the delta, if present) are the input surface for `[ARCHITECTURE_DRIFT]`. The accepted ADRs (the ADR digest from `/speq-cli`, plus any fragment you open) are the input surface for `[ADR_CONFLICT]`.
+The `ADR: yes` assumptions in `intent.md` are the input surface for `[ADR_OVERPROMOTION]`: check each against `/speq-adr-rules`. `intent.md`, `plan.md`, and `architecture.md` (the delta, if present) are the input surface for `[ARCHITECTURE_DRIFT]`. The accepted ADRs (the ADR digest from `/speq-cli`, plus any fragment you open) are the input surface for `[ADR_CONFLICT]`.
 
 - `[SHALLOW_DESIGN]`: a planned module/interface is shallow relative to the complexity it should hide.
 - `[INFORMATION_COUPLING]`: a design decision (format, protocol, temporal split) reflected across multiple planned modules.
 - `[TACTICAL_SHORTCUT]`: a tactical shortcut with no scheduled strategic follow-up.
 - `[BOUNDARY_VIOLATION]`: planned business logic depends directly on a delivery mechanism, storage engine, or framework.
-- `[ADR_OVERPROMOTION]`: a `Promotes to ADR: yes` entry that fails `/speq-adr-rules`. Flag an entry when any of these holds: Rationale names no rule-2 criterion; Rationale states no ADR search result; the content is on the never-an-ADR list (rule 3); Decision holds implementation detail such as signatures, paths, or flags (rule 6). Fix: set it to `no`, or, if it is a corollary of another promoted decision, fold it into that parent entry's `Consequences` line.
-- `[ARCHITECTURE_DRIFT]` (BLOCKER): the plan changes the architecture but the delta does not say so. Flag it when any of these holds: (1) a `Promotes to ADR: yes` entry whose Rationale names rule-2 criterion 1, 2, or 3 has no `Architecture:` line, names a section the delta lacks, or says `no change` without a reason; (2) `plan.md` states a component, boundary, interface, data flow, constraint, or external dependency that the delta lacks; (3) the delta breaks `/speq-plan`'s `references/architecture-delta-template.md`. Fix: add or correct the delta block, move the fact into the delta, or write `Architecture: no change: <reason>`. Content in `plan.md` that only duplicates the delta is FINDINGS.
-- `[ADR_CONFLICT]` (BLOCKER): a decision, spec delta, or architecture delta contradicts an accepted ADR without a superseding entry (`Supersedes: <slug>`).  Fix: conform to the ADR, or add a superseding decision-log entry.
+- `[ADR_OVERPROMOTION]`: an `ADR: yes` assumption that fails `/speq-adr-rules`. Flag it when any of these holds: it names no rule-2 criterion; it states no ADR search result; the content is on the never-an-ADR list (rule 3); it holds implementation detail such as signatures, paths, or flags (rule 6). Fix: drop the ADR token, or merge it into the assumption it is a corollary of.
+- `[ARCHITECTURE_DRIFT]` (BLOCKER): the plan changes the architecture but the delta does not say so. Flag it when any of these holds: (1) an `ADR: yes` assumption on rule-2 criterion 1, 2, or 3 names no `§ <section>`, or names a section the delta lacks; (2) `plan.md` states a component, boundary, interface, data flow, constraint, or external dependency that the delta lacks; (3) the delta breaks `/speq-plan`'s `references/architecture-delta-template.md`. Fix: add or correct the delta block, or move the fact into the delta. Content in `plan.md` that only duplicates the delta is FINDINGS.
+- `[ADR_CONFLICT]` (BLOCKER): a decision, spec delta, or architecture delta contradicts an accepted ADR without a superseding assumption (`supersedes <slug>`). Fix: conform to the ADR, or add an `ADR: yes` assumption that supersedes it.
 
 ### Prose quality: does the writing meet `/speq-writing-guardrails`?
 

@@ -4,26 +4,24 @@
 
 # Decision Log
 
-The decision log records why a plan chose its design. It has two parts: a plan-level log for every plan, and permanent ADR fragments for the rare durable decision.
+The decision log is the permanent record of durable decisions: ADR fragments in `specs/_decision/`. Its source is a plan's `intent.md`, which records what the user said and what the plan assumed.
 
 | Part | Location | Purpose |
 |------|----------|---------|
-| Plan-level log | `specs/_plans/<plan-name>/decision-log.md` | Interview answers, open assumptions, and design choices of one plan |
+| Plan intent | `specs/_plans/<plan-name>/intent.md` | The user's interview answers and the plan's assumptions |
 | Permanent log | `specs/_decision/NNN-<plan-name>.md` | One fragment per plan or patch, holding its accepted ADRs |
 
-An ADR (Architecture Decision Record) is one durable decision. The decisions of one plan live in that plan's `decision-log.md`. Only the durable ones become ADRs. The `## Context` section of `plan.md` is a bullet list of the problem. It holds no decisions.
+An ADR (Architecture Decision Record) is one durable decision. Only a confirmed assumption marked `ADR: yes` becomes one. The `## Context` section of `plan.md` is a bullet list of the problem. It holds no decisions.
 
 ---
 
 ## Lifecycle
 
 ```
-/speq:plan     writes decision-log.md. Choices the user did not
-               make go to Assumptions until the user confirms
-               them. An entry marked
-               "Promotes to ADR: yes" is an ADR candidate.
-               Review blockers that changed a decision become
-               "[plan-review]" entries.
+/speq:plan     writes intent.md. Every choice the user did not
+               make is an assumption until the user confirms it.
+               A confirmed assumption marked "ADR: yes" is an
+               ADR candidate.
 
 /speq:record   writes each candidate as an ADR with
                Status: Accepted into specs/_decision/NNN-<plan-name>.md.
@@ -35,36 +33,29 @@ An ADR (Architecture Decision Record) is one durable decision. The decisions of 
                Under /speq:patch-pr, merging the PR is.
 ```
 
-To drop a candidate, set the entry to `Promotes to ADR: no` and run `/speq:plan` again. In a PR run, comment on the draft PR and run `/speq:plan-pr` again.
+To drop a candidate, ask for the ADR token's removal when `/speq:plan` confirms its assumptions. In a PR run, comment on the draft PR and run `/speq:plan-pr` again.
 
 ## Promotion rules
 
-`/speq:adr-rules` owns the rules. In short, the default is `no`, a `yes` needs a named criterion and a prior ADR search (see `/speq:cli`).
+`/speq:adr-rules` owns the rules. In short, an assumption carries no ADR token by default. `ADR: yes` needs a named criterion and a prior ADR search (see `/speq:cli`).
 
-## Plan-level log
+## Plan intent
 
 ```markdown
-# Decision Log: add-prose-delta-anchors
+# Intent: add-prose-delta-anchors
 
 ## Interview
 
-**Q:** Should a delta need new marker syntax to target a Background?
-**A:** No. Wrap the existing heading.
+- Q: New marker syntax to target a Background? → A: No, wrap the existing heading
 
-## Design Decisions
+## Assumptions
 
-### [1] Anchor a delta block by its first non-empty line
-
-- **Decision:** A delta block's anchor is its first non-empty line.
-- **Alternatives:** Scan the whole block for the first heading
-- **Rationale:** A heading quoted inside the prose can take over the anchor (Interview: no new marker syntax).
-- **Consequences:** Plans need no new marker syntax.
-- **Promotes to ADR:** yes
+- [A1] confirmed: A delta block's anchor is its first non-empty line; a heading scan was rejected because a quoted heading would take over the anchor. ADR: yes, criterion 4, no existing ADR
 ```
 
-`## Assumptions` holds the plan's own choices that the user has not confirmed yet. `/speq:plan` asks the user about each one and moves it into `## Interview`, so a finished plan has none. `Alternatives` may read `none`. `Consequences` and `Supersedes` (the slug of the ADR this replaces) are optional.
+Each assumption is one dense line with status `open` or `confirmed`. `/speq:plan` asks the user about every `open` one before the plan is ready, and `/speq:implement` refuses to start while one is open.
 
-The file is optional. If present, `speq plan validate` verifies its structure.
+The file is optional. If present, `speq plan validate` checks its H1, its sections, and that every `ADR:` value is `yes` or `no`.
 
 ## Permanent log
 

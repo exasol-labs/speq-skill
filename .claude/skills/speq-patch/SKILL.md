@@ -35,7 +35,7 @@ Invoke before starting:
 
 1. Run `speq plan list` and the absence check per `/speq-cli` for the behavior the change touches.
 2. Do not interview. Ask only when the intent has more than one reading or leaves the expected behavior open.
-3. Name the patch per `/speq-plan` step 3, without its decision log. A stopped run for this intent left the patch folder or the branch `patch/<name>` → reuse `<name>`. Otherwise never pick a name that `speq plan list` shows.
+3. Name the patch per `/speq-plan` step 3, without its `intent.md`. A stopped run for this intent left the patch folder or the branch `patch/<name>` → reuse `<name>`. Otherwise never pick a name that `speq plan list` shows.
 
 ### 3. Size Check Before Coding
 

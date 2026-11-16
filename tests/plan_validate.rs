@@ -261,23 +261,23 @@ mod spec_validation {
     }
 }
 
-mod decision_log {
+mod intent {
     use super::*;
 
     #[test]
-    fn plan_with_valid_decision_log_passes() {
+    fn plan_with_valid_intent_passes() {
         let tmp = TempDir::new().unwrap();
-        setup_fixture(&tmp, "with-decisions");
+        setup_fixture(&tmp, "with-intent");
 
         cmd()
             .current_dir(tmp.path())
-            .args(["plan", "validate", "with-decisions"])
+            .args(["plan", "validate", "with-intent"])
             .assert()
             .success();
     }
 
     #[test]
-    fn plan_without_decision_log_passes() {
+    fn plan_without_intent_passes() {
         let tmp = TempDir::new().unwrap();
         setup_fixture(&tmp, "valid-plan");
 
@@ -285,46 +285,49 @@ mod decision_log {
             .current_dir(tmp.path())
             .args(["plan", "validate", "valid-plan"])
             .assert()
-            .success();
+            .success()
+            .stdout(predicate::str::contains("intent.md").not());
     }
 
     #[test]
-    fn plan_decision_log_no_sections_fails() {
+    fn plan_intent_no_sections_fails() {
         let tmp = TempDir::new().unwrap();
-        setup_fixture(&tmp, "decisions-no-sections");
+        setup_fixture(&tmp, "intent-no-sections");
 
         cmd()
             .current_dir(tmp.path())
-            .args(["plan", "validate", "decisions-no-sections"])
+            .args(["plan", "validate", "intent-no-sections"])
             .assert()
             .code(1)
-            .stdout(predicate::str::contains("section"));
+            .stdout(predicate::str::contains("## Interview or ## Assumptions"));
     }
 
     #[test]
-    fn plan_decision_log_bad_promote_warns() {
+    fn plan_intent_bad_adr_value_warns() {
         let tmp = TempDir::new().unwrap();
-        setup_fixture(&tmp, "decisions-bad-promote");
+        setup_fixture(&tmp, "intent-bad-adr");
 
         cmd()
             .current_dir(tmp.path())
-            .args(["plan", "validate", "decisions-bad-promote"])
+            .args(["plan", "validate", "intent-bad-adr"])
             .assert()
             .success()
-            .stdout(predicate::str::contains("maybe"));
+            .stdout(
+                predicate::str::contains("WARN (intent.md)").and(predicate::str::contains("maybe")),
+            );
     }
 
     #[test]
-    fn plan_decision_log_bad_h1_fails() {
+    fn plan_intent_bad_h1_fails() {
         let tmp = TempDir::new().unwrap();
-        setup_fixture(&tmp, "decisions-bad-h1");
+        setup_fixture(&tmp, "intent-bad-h1");
 
         cmd()
             .current_dir(tmp.path())
-            .args(["plan", "validate", "decisions-bad-h1"])
+            .args(["plan", "validate", "intent-bad-h1"])
             .assert()
             .code(1)
-            .stdout(predicate::str::contains("wrong-name"));
+            .stdout(predicate::str::contains("# Intent: wrong-name"));
     }
 }
 

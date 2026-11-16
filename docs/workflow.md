@@ -25,8 +25,9 @@ Run `/speq:mission` once per project.
 Run `/speq:plan <intent>`.
 
 - Interviews you about the change
-- Writes a plan in `specs/_plans/<plan-name>/`: `plan.md`, spec deltas, `decision-log.md`, and an optional `architecture.md` delta
+- Writes a plan in `specs/_plans/<plan-name>/`: `plan.md`, spec deltas, `intent.md`, and an optional `architecture.md` delta
 - Has a reviewer agent challenge the plan first
+- Asks you to confirm or correct every assumption it made
 
 ## Implement it
 

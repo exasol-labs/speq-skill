@@ -58,8 +58,8 @@ fn handle_plan_command(command: cli::PlanCommands) -> ExitCode {
                     }
 
                     print_spec_warnings(&result.spec_validation_warnings);
-                    for warn in &result.decision_log_warnings {
-                        println!("  WARN (decision-log.md): {}", warn);
+                    for warn in &result.intent_warnings {
+                        println!("  WARN (intent.md): {}", warn);
                     }
                     ExitCode::SUCCESS
                 } else {
@@ -294,17 +294,11 @@ fn handle_decision_log_command(command: cli::DecisionLogCommands) -> ExitCode {
             let result = validate::decision_log::validate_decisions_dir(&decisions_dir);
             if result.is_success() {
                 println!("Permanent decision log validation passed.");
-                for warn in &result.warnings {
-                    println!("  WARN: {}", warn);
-                }
                 ExitCode::SUCCESS
             } else {
                 println!("Permanent decision log validation failed:");
                 for error in &result.errors {
                     println!("  ERROR: {}", error);
-                }
-                for warn in &result.warnings {
-                    println!("  WARN: {}", warn);
                 }
                 ExitCode::from(1)
             }

@@ -9,10 +9,10 @@ An ADR is a rare record of a durable decision. Most plans produce none. This ski
 
 ## 1. Default No
 
-- The expected number of `Promotes to ADR: yes` entries per plan is zero.
+- The expected number of `ADR: yes` assumptions per plan is zero.
 - Set `yes` only when a criterion in rule 2 applies and you can name it.
-- Two or more `yes` entries in one plan get re-judged. Re-read each one against rule 2 and rule 3 before you keep it.
-- A plan with many Design Decisions entries or many resolved review findings does not owe an ADR for each. Most decisions are local and stay `no`.
+- Two or more `ADR: yes` assumptions in one plan get re-judged. Re-read each one against rule 2 and rule 3 before you keep it.
+- A plan with many assumptions or many resolved review findings does not owe an ADR for each. Most choices are local and carry no ADR token.
 
 ## 2. Criteria for Yes
 
@@ -23,7 +23,7 @@ A decision qualifies only when at least one of these holds:
 - It is a major technology, API, persistence, security, or deployment choice.
 - It rejects a plausible alternative, and the reason will matter to a later reader.
 
-The entry's Rationale names the criterion that applies and states the result of the search in rule 5.
+The assumption names the criterion that applies and states the result of the search in rule 5.
 
 ## 3. Never an ADR
 
@@ -41,7 +41,7 @@ The entry's Rationale names the criterion that applies and states the result of 
 |---------|-------------|
 | Conventions that bind contributors or agents | `CLAUDE.md`, `AGENTS.md`, or `specs/mission.md` Constraints |
 | WHAT the system is: components and boundaries | `specs/architecture.md`, changed through an architecture delta |
-| HOW this plan builds it | A phrase in the `plan.md` task line. Only a choice with a rejected alternative gets a `decision-log.md` `## Design Decisions` entry with `Promotes to ADR: no` |
+| HOW this plan builds it | A phrase in the `plan.md` task line, or an assumption in `intent.md` without an ADR token |
 | Execution steps | `plan.md` `## Implementation Tasks` |
 
 An ADR records why. specs/architecture.md records what is.
@@ -50,23 +50,23 @@ To change an existing ADR, write a new ADR with `Supersedes: <slug>`. Do not edi
 
 ## 5. Search First
 
-Before you set `yes`, read the ADR digest (`/speq-cli`) and any fragment that matches the decision. If an ADR already covers the decision, do not promote a duplicate. Either set `no`, or supersede that ADR when the decision has changed. State the search result in Rationale.
+Before you set `yes`, read the ADR digest (`/speq-cli`) and any fragment that matches the decision. If an ADR already covers the decision, do not promote a duplicate. Either drop the ADR token, or supersede that ADR when the decision has changed. State the search result in the assumption.
 
-Every plan reads the accepted ADRs before it records design decisions. A plan whose decision, spec delta, or architecture delta contradicts an accepted ADR either conforms to it or supersedes it through a decision-log entry with `Supersedes: <slug>` and `Promotes to ADR: yes`. A silent contradiction is a defect.
+Every plan reads the accepted ADRs before it makes design choices. A plan whose choice, spec delta, or architecture delta contradicts an accepted ADR either conforms to it or supersedes it through an `ADR: yes` assumption with `supersedes <slug>`. A silent contradiction is a defect.
 
 ## 6. One Decision, No Detail
 
 - One ADR records one decision.
 - Decision states the choice in plain words. It holds no function signatures, file paths, or flags.
 - An ADR names a library but never pins its version. A version number lives in the manifest or lockfile. The Decision states the policy instead, for example "use the registry release, not a git tag".
-- If the Decision needs a list of paths, signatures, or version numbers to make sense, the content is implementation detail. Move it to the `plan.md` task line, or to a `decision-log.md` `## Design Decisions` entry with `Promotes to ADR: no` if it has a rejected alternative.
+- If the Decision needs a list of paths, signatures, or version numbers to make sense, the content is implementation detail. Move it to the `plan.md` task line.
 
 ## 7. Shape
 
 An ADR has four short sections: Context, Decision, Options Considered, Consequences.
 
 - Options Considered appears only when a real alternative was rejected.
-- Consequences appears only when the entry carries a Consequences line.
+- Consequences appears only when the assumption states an effect on later work.
 - Each section is a few sentences. A section that needs a page is more than one decision or holds implementation detail.
 
 ## 7a. Minimum Text, No History
@@ -78,14 +78,14 @@ An ADR holds the least text that states the decision. Follow `/speq-writing-guar
 - Decision is one to three sentences.
 - An Options Considered row is one line: the option and the reason it lost.
 - Consequences are short bullets that name what becomes easier or harder.
-- Do not copy a decision-log entry's Rationale or Alternatives prose into the ADR. Keep only what a later reader needs to understand why.
+- Do not copy the assumption's wording into the ADR verbatim. Keep only what a later reader needs to understand why.
 - Remove a sentence that a reader could drop without losing the decision or its reason.
 
 ## 8. Status Lifecycle
 
-- An ADR is proposed at plan time. A `Promotes to ADR: yes` entry that passes rules 1 to 5 is the proposal. The plan skill prints it as an ADR candidate.
+- An ADR is proposed at plan time. An `ADR: yes` assumption that passes rules 1 to 5 is the proposal. The plan skill prints it as an ADR candidate.
 - Recording the plan is the acceptance. `/speq-record` writes `Status: Accepted` when `/speq-record` runs.
-- To reject a proposal, change the entry to `Promotes to ADR: no` and run the plan skill again before you record. In a PR run, comment on the draft PR and run `/speq-plan-pr` again with the PR number.
+- To reject a proposal, ask for the ADR token's removal when the plan skill confirms its assumptions, or remove it and run the plan skill again before you record. In a PR run, comment on the draft PR and run `/speq-plan-pr` again with the PR number.
 - `/speq-patch` writes an ADR with `Status: Accepted` into its own fragment. Committing the patch is the acceptance. Under `/speq-patch-pr`, merging the patch PR is the acceptance, and a reviewer rejects the ADR by asking on the PR for the fragment's removal.
 - `Deprecated` and `Superseded by <slug>` follow the existing rules.
 
@@ -95,6 +95,6 @@ An ADR holds the least text that states the decision. Follow `/speq-writing-guar
 |------|---------|
 | ADR | A permanent record in `specs/_decision/` of one durable decision |
 | Plan context | The `## Context` part of `plan.md`: a bullet list of the problem and the forces behind one plan's change. It holds no decisions and is not an ADR |
-| Decision-log entry | A note in a plan's `decision-log.md`. Only an entry marked `Promotes to ADR: yes` can become an ADR |
-| ADR candidate | A decision-log entry marked `Promotes to ADR: yes`. It is the proposal, shown when the plan is ready |
+| Assumption | A line in a plan's `intent.md` that states a choice the user did not make. Only one marked `ADR: yes` can become an ADR |
+| ADR candidate | A confirmed assumption marked `ADR: yes`. It is the proposal, shown when the plan is ready |
 | Accepted | An ADR written by `/speq-record` or `/speq-patch`. Recording the plan, committing the patch, or merging the patch PR is the acceptance |
