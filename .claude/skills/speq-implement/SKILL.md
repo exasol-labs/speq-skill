@@ -30,9 +30,8 @@ Read `specs/_plans/<plan-name>/plan.md` and `intent.md`. The spec deltas they re
 `specs/_plans/<plan-name>/tasks.md` is the task list. It exists to enable resume. Each task is a checkbox: `- [ ]` pending, `- [x]` done.
 
 1. If `tasks.md` is absent, write it: break the spec deltas, Dead Code Removal, and Verification in `plan.md` into tasks in implementation order. Each task is small enough to verify as one unit and traces to one of them.
-2. Mirror the unchecked tasks with TaskCreate, so progress is visible in the session.
-3. Work through the tasks in order. For each task: TDD per `/speq-code-guardrails`, then check it off in `tasks.md` (`- [ ]` → `- [x]`) and mark the runtime task completed.
-4. Never check a task while a test it touches fails. If you cannot finish a task, leave it unchecked and report why.
+2. Work through the tasks in order. For each task: TDD per `/speq-code-guardrails`, then check it off in `tasks.md` (`- [ ]` → `- [x]`).
+3. Never check a task while a test it touches fails. If you cannot finish a task, leave it unchecked and report why.
 
 ### Phase 3: Code Review
 
@@ -91,11 +90,3 @@ Ready for: /speq-record <plan-name>
 ## Resume
 
 Running again resumes: start at the first unchecked task in `tasks.md`. With every task checked, continue at Phase 3.
-
-## Anti-Patterns
-
-| Pattern | Why Wrong |
-|---------|-----------|
-| Checking a task while its tests fail | Only verified work is done |
-| A second code review after the fixes | One review; verification checks the fixes |
-| Skipping the verification report | `/speq-record` gates on it |

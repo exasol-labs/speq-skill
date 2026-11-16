@@ -26,11 +26,7 @@ Get the plan name from the user prompt. If none is given, ask the user to choose
 
 ### Phase 2: Verify Preconditions
 
-```
-Check: specs/_plans/<plan-name>/verification-report.md exists?
-├─ Yes → Proceed
-└─ No  → STOP: "Run /speq-implement <plan-name> first."
-```
+No `specs/_plans/<plan-name>/verification-report.md` → stop: "Run /speq-implement <plan-name> first."
 
 Read `plan.md`, list the delta specs (`specs/_plans/<plan-name>/**/spec.md`), and run `speq feature list`.
 
@@ -49,13 +45,7 @@ Failure format: `Recording failed: architecture delta: architecture.md:<line>: <
 
 ### Phase 4: Merge Feature Deltas
 
-For each delta spec at `specs/_plans/<plan-name>/<domain>/<feature>/spec.md`:
-
-```
-specs/<domain>/<feature>/spec.md exists?
-├─ No  → Copy delta (strip markers)
-└─ Yes → Merge using markers below
-```
+Run `speq plan validate <plan-name>` first: it checks marker balance, illegal marker and anchor pairs, and repeated anchors. Then, for each delta spec at `specs/_plans/<plan-name>/<domain>/<feature>/spec.md`: a new feature is copied with its markers stripped, an existing one is merged by the table below.
 
 A delta block's anchor is the first non-empty line inside the block. `### Scenario: <name>` and `## Background` match exactly. `# Feature: <name>` matches by the prefix `# Feature`, so a description delta MAY rename the feature.
 
@@ -120,15 +110,3 @@ Only when every validation passed and every threshold decision is resolved:
 ✓ Architecture merged: <sections>   (omit when no delta)
 ✓ ADRs accepted: N — <slugs>   (omit when none)
 ```
-
-## Anti-Patterns
-
-| Pattern | Why Wrong |
-|---------|-----------|
-| Record without verification report | Implementation not proven |
-| Rewriting scenario wording or `specs/architecture.md` beyond the delta | Recording is mechanical |
-| Merging a CHANGED or REMOVED block whose scenario is absent from the target | It silently merges nothing; stop instead |
-| A heading left outside the marker, so the block's first line is not an anchor | Nothing can tell what the block targets |
-| Two blocks of one delta file sharing an anchor | The result would depend on block order; one block carries the final text |
-| `Status: Proposed` on a promoted ADR | Recording is the acceptance |
-| Archiving after an architecture delta failure | The delta was not merged, so the plan stays open |

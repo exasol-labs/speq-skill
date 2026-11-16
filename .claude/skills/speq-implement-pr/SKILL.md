@@ -98,28 +98,3 @@ Run — operation: push (per /speq-git-operations)
    ```
 
 3. Report the finished PR and leave it for the user's review. Never merge it.
-
-## Spec Hierarchy (reference)
-
-```
-specs/
-├── <domain>/<feature>/spec.md            # Permanent (after record)
-├── architecture.md                       # Permanent, changed by the recorder applying the plan's architecture delta
-├── _plans/<plan-name>/                   # Active until recorded: committed whole at step 4 except notes/
-│   ├── architecture.md                   # Architecture delta, present only when the plan changes the architecture
-│   ├── code-review.md                    # Created by the code reviewer
-│   ├── plan-review.md                    # Created by the plan reviewer
-│   ├── tasks.md                          # Task list for resume, written by speq-implement
-│   ├── notes/pr-feedback.md              # PR comments for a plan revision; local, never committed
-│   └── verification-report.md            # Created by speq-implement
-└── _recorded/NNN-<plan-name>/            # Archived by speq-record (gitignored by default)
-```
-
-## Work Split (reference)
-
-| Step | Performed by |
-|------|--------------|
-| Target resolution, version bump, coordination | This skill |
-| Coding, review, verification | `speq-implement` |
-| Spec merge and archive | `speq-record` |
-| Branch, commit, push, PR create/update | This skill, directly, per `/speq-git-operations` |

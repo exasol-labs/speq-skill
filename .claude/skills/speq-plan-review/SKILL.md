@@ -17,7 +17,7 @@ Also invoke: `/speq-design-philosophy`, `/speq-cli` (check the plan's claims aga
 
 ## Method
 
-**Ask why this plan may fail.** Before scoring anything, write 2-3 concrete ways this plan may fail. Route each into the taxonomy below. A failure with no matching category means the taxonomy misses a category, not that the failure does not count.
+**Ask why this plan may fail.** Before scoring, name the concrete ways it may fail and route each into the taxonomy. A failure with no matching tag still counts.
 
 **No silent pass.** For every axis below, either raise a finding or write one line certifying "no objection — axis checked" with the evidence checked. Never skip an axis.
 
@@ -45,16 +45,13 @@ Tag every finding. Group findings by axis in the output.
 - `[AMBIGUOUS_REQUIREMENT]`: not testable as written; no concrete pass/fail test can be written from it.
 - `[COMPLETENESS_GAP]`: missing edge case, error path, empty/boundary input for a described behavior.
 - `[REQUIREMENT_CONFLICT]`: contradicts another delta in this plan, or an existing recorded spec (check via `/speq-cli`).
-- `[IMPLEMENTATION_DETAIL]`: a spec delta's `## Background` or `# Feature <name>` description states a fact that no scenario's GIVEN/WHEN/THEN step in the same spec depends on, a Background runs past 5 one-line bullets, or a Background states behavior that belongs in a scenario. For a delta on an existing feature, the scenarios are those of the target spec after the delta merges; for a NEW feature, they are the delta file's own scenarios. A Background line that only restates a THEN step is redundant, not an implementation detail — don't flag it. Fix: drop the Background line, move it into the scenario step that actually needs it, or turn behavior into a scenario.
+- `[BACKGROUND_DRIFT]`: a Background or feature description breaks `/speq-plan`'s Short Background rule, or states a fact no scenario step depends on. Fix: drop the line, move it into the step that needs it, or turn behavior into a scenario.
 
 ### Design Depth: does the plan manage complexity well? (per `/speq-design-philosophy`)
 
 The `ADR: yes` directions in `intent.md` are the input surface for `[ADR_OVERPROMOTION]`: check each against the ADR rules in `/speq-plan`'s `references/decision-log-template.md`. `intent.md`, `plan.md`, and `architecture.md` (the delta, if present) are the input surface for `[ARCHITECTURE_DRIFT]`. The accepted ADRs (the ADR digest from `/speq-cli`, plus any fragment you open) are the input surface for `[ADR_CONFLICT]`.
 
-- `[SHALLOW_DESIGN]`: a planned module/interface is shallow relative to the complexity it should hide.
-- `[INFORMATION_COUPLING]`: a design decision (format, protocol, temporal split) reflected across multiple planned modules.
-- `[TACTICAL_SHORTCUT]`: a tactical shortcut with no scheduled strategic follow-up.
-- `[BOUNDARY_VIOLATION]`: planned business logic depends directly on a delivery mechanism, storage engine, or framework.
+- `[DESIGN_VIOLATION]`: a planned module, interface, or boundary breaks a `/speq-design-philosophy` principle; name the principle.
 - `[ADR_OVERPROMOTION]`: an `ADR: yes` direction that fails the ADR rules. Flag it when any of these holds: it names no rule-2 criterion; it states no ADR search result; the content is on the never-an-ADR list (rule 3), including implementation detail such as signatures, paths, or flags. Fix: drop the ADR token, or merge it into the direction it is a corollary of.
 - `[ARCHITECTURE_DRIFT]` (BLOCKER): the plan changes the architecture but the delta does not say so. Flag it when any of these holds: (1) an `ADR: yes` direction on rule-2 criterion 1, 2, or 3 names no `§ <section>`, or names a section the delta lacks; (2) `plan.md` states a component, boundary, interface, data flow, constraint, or external dependency that the delta lacks; (3) the delta breaks `/speq-plan`'s `references/architecture-delta-template.md`. Fix: add or correct the delta block, or move the fact into the delta. Content in `plan.md` that only duplicates the delta is FINDINGS.
 - `[ADR_CONFLICT]` (BLOCKER): a decision, spec delta, or architecture delta contradicts an accepted ADR without a superseding direction (`supersedes <slug>`). Fix: conform to the ADR, or add an `ADR: yes` direction that supersedes it.

@@ -6,7 +6,6 @@ Captures feature changes in plans before applying to permanent specs.
 
 1. **New Feature**: Full spec (Feature heading, Background, all Scenarios)
 2. **Existing Feature**: Wrap only what changed in markers. A `### Scenario:` heading, `## Background`, or the `# Feature: <name>` description — each wrapped in place, heading included inside the marker
-3. **Applying**: Merge deltas into permanent specs, remove markers
 
 ## Anchors
 
@@ -79,6 +78,10 @@ Validates the anchors of a plan's spec delta blocks during plan validation.
 <!-- /DELTA:CHANGED -->
 
 ## Scenarios
+
+### Scenario: Repeated anchor is rejected
+
+<copied verbatim from the target spec, outside any marker>
 ```
 
 ## Example: Description
@@ -94,14 +97,3 @@ Validates the anchors of a plan's spec delta blocks during plan validation. Catc
 
 ## Background
 ```
-
-## Anti-Pattern: Heading Outside the Marker
-
-```markdown
-## Background
-<!-- DELTA:CHANGED -->
-* Command syntax: `speq plan validate <plan-name>`
-<!-- /DELTA:CHANGED -->
-```
-
-Wrong. The block's first non-empty line is the bullet, not `## Background`, so the anchor is unrecognized and `plan validate` and the `/speq-record` skill reject it. Move the heading inside the marker, as in the Background example above.

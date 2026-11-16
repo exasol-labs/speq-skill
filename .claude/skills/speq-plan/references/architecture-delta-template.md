@@ -42,7 +42,7 @@ A CHANGED block replaces the whole section body. Any line the block omits is del
 
 ## Missing Target
 
-If `specs/architecture.md` does not exist, the delta is invalid. Run `/speq-mission` first.
+If `specs/architecture.md` does not exist, write no delta. `/speq-mission` creates the file.
 
 ## Example: CHANGED
 
@@ -60,59 +60,3 @@ If `specs/architecture.md` does not exist, the delta is invalid. Run `/speq-miss
 - output (src/output.rs): formats results for the terminal | owns: none | depends on: none
 <!-- /DELTA:CHANGED -->
 ```
-
-## Example: NEW
-
-Adds a custom section that does not exist yet.
-
-```markdown
-# Architecture Delta: add-deployment-notes
-<!-- BASE: 3b18e512dba79e4c8300dd08aeb37f8e728b8dad -->
-
-<!-- DELTA:NEW -->
-## Deployment
-
-- Release: single static binary per platform
-- Install: unpacked into `~/.local/bin`
-<!-- /DELTA:NEW -->
-```
-
-## Example: REMOVED
-
-The block holds only the heading. The section MUST be a custom section that exists.
-
-```markdown
-# Architecture Delta: drop-deployment-notes
-<!-- BASE: 3b18e512dba79e4c8300dd08aeb37f8e728b8dad -->
-
-<!-- DELTA:REMOVED -->
-## Deployment
-<!-- /DELTA:REMOVED -->
-```
-
-## Anti-Pattern: Prose Outside a Block
-
-```markdown
-# Architecture Delta: add-export-command
-<!-- BASE: 3b18e512dba79e4c8300dd08aeb37f8e728b8dad -->
-
-This plan adds an export module.
-
-<!-- DELTA:CHANGED -->
-## Components
-- export (src/export.rs): writes records to files | owns: none | depends on: store
-<!-- /DELTA:CHANGED -->
-```
-
-Wrong. The prose line sits outside a block, so the delta is invalid. Move the explanation to `plan.md`. This block is also wrong because it lists only the new bullet. It deletes every other component. Copy the full section, then edit it.
-
-## Anti-Pattern: NEW or REMOVED on a Canonical Section
-
-```markdown
-<!-- DELTA:NEW -->
-## Interfaces
-- CLI: `tool export <file>`
-<!-- /DELTA:NEW -->
-```
-
-Wrong. Interfaces is a canonical section and always exists. Use `DELTA:CHANGED` with the full section body.

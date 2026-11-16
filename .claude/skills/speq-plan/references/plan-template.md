@@ -71,7 +71,7 @@ Do NOT copy placeholders below. Replace with real values.
 
 ### Scenario Coverage
 
-<!-- Map EVERY scenario from feature specs to an integration test. No gaps allowed. -->
+<!-- Map every new or changed scenario to an integration test. -->
 
 | Scenario | Test Type | Test Location | Test Name |
 |----------|-----------|---------------|-----------|

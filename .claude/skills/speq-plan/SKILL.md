@@ -26,12 +26,12 @@ Invoke before starting:
 
 ## Rules
 
-- **Read-only investigation**: planning reads existing code, tests, specs, and docs. It never builds the software, runs a test suite, starts Docker or an e2e run, or launches the software. Plan the commands to run; do not run them.
+- **Read-only investigation**: read code, tests, specs, and docs. Never build, test, or run the software; plan the commands instead.
 - **Short Background**: `## Background` is a concise summary of the context every scenario shares, 3-5 one-line bullets at most. It never encodes features, behavior, or requirements; each of those is a scenario (or a step in one). When a change adds behavior, add or change a scenario, not a Background line. When you rewrite a Background that has grown past this, cut it down in the same `DELTA:CHANGED` block.
 - **Architecture by delta**: never edit `specs/architecture.md`; `/speq-record` merges the delta. When the plan changes no architecture, write no delta.
 - **Proof is tests and manual runs**: `speq` commands (`speq plan validate`, `speq feature get`) check the plan, not the product, so never list them as test or manual evidence.
 - **One copy**: never embed spec content in `plan.md` or `intent.md`; reference the delta files.
-- **Specs describe the software, not its tests**: a spec delta states features, behavior, and constraints of the software. Never encode e2e tests, test suites, Docker setups, or the test environment as scenarios or Background. `specs/mission.md` encodes how to test; reference it from the plan's Verification section.
+- **Specs describe the software, not its tests**: never encode test suites, Docker setups, or the test environment as scenarios or Background. The plan's Verification section covers testing.
 
 ## Workflow
 
@@ -46,11 +46,7 @@ Read the ADR digest per `/speq-cli`. Name the features that relate to the reques
 
 ### 2. Clarifying Interview
 
-Apply the Socratic Method by asking the user. Never assume. Decompose the problem space with MECE partitioning:
-
-- **Probe**: surface hidden assumptions with open-ended questions
-- **Partition**: present alternative solutions as MECE options
-- **Challenge**: test design tradeoffs with counterexamples
+Ask the user; never assume. Offer alternatives as options where the request leaves a design choice open.
 
 **Gap hunt.** The goal of the interview is to find what the request leaves open, including what the user has not thought of. Before you close it, check each lens below against the request and the discovery results. Ask about every lens that applies and that the request does not settle. Skip a lens that does not apply.
 
@@ -147,21 +143,3 @@ Print to the terminal:
 - The number of directions the user corrected in step 6
 - If step 5 ran a fix pass, one line ("N review findings fixed")
 - Tell the user to run `/speq-implement <plan-name>` to continue, after `/clear` for a fresh context window
-
-## Spec Hierarchy (reference)
-
-```
-specs/
-├── <domain>/<feature>/spec.md     # Permanent
-├── _plans/<plan-name>/            # Active
-└── _recorded/<plan-name>/         # Archived
-```
-
-## Anti-Patterns
-
-| Pattern | Why Wrong |
-|---------|-----------|
-| Skipping the clarifying interview | Content comes from user answers, never assumptions |
-| Deciding a gap silently | The user never sees the choice; it surfaces as a defect after implementation |
-| Running a second review after the fix pass | One review, one fix pass; unresolved findings go to the user |
-| Persisting non-blocking findings or looping on them | Report-only; they never gate |
