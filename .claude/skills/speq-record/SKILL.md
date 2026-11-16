@@ -72,7 +72,7 @@ Report line: `Architecture: § Components (CHANGED), § Deployment (NEW)`. List 
 
 ### Phase 6: Check Library Thresholds
 
-A spec with more than 10 scenarios, or a domain with more than 8 features, needs a user decision. Stop before archiving and ask a concrete question about how to reorganize. Never reorganize the library on your own.
+A spec with more than 10 scenarios, or a domain with more than 8 features, needs a reorganization. Stop before archiving, propose a concrete one (which scenarios or features move where), and ask the user. Never reorganize without that answer. Under `/speq-implement-pr`, the run is the answer: apply your proposal.
 
 ### Phase 7: Promote ADRs
 

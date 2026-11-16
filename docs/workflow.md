@@ -66,6 +66,6 @@ Run `/speq:audit` to run the validators and check unrecorded plans, the architec
 
 Plan names follow `<verb>-<scope>`, with the verb `add`, `change`, `remove`, `refactor`, or `fix`.
 
-`/speq:record` stops and asks you when a feature has more than 10 scenarios or a domain has more than 8 features. It never reorganizes without your decision.
+`/speq:record` stops and asks you when a feature has more than 10 scenarios or a domain has more than 8 features. It never reorganizes without your decision, except under `/speq:implement-pr`, which applies the proposed split.
 
 Text after a command reaches the skill as instructions, for example `/speq:implement add-plan-export use sonnet for the review`.

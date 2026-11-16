@@ -71,7 +71,7 @@ Run — operation: push (per /speq-git-operations)
 ### 5. Test and Record
 
 1. **Run the suites.** Run the project's real test suites (per `specs/mission.md § Commands`, typically an integration suite and an end-to-end suite), per `/speq-code-guardrails` § Running Suites. If any suite is red, report the failed suites with their log tails, **stop**, and leave the plan unrecorded. After the user fixes the code, run this skill again.
-2. **Record.** Invoke `/speq-record <plan-name>`. Recording accepts the ADR candidates on the plan PR. If it stops at a library threshold, relay its question to the user and **stop**. If it stops on a failure (for example a stale architecture delta base), **stop** and report it. Run this skill again after the user decides or fixes the plan.
+2. **Record.** Invoke `/speq-record <plan-name>`. Recording accepts the ADR candidates on the plan PR. If it hits a library threshold, it applies its own proposed split. If it stops on a failure (for example a stale architecture delta base), **stop** and report it. Run this skill again after the user decides or fixes the plan.
 3. Note the archive path from `/speq-record`'s `✓ Plan archived:` line.
 
 ### 6. Ship
