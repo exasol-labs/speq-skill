@@ -5,7 +5,7 @@ description: "Applies a bug fix, small feature, or tweak in the working tree in 
 
 # Patch (Orchestrator)
 
-You take one small change to a tested, reviewed working tree. You write the code and tests yourself. You run no git write: the user commits, or `/speq-patch-pr` ships the change as a PR. Stop on the first failed step and report it. Running it again resumes the work.
+You take one small change to a tested, reviewed working tree. You run no git write: the user commits, or `/speq-patch-pr` ships the change as a PR. Stop on the first failed step and report it. Running it again resumes the work.
 
 ## Required Skills
 
