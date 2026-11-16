@@ -1,89 +1,37 @@
 # Audit Checks
 
-Reserved names under `specs/` (not domains): `_plans/`, `_recorded/`, `_decision/`, `mission.md`, `architecture.md`, `.gitignore`.
+## 1. Validators
+**Detect:** run `speq feature validate`, `speq decision-log validate`, and `speq plan validate <plan>` for each plan in `speq plan list` (call `/speq-cli`).
+**Signal:** `✓ 0 errors` or `✗ N errors` naming the first few features, fragments, or plans.
+**Remediate:** none. Report the validator messages. The user fixes the file.
 
-## 1. Spec structure
-**Detect:** `find specs -name spec.md`, skipping reserved dirs. Each result must sit at `specs/<domain>/<feature>/spec.md`. Offenders: a `spec.md` at another depth, a `.md` directly under a domain dir, a feature dir with no `spec.md`.
-**Signal:** `✓` or `✗` listing each offending path.
-**Remediate:** [domain/feature restructure](#remediation-domainfeature-restructure).
+## 2. Unrecorded plans
+**Detect:** a `specs/_plans/*/` dir with `verification-report.md` is implemented but not archived. `plan.md` alone is un-implemented. `open-questions.md` means blocked on purpose. Note both, flag neither.
+**Signal:** `✗ N unrecorded: <names>` or `✓ none`.
+**Remediate:** point to `/speq-record <plan>`. Never archive here.
 
-## 2. Feature specs
-**Detect:** `speq feature validate` (call `/speq-cli`).
-**Signal:** `✓ 0 errors` or `✗ N errors` naming the first few features.
-**Remediate:** none. Report the validator messages. The user fixes the spec.
+## 3. Architecture file
+**Detect:** read-only, no CLI command exists. Check `specs/architecture.md` against the Rules in `/speq-plan`'s `references/architecture-template.md`.
+**Signal:** `✓ present, N sections`, `✗ missing`, or `✗ bad structure: <first violation with line>`.
+**Remediate:** missing: on Yes, run `/speq-mission`. Bad structure: report only. The user fixes the file or plans the change with `/speq-plan`. Never write `specs/architecture.md` here.
 
-## 3. Library thresholds
-**Detect:** flag a feature with more than 10 scenarios and a domain with more than 8 features. Count `### Scenario:` blocks per feature and feature dirs per domain.
-**Signal:** `⚠ <domain>/<feature>: N scenarios`, `⚠ <domain>: N features`, or `✓ max X scenarios · Y features`.
-**Remediate:** advisory. Recommend `/speq-plan` to split. Never auto-split.
-
-## 4. Decision log
-**Detect:** `specs/decision-log.md` exists = old format. Otherwise `speq decision-log validate` (absent or empty passes).
-**Signal:** `✗ old specs/decision-log.md (N ADRs)`, `✗ validate failed: <msg>`, or `✓`.
-**Remediate (old format, on Yes):** [decision-log migration](#remediation-decision-log-migration).
+## 4. Mission sync
+Run in SKILL.md Phase 3a. It yields (a) library domains and features the mission does not mention, (b) mission capabilities with no backing spec.
+**Signal:** `✓ in sync`, `⚠ N features unmentioned · M capabilities unbacked`, or `✗ no mission.md`.
+**Remediate (on Yes):** run `/speq-mission` seeded with the two lists. Never edit `mission.md`.
 
 ## 5. ADR review
 Run in SKILL.md Phase 3b. Read the ADR rules in `/speq-plan`'s `references/decision-log-template.md` first.
 
-**Detect:** skip (`— n/a`) when `specs/_decision/` holds no fragment, or when the old `specs/decision-log.md` exists (migrate first). Otherwise read every fragment in full and judge each ADR by those rules.
+**Detect:** skip (`— n/a`) when `specs/_decision/` holds no fragment. Otherwise read every fragment in full and judge each ADR by those rules.
 - **Noise:** fails the rules. Remove it. Fold a corollary into its parent's `### Consequences`.
 - **Wordy:** a real decision with more text than ADR rule 5 allows. Trim it.
 - **Keep** everything else. When in doubt, keep. Never remove an ADR named in another's `Supersedes` or `Superseded by`.
 
 **Signal:** `✓ N ADRs, clean` or `⚠ M noise · T wordy of N ADRs`, each listed with a one-line reason and `file:line` evidence.
-**Remediate (on Yes):** [ADR cleanup](#remediation-adr-cleanup).
-
-## 6. Active-plan validity
-**Detect:** `speq plan validate <plan>` for each plan in `speq plan list`.
-**Signal:** `✓ all valid` or `✗ <plan>: <msg>`.
-**Remediate:** none. The user fixes the plan.
-
-## 7. Unrecorded plans
-**Detect:** a `specs/_plans/*/` dir with `verification-report.md` is implemented but not archived. `plan.md` alone is un-implemented. `open-questions.md` means blocked on purpose. Note both, flag neither.
-**Signal:** `✗ N unrecorded: <names>` or `✓ none`.
-**Remediate:** point to `/speq-record <plan>`. Never archive here.
-
-## 8. Recorded-folder naming
-**Detect:** each `specs/_recorded/*` entry should match `^\d{3}-<plan>`. Legacy `YYYY-MM-DD-<plan>` or bare names are inconsistent. The dir is gitignored, so this is cosmetic.
-**Signal:** `⚠ N legacy names` or `✓`.
-**Remediate (inline, on Yes):** `mv` each legacy folder to the next `NNN-<plan>` (NNN = count of entries plus one, zero-padded, in existing chronological order).
-
-## 9. `_recorded` ignored
-**Detect:** `specs/.gitignore` has a `/_recorded` or `_recorded` line.
-**Signal:** `✓` or `✗ missing from specs/.gitignore`.
-**Remediate (inline, on Yes):** append `/_recorded` (create the file if absent).
-
-## 10. Reserved dirs tracked
-**Detect:** neither `specs/.gitignore` nor the root `.gitignore` ignores `_decision/` or `_plans/`. Only `_recorded` may be ignored.
-**Signal:** `✗ _plans wrongly ignored`, `✗ _decision wrongly ignored`, or `✓ _decision, _plans tracked`.
-**Remediate (inline, on Yes):** remove the offending line.
-
-## 11. Mission sync
-Run in SKILL.md Phase 3a. It yields (a) library domains and features the mission does not mention, (b) mission capabilities with no backing spec.
-**Signal:** `✓ in sync`, `⚠ N features unmentioned · M capabilities unbacked`, or `✗ no mission.md`.
-**Remediate (on Yes):** run `/speq-mission` seeded with the two lists. Never edit `mission.md`.
-
-## 12. Architecture file
-**Detect:** read-only, no CLI command exists. Check `specs/architecture.md` against the Rules in `/speq-plan`'s `references/architecture-template.md`. Also flag the old layout: the file is missing and `specs/mission.md` still holds `## Architecture`, `## External Dependencies`, or technical or performance constraint lines.
-**Signal:** `✓ present, N sections`, `✗ missing`, `✗ missing, mission.md holds the old sections`, or `✗ bad structure: <first violation with line>`.
-**Remediate (on Yes):** missing or old layout: run `/speq-mission` for its migration interview. Bad structure: report only. The user fixes the file or plans the change with `/speq-plan`. Never write `specs/architecture.md` here.
-
-## 13. Serena
-**Detect:** `ToolSearch` with the query `serena`. Any tool name containing `serena` is a match. Serena is optional and Context7 is not checked.
-**Signal:** `✓ serena found`, `ℹ not installed` (Detail: `skills work without it, see docs/mcp-servers.md`), or `— n/a` when the host has no `ToolSearch`, for example Codex.
-**Remediate:** none. A hint is not a finding and does not count toward `N findings`.
+**Remediate (on Yes):** ADR cleanup below.
 
 ---
-
-## Remediation: decision-log migration
-Apply on Yes. Convert the old single `specs/decision-log.md` (`## ADR-NNN` blocks) to per-plan fragments in the layout of `/speq-plan`'s `references/decision-log-template.md`: Context from the old rationale, Decision from the old decision, and Options Considered and Consequences only where the old block has them. The old file has no per-plan attribution, so put all ADRs in one fragment `specs/_decision/NNN-<name>.md` (NNN = existing fragment count plus one, zero-padded, H1 `# Decisions: <name>`) unless a block names its plan. Convert each `ADR-NNN` reference to the target's new slug. Drop all dates. Delete `specs/decision-log.md`, then run `speq decision-log validate`. It MUST pass.
-
-## Remediation: domain/feature restructure
-Always ask. Never auto-run.
-1. Build the move list: for each offending `spec.md`, propose `specs/<domain>/<feature>/spec.md`, inferring domain and feature from the path or the `# Feature:` heading.
-2. Show the full `mv` list and confirm.
-3. On Yes, `mkdir -p` and `mv` each `spec.md` with its sibling files.
-4. Run `speq feature validate`. It MUST pass. On failure, stop and report.
 
 ## Remediation: ADR cleanup
 Show the list first. The user can strike slugs. Apply the rest on Yes.

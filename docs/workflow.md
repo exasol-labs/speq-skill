@@ -59,7 +59,7 @@ Run `/speq:patch <intent>` for a small fix or tweak.
 
 ## Check the library
 
-Run `/speq:audit` to check structure, ADRs, mission drift, and unrecorded plans.
+Run `/speq:audit` to run the validators and check unrecorded plans, the architecture file, mission drift, and ADR noise.
 
 ## Good to know
 

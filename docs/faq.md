@@ -67,9 +67,9 @@
 ## How do I check that the spec library is healthy?
 
 - Run `/speq:audit`
-- It reports problems with structure, ADRs, the mission, and unrecorded plans
+- It reports validator errors, unrecorded plans, mission drift, and ADR noise
 - It asks before each fix
 
 ## How do I upgrade to a newer version?
 
-- Run `/speq:audit`
+- Re-run the setup script. See [Installation](./installation.md#update)

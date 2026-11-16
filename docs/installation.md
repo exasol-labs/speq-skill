@@ -59,7 +59,7 @@ In Claude Code, `/plugin` shows the `speq:*` skills. In Codex, type `$` and sele
 
 ## Update
 
-Re-run the setup script and run `/speq:audit` to update the spec library.
+Re-run the setup script.
 
 ## Uninstall
 
