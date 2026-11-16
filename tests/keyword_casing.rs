@@ -38,7 +38,7 @@ mod step_keywords {
         let stdout = String::from_utf8_lossy(&output);
         assert!(stdout.contains("WARN"));
         assert!(stdout.contains("given"));
-        assert!(stdout.contains("should be uppercase"));
+        assert!(stdout.contains("must be uppercase"));
     }
 
     #[test]
@@ -58,7 +58,7 @@ mod step_keywords {
         let stdout = String::from_utf8_lossy(&output);
         assert!(stdout.contains("WARN"));
         assert!(stdout.contains("when"));
-        assert!(stdout.contains("should be uppercase"));
+        assert!(stdout.contains("must be uppercase"));
         assert!(stdout.contains("0 errors"));
     }
 
@@ -95,8 +95,8 @@ mod rfc_keywords {
 
         let stdout = String::from_utf8_lossy(&output);
         assert!(stdout.contains("WARN"));
-        assert!(stdout.contains("must"));
-        assert!(stdout.contains("should be uppercase"));
+        assert!(stdout.contains("RFC 2119 keyword 'must'"));
+        assert!(stdout.contains("must be uppercase"));
     }
 
     #[test]
@@ -116,7 +116,7 @@ mod rfc_keywords {
         let stdout = String::from_utf8_lossy(&output);
         assert!(stdout.contains("WARN"));
         assert!(stdout.contains("shall"));
-        assert!(stdout.contains("should be uppercase"));
+        assert!(stdout.contains("must be uppercase"));
         assert!(stdout.contains("0 errors"));
     }
 

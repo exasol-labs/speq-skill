@@ -206,7 +206,7 @@ mod spec_validation {
             .args(["plan", "validate", "lowercase-steps"])
             .assert()
             .success()
-            .stdout(predicate::str::contains("should be uppercase"));
+            .stdout(predicate::str::contains("must be uppercase"));
     }
 
     #[test]
@@ -219,7 +219,7 @@ mod spec_validation {
             .args(["plan", "validate", "lowercase-rfc"])
             .assert()
             .success()
-            .stdout(predicate::str::contains("should be uppercase"));
+            .stdout(predicate::str::contains("must be uppercase"));
     }
 
     #[test]

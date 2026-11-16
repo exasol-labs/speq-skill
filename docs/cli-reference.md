@@ -102,7 +102,11 @@ speq feature validate [domain/feature]
 ```bash
 $ speq feature validate validation
 ✓ validation/keyword-casing (0 errors, 0 warnings)
+
+Summary: 1 passed, 0 failed, 0 warnings
 ```
+
+An unknown domain prints `Domain '<name>' not found` and exits with code 1.
 
 Checks:
 - Required sections (Feature, Background, Scenarios)

@@ -45,7 +45,7 @@ Each ADR needs `**ID:**`, `**Plan:**`, `**Status:**`, `### Context`, and `### De
 ## Commands
 
 ```bash
-speq decision-log validate   # structure, required fields, status values, slug references
+speq decision-log validate   # file names, structure, required fields, status values, kebab-case slugs, slug references
 speq decision-log show       # prints every fragment as one "Architecture Decision Records" view
 ```
 

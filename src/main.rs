@@ -175,7 +175,7 @@ fn handle_feature_get(base: &std::path::Path, path: &str) -> ExitCode {
     } else {
         // Display full feature
         if let Some(name) = &parsed.spec.feature_name {
-            println!("{}", name);
+            println!("# Feature: {}", name);
         }
         println!();
         if let Some(desc) = &parsed.spec.description {
@@ -225,6 +225,10 @@ fn handle_feature_command(command: cli::FeatureCommands) -> ExitCode {
                     let fp = feature::FeaturePath::new(parts[0], parts[1]);
                     vec![(fp.clone(), validate::run_feature(&base, &fp))]
                 }
+                Some(domain) if !feature::discover_domains(&base).iter().any(|d| d == domain) => {
+                    println!("Domain '{}' not found", domain);
+                    return ExitCode::from(1);
+                }
                 Some(domain) => validate::run_domain(&base, domain),
             };
 
@@ -244,15 +248,17 @@ fn print_validation_results(
         return ExitCode::SUCCESS;
     }
 
-    let mut has_errors = false;
+    let mut failed = 0;
+    let mut warnings = 0;
 
     for (fp, result) in results {
         match result {
             Ok(vr) => {
+                warnings += vr.warnings.len();
                 let status = if vr.is_success() {
                     if vr.warnings.is_empty() { "✓" } else { "⚠" }
                 } else {
-                    has_errors = true;
+                    failed += 1;
                     "✗"
                 };
                 println!(
@@ -271,13 +277,21 @@ fn print_validation_results(
                 }
             }
             Err(e) => {
-                has_errors = true;
+                failed += 1;
                 println!("✗ {} - {}", fp, e);
             }
         }
     }
 
-    if has_errors {
+    println!();
+    println!(
+        "Summary: {} passed, {} failed, {} warnings",
+        results.len() - failed,
+        failed,
+        warnings
+    );
+
+    if failed > 0 {
         ExitCode::from(1)
     } else {
         ExitCode::SUCCESS

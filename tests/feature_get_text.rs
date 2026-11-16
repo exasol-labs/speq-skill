@@ -75,7 +75,10 @@ fn displays_inline_code_in_steps() {
 fn displays_inline_code_in_feature_and_scenario_names() {
     let stdout = feature_get("demo/char-type");
 
-    assert_eq!(stdout.lines().next(), Some("`CHAR` type pushdown"));
+    assert_eq!(
+        stdout.lines().next(),
+        Some("# Feature: `CHAR` type pushdown")
+    );
     assert!(stdout.contains("### Pushdown of `substr`\n"));
 }
 
@@ -93,4 +96,14 @@ fn gets_scenario_by_name_with_inline_code() {
             "When a query calls `substr` on the column",
         ))
         .stdout(predicate::str::contains("Pad short values").not());
+}
+
+#[test]
+fn displays_feature_name_as_heading() {
+    let stdout = feature_get("demo/char-type");
+
+    assert!(
+        stdout.starts_with("# Feature: `CHAR` type pushdown\n"),
+        "output:\n{stdout}"
+    );
 }

@@ -31,8 +31,16 @@ impl Default for DecisionLogValidationResult {
 #[derive(Debug, Error, PartialEq)]
 pub enum DecisionLogError {
     // --- Permanent decision fragments (`specs/_decision/*.md`) ---
-    #[error("Fragment '{fragment}' is missing its H1 heading '# Decisions: <plan-name>'")]
+    #[error("Fragment '{fragment}' does not start with its H1 heading '# Decisions: <plan-name>'")]
     FragmentMissingH1 { fragment: String },
+
+    #[error("Fragment file '{fragment}' is not named 'NNN-<plan-name>.md' with a numeric prefix")]
+    FragmentFileName { fragment: String },
+
+    #[error(
+        "Fragment '{fragment}' ADR ID '{slug}' is not a kebab-case slug (lowercase letters and digits joined by single hyphens)"
+    )]
+    InvalidSlug { fragment: String, slug: String },
 
     #[error(
         "Fragment '{fragment}' ADR '{title}' has No identity: missing required '**ID:**' field"
@@ -112,6 +120,11 @@ pub fn validate_fragments(fragments: &[(String, String)]) -> DecisionLogValidati
 
     // Pass 1: per-fragment structural validation.
     for (name, content) in fragments {
+        if !is_valid_fragment_name(name) {
+            result.add_error(DecisionLogError::FragmentFileName {
+                fragment: name.clone(),
+            });
+        }
         if !fragment_has_valid_h1(content) {
             result.add_error(DecisionLogError::FragmentMissingH1 {
                 fragment: name.clone(),
@@ -272,6 +285,14 @@ fn validate_adr_block(
 
     let identity = id.clone().unwrap_or_else(|| block.title.clone());
 
+    if let Some(slug) = &id
+        && !is_kebab_case(slug)
+    {
+        result.add_error(DecisionLogError::InvalidSlug {
+            fragment: fragment.to_string(),
+            slug: slug.clone(),
+        });
+    }
     if id.is_none() {
         result.add_error(DecisionLogError::AdrMissingId {
             fragment: fragment.to_string(),
@@ -324,20 +345,38 @@ fn validate_adr_block(
     }
 }
 
-/// A fragment's first H1 must be `# Decisions: <plan-name>`.
+/// A fragment's first non-empty line must be `# Decisions: <plan-name>`.
 fn fragment_has_valid_h1(content: &str) -> bool {
-    for line in content.lines() {
-        let trimmed = line.trim_start();
-        if is_h1_line(trimmed) {
-            return trimmed.starts_with(FRAGMENT_H1_PREFIX);
-        }
-    }
-    false
+    content
+        .lines()
+        .map(str::trim_start)
+        .find(|line| !line.is_empty())
+        .is_some_and(|line| line.starts_with(FRAGMENT_H1_PREFIX))
 }
 
-fn is_h1_line(line: &str) -> bool {
-    let trimmed = line.trim_start();
-    trimmed.starts_with("# ")
+/// A fragment file is named `NNN-<plan-name>.md`: a numeric prefix, a hyphen,
+/// and a non-empty plan name.
+fn is_valid_fragment_name(name: &str) -> bool {
+    let Some(stem) = name.strip_suffix(".md") else {
+        return false;
+    };
+    match stem.split_once('-') {
+        Some((prefix, plan)) => {
+            !prefix.is_empty() && prefix.chars().all(|c| c.is_ascii_digit()) && !plan.is_empty()
+        }
+        None => false,
+    }
+}
+
+/// Lowercase ASCII letters and digits in hyphen-separated words.
+fn is_kebab_case(slug: &str) -> bool {
+    !slug.is_empty()
+        && slug.split('-').all(|word| {
+            !word.is_empty()
+                && word
+                    .chars()
+                    .all(|c| c.is_ascii_lowercase() || c.is_ascii_digit())
+        })
 }
 
 /// Extract a `**Name:**` field value, anchoring to the START of the trimmed
@@ -371,6 +410,40 @@ fn numeric_prefix(name: &str) -> u32 {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn fragment_name_rule() {
+        for name in ["001-plan-a.md", "7-x.md"] {
+            assert!(is_valid_fragment_name(name), "{name}");
+        }
+        for name in [
+            "plan-a.md",
+            "001-.md",
+            "-plan.md",
+            "a01-plan.md",
+            "001-plan-a.txt",
+        ] {
+            assert!(!is_valid_fragment_name(name), "{name}");
+        }
+    }
+
+    #[test]
+    fn kebab_case_rule() {
+        for slug in ["use-line-scanner", "v2-scanner"] {
+            assert!(is_kebab_case(slug), "{slug}");
+        }
+        for slug in [
+            "",
+            "Use-scanner",
+            "use_scanner",
+            "use--scanner",
+            "-use",
+            "use-",
+            "use scanner",
+        ] {
+            assert!(!is_kebab_case(slug), "{slug}");
+        }
+    }
 
     fn fragment(name: &str, content: &str) -> (String, String) {
         (name.to_string(), content.to_string())
