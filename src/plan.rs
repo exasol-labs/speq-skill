@@ -48,7 +48,6 @@ pub struct PlanValidationResult {
     pub spec_paths: Vec<String>,
     pub spec_validation_errors: Vec<SpecValidationResult>,
     pub spec_validation_warnings: Vec<SpecValidationResult>,
-    pub intent_warnings: Vec<String>,
 }
 
 impl PlanValidationResult {
@@ -156,73 +155,7 @@ pub fn validate_plan(
         }
     }
 
-    let intent_path = plan_dir.join("intent.md");
-    if intent_path.exists() {
-        let content = std::fs::read_to_string(&intent_path).map_err(|_| {
-            PlanValidationError::FileReadError {
-                path: intent_path.display().to_string(),
-            }
-        })?;
-        let (errors, warnings) = validate_intent(&content, plan_name);
-        for error in errors {
-            result.add_error(format!("intent.md: {}", error));
-        }
-        result.intent_warnings = warnings;
-    }
-
     Ok(result)
-}
-
-/// Validate a plan's optional `intent.md`: the user's interview answers and
-/// the plan's directions. Returns `(errors, warnings)`.
-///
-/// Requires the H1 `# Intent: <plan-name>` and at least one of `## Interview`
-/// or `## Directions`. An `ADR:` value on a direction line that is not
-/// `yes` or `no` is a warning, not an error.
-fn validate_intent(content: &str, plan_name: &str) -> (Vec<String>, Vec<String>) {
-    let expected_h1 = format!("# Intent: {plan_name}");
-    let mut errors = Vec::new();
-    let mut warnings = Vec::new();
-    let mut h1: Option<&str> = None;
-    let mut section_found = false;
-    let mut in_directions = false;
-
-    for line in content.lines().map(str::trim) {
-        if h1.is_none() && line.starts_with("# ") {
-            h1 = Some(line);
-            continue;
-        }
-        if line.starts_with("## ") {
-            in_directions = line == "## Directions";
-            section_found |= in_directions || line == "## Interview";
-            continue;
-        }
-        if in_directions && let Some(idx) = line.find("ADR:") {
-            let value = line[idx + 4..]
-                .split_whitespace()
-                .next()
-                .unwrap_or("")
-                .trim_end_matches(|c: char| !c.is_alphanumeric());
-            if !value.eq_ignore_ascii_case("yes") && !value.eq_ignore_ascii_case("no") {
-                warnings.push(format!(
-                    "Invalid 'ADR' value '{value}' (expected 'yes' or 'no')"
-                ));
-            }
-        }
-    }
-
-    match h1 {
-        None => errors.push(format!("Missing H1 heading '{expected_h1}'")),
-        Some(found) if found != expected_h1 => errors.push(format!(
-            "H1 heading does not match plan name: expected '{expected_h1}', found '{found}'"
-        )),
-        _ => {}
-    }
-    if !section_found {
-        errors.push("No valid sections found (expected ## Interview or ## Directions)".to_string());
-    }
-
-    (errors, warnings)
 }
 
 fn validate_delta_markers(content: &str, file_path: &str, result: &mut PlanValidationResult) {
@@ -301,52 +234,6 @@ mod tests {
     use super::*;
     use std::fs;
     use tempfile::TempDir;
-
-    const VALID_INTENT: &str = "# Intent: my-plan\n\n## Interview\n\n- Q: a? → A: b\n\n## Directions\n\n- [D1] anchor is the first line. ADR: yes\n";
-
-    #[test]
-    fn intent_valid_passes() {
-        let (errors, warnings) = validate_intent(VALID_INTENT, "my-plan");
-        assert!(errors.is_empty(), "{errors:?}");
-        assert!(warnings.is_empty(), "{warnings:?}");
-    }
-
-    #[test]
-    fn intent_missing_h1_fails() {
-        let (errors, _) = validate_intent("## Interview\n", "my-plan");
-        assert_eq!(errors, ["Missing H1 heading '# Intent: my-plan'"]);
-    }
-
-    #[test]
-    fn intent_h1_mismatch_fails() {
-        let (errors, _) = validate_intent("# Intent: other\n\n## Interview\n", "my-plan");
-        assert!(errors[0].contains("found '# Intent: other'"), "{errors:?}");
-    }
-
-    #[test]
-    fn intent_without_sections_fails() {
-        let (errors, _) = validate_intent("# Intent: my-plan\n\n## Design Decisions\n", "my-plan");
-        assert!(errors[0].starts_with("No valid sections"), "{errors:?}");
-    }
-
-    #[test]
-    fn intent_bad_adr_value_warns() {
-        let content =
-            "# Intent: my-plan\n\n## Directions\n\n- [D1] x. ADR: maybe\n- [D2] y (ADR: No)\n";
-        let (errors, warnings) = validate_intent(content, "my-plan");
-        assert!(errors.is_empty());
-        assert_eq!(
-            warnings,
-            ["Invalid 'ADR' value 'maybe' (expected 'yes' or 'no')"]
-        );
-    }
-
-    #[test]
-    fn intent_adr_outside_directions_is_ignored() {
-        let content = "# Intent: my-plan\n\n## Interview\n\n- Q: ADR: whatever? → A: no\n";
-        let (_, warnings) = validate_intent(content, "my-plan");
-        assert!(warnings.is_empty());
-    }
 
     fn create_plan(tmp: &TempDir, plan_name: &str) -> std::path::PathBuf {
         let plan_dir = tmp.path().join("specs/_plans").join(plan_name);

@@ -54,7 +54,7 @@ To drop a candidate, ask for the ADR token's removal when `/speq:plan` reviews i
 
 Each direction is one dense line. `/speq:plan` shows every direction to the user, who corrects any of them before the plan is ready. Running `/speq:implement` accepts the plan.
 
-The file is optional. If present, `speq plan validate` checks its H1, its sections, and that every `ADR:` value is `yes` or `no`.
+The file is optional.
 
 ## Permanent log
 

@@ -36,7 +36,7 @@
 - validate::decision_log (src/validate/decision_log.rs): validates decision fragments in specs/_decision and assembles the permanent log | owns: none | depends on: none
 - feature (src/feature.rs): discovers domains and features by walking directories under specs | owns: feature path model | depends on: none
 - tree (src/tree.rs): renders the domain and feature tree view | owns: none | depends on: feature
-- plan (src/plan.rs): lists active plans and validates a plan's delta specs and intent.md | owns: plan validation results | depends on: validate, delta
+- plan (src/plan.rs): lists active plans and validates a plan's delta specs | owns: plan validation results | depends on: validate, delta
 - delta (src/delta.rs): finds delta spec files, parses delta markers, and checks anchor rules | owns: delta parse results | depends on: none
 
 ## Data Flow

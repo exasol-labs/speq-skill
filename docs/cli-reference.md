@@ -150,7 +150,6 @@ Checks:
 - `plan.md` is present
 - Delta markers are properly formatted
 - Spec syntax is valid
-- `intent.md` structure, if the file is present (absence is not an error)
 
 ---
 

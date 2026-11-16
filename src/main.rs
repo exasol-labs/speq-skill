@@ -58,9 +58,6 @@ fn handle_plan_command(command: cli::PlanCommands) -> ExitCode {
                     }
 
                     print_spec_warnings(&result.spec_validation_warnings);
-                    for warn in &result.intent_warnings {
-                        println!("  WARN (intent.md): {}", warn);
-                    }
                     ExitCode::SUCCESS
                 } else {
                     println!("Plan '{}' validation failed:", plan_name);
