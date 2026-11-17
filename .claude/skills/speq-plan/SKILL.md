@@ -126,19 +126,15 @@ It writes `specs/_plans/<plan-name>/plan-review.md` and returns `PLAN REVIEW: BL
 - **`INTENT > 0`:** the reviewer holds that the plan solves a different problem than the one asked. Ask the user about those findings before any fix. The user accepts the plan as-is, or gives guidance and you revise.
 - **`INTENT == 0` and `BLOCKERS > 0`:** fix the blockers per `references/revision-mode.md`. Do not review again.
 - **Any blocker you could not resolve, or a failed `speq plan validate`:** ask the user, one line of context each plus a pointer to the review file.
-- **Non-blocking findings** never loop and are never persisted. Carry them into step 7's report. An `[UNSTATED_ASSUMPTION]` or `[INTENT_GAP]` finding becomes an entry in `## Directions`, whatever its severity.
+- **Non-blocking findings** never loop and are never persisted. Carry them into step 6's report. An `[UNSTATED_ASSUMPTION]` or `[INTENT_GAP]` finding becomes an entry in `## Directions`, whatever its severity.
 
-### 6. Review Directions
-
-Present every direction to the user, grouped by topic, each with what it affects in the plan. Ask which ones to change. For each correction, rewrite the direction with the user's answer, revise the deltas and `plan.md` where it affects them, and run `speq plan validate <plan-name>`. A direction the user does not correct stands.
-
-### 7. Explain Next Steps
+### 6. Explain Next Steps
 
 Print to the terminal:
 
 - `plan.md`'s `## Impact` section
 - `ADR candidates: none`, or each `ADR: yes` direction
 - The non-blocking findings from step 5
-- The number of directions the user corrected in step 6
+- Every direction in `## Directions`, one line each with what it affects in the plan, so the user can correct one through a plan revision
 - If step 5 ran a fix pass, one line ("N review findings fixed")
 - Tell the user to run `/speq-implement <plan-name>` to continue, after `/clear` for a fresh context window

@@ -34,7 +34,7 @@ Run — operation: checkout (per /speq-git-operations)
 
 ### 2. New Plan
 
-1. Run `/speq-plan` steps 1 to 6: discovery, the clarifying interview, the plan name, plan authoring, the one review with its fix pass, and the review of directions. Skip its step 7.
+1. Run `/speq-plan` steps 1 to 5: discovery, the clarifying interview, the plan name, plan authoring, and the one review with its fix pass. Skip its step 6.
 2. Create the branch. The plan files are uncommitted, so they carry over:
    ```
    Run — operation: create-branch (per /speq-git-operations)
@@ -53,7 +53,7 @@ Run this when step 1 found a PR for the target.
    ```
 2. If no comment is new, report that and stop.
 3. Treat every comment as user feedback on the files the PR changed, with its file and line when it has them. Revise the plan per `/speq-plan`'s `references/revision-mode.md`. If a comment is ambiguous, ask the user.
-4. Run `/speq-plan` step 6 on the new or changed directions only. Run its step 5 (the plan review) again only when the revision changed a spec delta or the plan's scope.
+4. Run `/speq-plan` step 5 (the plan review) again only when the revision changed a spec delta or the plan's scope.
 5. Commit and push, and answer on the PR:
    ```
    Run — operation: commit (per /speq-git-operations)

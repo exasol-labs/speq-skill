@@ -59,7 +59,7 @@ The `ADR: yes` directions in `intent.md` are the input surface for `[ADR_OVERPRO
 ## Severity
 
 - **BLOCKER**: violates user intent, or the plan is infeasible/untestable as written, or breaks a project rule the skill system enforces. Gates the plan; it gets one fix pass.
-- **FINDINGS**: Non-blocking findings to be acknowledged by the user. `[UNSTATED_ASSUMPTION]` and `[INTENT_GAP]` default to FINDINGS: `/speq-plan` turns them into directions the user reviews.
+- **FINDINGS**: Non-blocking findings to be acknowledged by the user. `[UNSTATED_ASSUMPTION]` and `[INTENT_GAP]` default to FINDINGS: `/speq-plan` turns them into directions and lists them in its report.
 
 ## Output Format
 
