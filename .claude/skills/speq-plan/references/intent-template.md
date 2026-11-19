@@ -6,7 +6,9 @@ STRUCTURAL TEMPLATE - DO NOT COPY-PASTE
 
 ## Interview
 
-- Q: <question> → A: <user answer>
+- Q: <full question, understandable without the conversation>
+  A: <chosen option with its description, or the user's own words exactly as written>
+  Rejected: <offered options the user did not pick>
 
 ## Directions
 
@@ -15,7 +17,7 @@ STRUCTURAL TEMPLATE - DO NOT COPY-PASTE
 
 ## Rules
 
-- `## Interview` holds only what the user said, one line per exchange, a few words each.
+- `## Interview` holds only the interview exchanges, never the plan's own choices: one entry per exchange, 2 to 3 lines each. The question stands on its own. The answer keeps the meaning of the user's choice: an offered option with its description, or the user's own words verbatim. Add `Rejected:` only when the user chose between real alternatives.
 - A direction is a choice the plan made without a user answer that changes behavior, scope, or design. One line, at most about 30 words: the choice, then why. A rejected alternative appears only when it is the reason for the choice.
 - Never a direction: naming, file placement, anything a spec delta already states, and anything the user answered.
 - Merge directions that share one reason. Delete one that the plan no longer depends on.

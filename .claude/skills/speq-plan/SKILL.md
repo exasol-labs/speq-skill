@@ -57,7 +57,7 @@ Ask the user; never assume. Offer alternatives as options where the request leav
 
 **Split check.** A plan may be too big when it holds parts that ship and verify on their own (two or more user-visible outcomes where neither needs the other), or when the deltas hold more than about 12 new or changed scenarios. Then ask the user whether to split, and propose the parts. The user decides the scope. On a split, plan the part the user picks, and end its `plan.md` Context with a `Follow-up plans` list (name and one-line scope each).
 
-Keep each exchange as one line: `- Q: <question> → A: <answer>`, a few words each.
+Log each exchange as one entry that a reader who missed the conversation understands, per `## Interview` in `references/intent-template.md`: the full question, the chosen answer with its meaning, and the rejected options when the user chose between real alternatives.
 
 ### 3. Plan Name
 
@@ -71,7 +71,7 @@ Pattern: `<verb>-<feature-scope>[-<qualifier>]`
 | `refactor` | Restructure, same behavior |
 | `fix` | Bug or spec mismatch |
 
-Once the name is set, write `specs/_plans/<plan-name>/intent.md` with the H1 `# Intent: <plan-name>` and an `## Interview` section holding the step 2 lines. This is the only copy of the interview.
+Once the name is set, write `specs/_plans/<plan-name>/intent.md` with the H1 `# Intent: <plan-name>` and an `## Interview` section holding the step 2 entries. This is the only copy of the interview.
 
 ### 4. Author the Plan
 
